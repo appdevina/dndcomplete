@@ -40,10 +40,10 @@ class WeeklyController extends Controller
                 $data['is_add'] = 1;
                 $monday = ConvertDate::getMondayOrSaturday($data['year'], $data['week'], true)->addHour(7);
                 if (auth()->user()->area_id == 2 && now()->addHour(7) > $monday->addDay(8)->addHour(10)) {
-                    return ResponseFormatter::error(null, 'Tidak bisa menambahkan extra task weekly di week ' . $request->week. ' sudah lebih dari hari selasa jam 10:00');
+                    return ResponseFormatter::error(null, 'Tidak bisa menambahkan extra task weekly di week ' . $request->week . ' sudah lebih dari hari selasa jam 10:00');
                 }
                 if (auth()->user()->area_id != 2 && now()->addHour(7) > $monday->addDay(7)->addHour(10)) {
-                    return ResponseFormatter::error(null, 'Tidak bisa menambahkan extra task weekly di week ' . $request->week. ' sudah lebih dari hari senin jam 10:00');
+                    return ResponseFormatter::error(null, 'Tidak bisa menambahkan extra task weekly di week ' . $request->week . ' sudah lebih dari hari senin jam 10:00');
                 }
             } else {
                 $monday = ConvertDate::getMondayOrSaturday($data['year'], $data['week'], true);
@@ -55,6 +55,9 @@ class WeeklyController extends Controller
                 if (Auth::user()->area_id != 2 && now() > $monday2->addHour(17)) {
                     return ResponseFormatter::error(null, 'Tidak bisa menambahkan weekly di week ' . $request->week . ' sudah lebih dari hari senin jam 17:00');
                 }
+            }
+            if ($request->tipe == 'RESULT' && $request->value_plan == null) {
+                return ResponseFormatter::error(null, 'Tipe task result harus isi value plan resultnya');
             }
             $data['user_id'] = Auth::id();
             Weekly::create($data);

@@ -43,9 +43,9 @@ class DailyController extends Controller
             $data['date'] = Carbon::parse(strtotime($request->date))->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'));
             $date = Carbon::parse(strtotime($request->date))->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'));
             if (!$request->isplan) {
-                if (!Daily::whereDate('date', Carbon::parse(strtotime($request->date))->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->format('Y-m-d'))->where('user_id', auth()->id())->get()) {
-                    return ResponseFormatter::error(null, "Tidak bisa menambahkan daily extra karena hari ini anda tidak ada plan");
-                }
+                // if (!Daily::whereDate('date', Carbon::parse(strtotime($request->date))->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->format('Y-m-d'))->where('user_id', auth()->id())->get()) {
+                //     return ResponseFormatter::error(null, "Tidak bisa menambahkan daily extra karena hari ini anda tidak ada plan");
+                // }
                 $data['isplan'] = false;
                 $data['ontime'] = true;
                 if (
