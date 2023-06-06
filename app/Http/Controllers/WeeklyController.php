@@ -47,31 +47,34 @@ class WeeklyController extends Controller
     {
         switch ($request->tasktype) {
             case '1':
-                $weeklys = Weekly::with(['user' => function ($query) {
-                    $query->where('divisi_id', auth()->user()->divisi_id);
-                }])
+                $weeklys = Weekly::with(['user'])
+                ->whereHas('user', function ($query) {
+                        $query->where('divisi_id', auth()->user()->divisi_id);
+                    })
                 ->where('year', now()->year)
                 ->where('week', now()->weekOfYear)
                 ->orderBy('week', 'DESC')
-                ->get();
+                ->simplePaginate(30);
                 break;
 
             case '2':
-                $weeklys = Weekly::with(['user' => function ($query) {
-                    $query->where('divisi_id', auth()->user()->divisi_id);
-                }])
+                $weeklys = Weekly::with(['user'])
+                ->whereHas('user', function ($query) {
+                        $query->where('divisi_id', auth()->user()->divisi_id);
+                    })
                 ->where('year', now()->year)
                 ->where('week', now()->weekOfYear - 1)
                 ->orderBy('week', 'DESC')
-                ->get();
+                ->simplePaginate(30);
                 break;
 
             default:
-                $weeklys = Weekly::with(['user' => function ($query) {
-                    $query->where('divisi_id', auth()->user()->divisi_id);
-                }])
+                $weeklys = Weekly::with(['user'])
+                ->whereHas('user', function ($query) {
+                        $query->where('divisi_id', auth()->user()->divisi_id);
+                    })
                 ->orderBy('week', 'DESC')
-                ->get();
+                ->simplePaginate(30);
                 break;
         }
 
@@ -79,7 +82,7 @@ class WeeklyController extends Controller
             $weeklys = Weekly::with('user')
             ->where('user_id', $request->user)
             ->orderBy('week', 'DESC')
-            ->get();
+            ->simplePaginate(30);
         }
 
         $logs = WeeklyLog::with(['user' => function ($query) {
@@ -90,13 +93,13 @@ class WeeklyController extends Controller
                 })
                 ->limit(30)
                 ->orderBy('created_at', 'DESC')
-                ->get();
+                ->simplePaginate(30);
 
         if ($request->user_log) {
             $logs = WeeklyLog::with('user')
                 ->where('user_id', $request->user_log)
                 ->orderBy('created_at', 'DESC')
-                ->get();
+                ->simplePaginate(30);
         }
 
         return view('teams.weekly.index')->with([

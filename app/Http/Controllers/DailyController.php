@@ -52,9 +52,10 @@ class DailyController extends Controller
     {
         switch ($request->tasktype) {
             case '1':
-                $dailys = Daily::with(['tag', 'user' => function ($query) {
-                $query->where('divisi_id', auth()->user()->divisi_id);
-                }])
+                $dailys = Daily::with(['tag', 'user'])
+                ->whereHas('user', function ($query) {
+                        $query->where('divisi_id', auth()->user()->divisi_id);
+                    })
                 ->where('date', now()->format('Y-m-d'))
                 ->orderBy('date', 'DESC')
                 ->orderBy('time', 'DESC')
@@ -62,9 +63,10 @@ class DailyController extends Controller
                 break;
 
             case '2':
-                $dailys = Daily::with(['tag', 'user' => function ($query) {
-                $query->where('divisi_id', auth()->user()->divisi_id);
-                }])
+                $dailys = Daily::with(['tag', 'user'])
+                ->whereHas('user', function ($query) {
+                        $query->where('divisi_id', auth()->user()->divisi_id);
+                    })
                 ->where('date', now()->subDay(1)->format('Y-m-d'))
                 ->orderBy('date', 'DESC')
                 ->orderBy('time', 'DESC')
@@ -72,9 +74,10 @@ class DailyController extends Controller
                 break;
 
             case '3':
-                $dailys = Daily::with(['tag', 'user' => function ($query) {
-                $query->where('divisi_id', auth()->user()->divisi_id);
-                }])
+                $dailys = Daily::with(['tag', 'user'])
+                ->whereHas('user', function ($query) {
+                        $query->where('divisi_id', auth()->user()->divisi_id);
+                    })
                 ->whereBetween('date', [now()->startOfWeek()->format('Y-m-d'), now()->endOfWeek()->format('Y-m-d')])
                 ->orderBy('date', 'DESC')
                 ->orderBy('time', 'DESC')
@@ -82,9 +85,10 @@ class DailyController extends Controller
                 break;
 
             default:
-                $dailys = Daily::with(['tag', 'user' => function ($query) {
-                $query->where('divisi_id', auth()->user()->divisi_id);
-                }])
+                $dailys = Daily::with(['tag', 'user'])
+                    ->whereHas('user', function ($query) {
+                            $query->where('divisi_id', auth()->user()->divisi_id);
+                        })
                     ->orderBy('date', 'DESC')
                     ->orderBy('time', 'DESC')
                     ->simplePaginate(30);
@@ -107,13 +111,13 @@ class DailyController extends Controller
                 })
                 ->limit(30)
                 ->orderBy('created_at', 'DESC')
-                ->get();
+                ->simplePaginate(30);
 
         if ($request->user_log) {
             $logs = DailyLog::with('user')
                 ->where('user_id', $request->user_log)
                 ->orderBy('created_at', 'DESC')
-                ->get();
+                ->simplePaginate(30);
         }
 
         return view('teams.daily.index')->with([

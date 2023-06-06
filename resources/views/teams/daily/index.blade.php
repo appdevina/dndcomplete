@@ -163,6 +163,14 @@
                 </div>
                 <div class="row">
                     <div class="col-12">
+                        <div class="d-flex justify-content-center">
+                            {{ $dailys->links() }}
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
                         <div class="card">
                             <div class="card-header bg-dark">
                                 <div class="row d-inline-flex">
@@ -217,6 +225,14 @@
                             <!-- /.card-body -->
                         </div>
                         <!-- /.card -->
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-center">
+                            {{ $logs->links() }}
+                        </div>
+                        <br>
                     </div>
                 </div>
         </section>
