@@ -18,4 +18,14 @@ class Weekly extends Model
     {
         return $this->belongsTo(User::class)->withTrashed();
     }
+
+    public function taskcategory()
+    {
+        return $this->belongsTo(TaskCategory::class, 'task_category_id');
+    }
+
+    public function taskstatus()
+    {
+        return $this->belongsTo(TaskStatus::class, 'task_status_id');
+    }
 }

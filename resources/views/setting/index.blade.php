@@ -21,6 +21,18 @@
                                             class="badge bg-success mx-3 elevation-0">Add</button>
                                     @break
 
+                                    @case('Task Category')
+                                        <h3 class="card-title">Task Category Setting</h3>
+                                        <button type="button" data-toggle="modal" data-target="#addTaskCategory"
+                                            class="badge bg-success mx-3 elevation-0">Add</button>
+                                    @break
+
+                                    @case('Task Status')
+                                        <h3 class="card-title">Task Status Setting</h3>
+                                        <button type="button" data-toggle="modal" data-target="#addTaskStatus"
+                                            class="badge bg-success mx-3 elevation-0">Add</button>
+                                    @break
+
                                     @default
                                         <h3 class="card-title">Area Setting</h3>
                                         <button type="button" data-toggle="modal" data-target="#addArea"
@@ -73,6 +85,32 @@
                                                     <td>{{ $divisi->area->name }}</td>
                                                     {{-- <td>
                                                         <a href="/setting/divisi/{{ $divisi->id }}"
+                                                            class="badge bg-warning"><span><i class="fas fa-edit"></i></span></a>
+                                                    </td> --}}
+                                                </tr>
+                                            @endforeach
+                                        @break
+
+                                        @case('Task Category')
+                                            @foreach ($taskcategories as $tc)
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $tc->task_category }}</td>
+                                                    {{-- <td>
+                                                        <a href="/setting/taskcategory/{{ $tc->id }}"
+                                                            class="badge bg-warning"><span><i class="fas fa-edit"></i></span></a>
+                                                    </td> --}}
+                                                </tr>
+                                            @endforeach
+                                        @break
+
+                                        @case('Task Status')
+                                            @foreach ($taskstatus as $ts)
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $ts->task_status }}</td>
+                                                    {{-- <td>
+                                                        <a href="/setting/taskstatus/{{ $ts->id }}"
                                                             class="badge bg-warning"><span><i class="fas fa-edit"></i></span></a>
                                                     </td> --}}
                                                 </tr>
@@ -168,6 +206,66 @@
                             </div>
                         </form>
 
+                    </div>
+                </div>
+            </div>
+        @break
+
+        @case('Task Category')
+            <!-- Modal Task Category-->
+            <div class="modal fade" id="addTaskCategory" tabindex="-1" role="dialog" aria-labelledby="addTaskCategoryLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <form method="POST" action="/setting/taskcategory">
+                            @csrf
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addTaskCategoryLabel">Task Category</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3 col-lg-12">
+                                    <label for="task_category" class="form-label">Nama Task Category</label>
+                                    <input type="text" class="form-control" id="task_category" name="task_category" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Add</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        @break
+
+        @case('Task Status')
+            <!-- Modal Task Status-->
+            <div class="modal fade" id="addTaskStatus" tabindex="-1" role="dialog" aria-labelledby="addTaskStatusLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <form method="POST" action="/setting/taskstatus">
+                            @csrf
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addTaskStatusLabel">Task Status</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3 col-lg-12">
+                                    <label for="task_status" class="form-label">Nama Task Status</label>
+                                    <input type="text" class="form-control" id="task_status" name="task_status" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Add</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

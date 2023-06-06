@@ -18,7 +18,7 @@
                                 </div>
                             @endif
                             <div class="card-body">
-                                <form action="/weekly/change" method="POST">
+                                <form action="{{ '/teams/weekly/edit/'.$weekly->id }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="id" value="{{ $weekly->id }}">
                                     <input type="hidden" name="page" value="teams">
@@ -52,12 +52,36 @@
                                         </div>
                                     </div>
                                     <div class="row">
+                                        <div class="mb-3 col-lg-3">
+                                            <label for="task_categories" class="form-label">Task Category</label>
+                                            <select class="custom-select col-lg-12" name="task_category_id" id="task_category" required>
+                                                <option value="" selected>-- Pilih --</option>
+                                                @foreach ($task_categories as $tc)
+                                                    <option value="{{ $tc->id }}"
+                                                        @if ($weekly->task_category_id == $tc->id) selected @endif>
+                                                        {{ $tc->task_category }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="mb-3 col-lg-3">
+                                            <label for="task_status" class="form-label">Task Status</label>
+                                            <select class="custom-select col-lg-12" name="task_status_id" id="task_status" required>
+                                                <option value="" selected>-- Pilih --</option>
+                                                @foreach ($task_status as $ts)
+                                                    <option value="{{ $ts->id }}"
+                                                        @if ($weekly->task_status_id == $ts->id) selected @endif>
+                                                        {{ $ts->task_status }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        @if ($weekly->tipe == 'RESULT')
                                         <div class="mb-3 col-lg-2">
                                             <label for="valueactual" class="form-label">Value Actual</label>
                                             <input type="number" class="form-control" id="valueactual" name="value_actual"
                                                 value="0" required>
                                             <span id="nominal"></span>
                                         </div>
+                                        @endif
                                     </div>
                                     <button type="submit" class="btn btn-success mt-3">Submit</button>
                                 </form>

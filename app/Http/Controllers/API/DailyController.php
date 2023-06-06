@@ -250,6 +250,7 @@ class DailyController extends Controller
             ) {
                 $daily['status'] ? $daily['ontime'] = 0 : $daily['ontime'] = 0.5;
             }
+            Carbon::now()->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->subWeek(2);
             $daily['status'] = !$daily['status'];
             $daily->save();
             return ResponseFormatter::success(null, 'Berhasil merubah status daily');

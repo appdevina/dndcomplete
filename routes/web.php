@@ -80,6 +80,17 @@ Route::middleware('auth')->group(
         Route::get('/req/approve/{id}', [DashboardController::class, 'approve']);
         Route::get('/req/reject/{id}', [DashboardController::class, 'reject']);
 
+        ##TEAMS
+        #DAILY
+        Route::get('/teams/daily', [DailyController::class, 'indexTeamsDaily']);
+        Route::get('/teams/daily/edit/{daily}', [DailyController::class, 'teamsDailyEdit']);
+        Route::post('/teams/daily/edit/{daily}', [DailyController::class, 'teamsDailyUpdate']);
+        #WEEKLY
+        Route::get('/teams/weekly', [WeeklyController::class, 'indexTeamsWeekly']);
+        Route::get('/teams/weekly/edit/{weekly}', [WeeklyController::class, 'teamsWeeklyEdit']);
+        Route::post('/teams/weekly/edit/{weekly}', [WeeklyController::class, 'teamsWeeklyUpdate']);
+
+        // Route::get('/teams/weekly/change/result/{id}', [WeeklyController::class, 'teamsShowResult']);
 
 
         ##ROUTE ADMIN
@@ -138,6 +149,14 @@ Route::middleware('auth')->group(
             Route::get('setting/area', [SettingController::class, 'area']);
             Route::post('setting/area', [SettingController::class, 'areaadd']);
             // Route::get('setting/area/{id}', [SettingController::class, 'areaedit']);
+
+            //TASK CATEGORY
+            Route::get('setting/taskcategory', [SettingController::class, 'taskcategory']);
+            Route::post('setting/taskcategory', [SettingController::class, 'taskcategoryadd']);
+
+            //TASK STATUS
+            Route::get('setting/taskstatus', [SettingController::class, 'taskstatus']);
+            Route::post('setting/taskstatus', [SettingController::class, 'taskstatusadd']);
 
             ##BROADCAST
             Route::post('broadcast', [DashboardController::class, 'broadcast']);

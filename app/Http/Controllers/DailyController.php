@@ -9,8 +9,11 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\TamplateDaily;
 use App\Helpers\ConvertDate;
 use App\Imports\DailyImportUser;
+use App\Models\DailyLog;
 use App\Models\Divisi;
 use App\Models\Request as ModelsRequest;
+use App\Models\TaskCategory;
+use App\Models\TaskStatus;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -43,6 +46,132 @@ class DailyController extends Controller
             'active' => 'daily',
             'dailys' => $dailys,
         ]);
+    }
+
+    public function indexTeamsDaily(Request $request)
+    {
+        switch ($request->tasktype) {
+            case '1':
+                $dailys = Daily::with(['tag', 'user' => function ($query) {
+                $query->where('divisi_id', auth()->user()->divisi_id);
+                }])
+                ->where('date', now()->format('Y-m-d'))
+                ->orderBy('date', 'DESC')
+                ->orderBy('time', 'DESC')
+                ->simplePaginate(30);
+                break;
+
+            case '2':
+                $dailys = Daily::with(['tag', 'user' => function ($query) {
+                $query->where('divisi_id', auth()->user()->divisi_id);
+                }])
+                ->where('date', now()->subDay(1)->format('Y-m-d'))
+                ->orderBy('date', 'DESC')
+                ->orderBy('time', 'DESC')
+                ->simplePaginate(30);
+                break;
+
+            case '3':
+                $dailys = Daily::with(['tag', 'user' => function ($query) {
+                $query->where('divisi_id', auth()->user()->divisi_id);
+                }])
+                ->whereBetween('date', [now()->startOfWeek()->format('Y-m-d'), now()->endOfWeek()->format('Y-m-d')])
+                ->orderBy('date', 'DESC')
+                ->orderBy('time', 'DESC')
+                ->simplePaginate(30);
+                break;
+
+            default:
+                $dailys = Daily::with(['tag', 'user' => function ($query) {
+                $query->where('divisi_id', auth()->user()->divisi_id);
+                }])
+                    ->orderBy('date', 'DESC')
+                    ->orderBy('time', 'DESC')
+                    ->simplePaginate(30);
+                break;
+        }
+
+        if ($request->user) {
+            $dailys = Daily::with(['tag', 'user'])
+                ->where('user_id', $request->user)
+                ->orderBy('date', 'DESC')
+                ->orderBy('time', 'DESC')
+                ->simplePaginate(30);
+        }
+
+        $logs = DailyLog::with(['user' => function ($query) {
+                $query->select('id', 'nama_lengkap', 'divisi_id');
+            }])
+                ->whereHas('user', function ($query) {
+                    $query->where('divisi_id', auth()->user()->divisi_id);
+                })
+                ->limit(30)
+                ->orderBy('created_at', 'DESC')
+                ->get();
+
+        if ($request->user_log) {
+            $logs = DailyLog::with('user')
+                ->where('user_id', $request->user_log)
+                ->orderBy('created_at', 'DESC')
+                ->get();
+        }
+
+        return view('teams.daily.index')->with([
+            'title' => 'Daily',
+            'active' => 'teams-daily',
+            'dailys' => $dailys,
+            'logs' => $logs,
+            'users' => User::where('divisi_id', auth()->user()->divisi_id)->get(),
+        ]);
+    }
+
+    public function teamsDailyEdit(Daily $daily)
+    {
+        ##CEK TASK PUNYA SENDIRI ATAU BUKAN
+        if ($daily->user_id != auth()->id()) {
+            return redirect('/teams/daily')->with(['error' => 'Task ini bukan milik anda !']);
+        }
+
+        return view('teams.daily.edit')->with([
+            'title' => 'Edit Daily',
+            'active' => 'teams-daily',
+            'daily' => $daily,
+            'task_categories' => TaskCategory::all(),
+            'task_status' => TaskStatus::all(),
+        ]);
+    }
+
+    public function teamsDailyUpdate(Request $request, Daily $daily)
+    {
+        try {
+            ##BELUM ADA VALIDASI BATAS WAKTU GANTI STATUS
+
+            ##PASS ALL VALIDATION
+            $daily->task_category_id = $request->task_category_id ?? '';
+            $daily->task_status_id = $request->task_status_id ?? '';
+    
+            if ($request->task_status_id == 1) {
+                $daily->status = 1;
+            } else {
+                $daily->status = 0;
+            }
+            $daily->save();
+
+            $task = Daily::find($daily->id);
+            $category = TaskCategory::find($request->task_category_id);
+            $status = TaskStatus::find($request->task_status_id);
+
+            $dailyLog = DailyLog::create([
+                'user_id' => auth()->user()->id,
+                'task_id' => $daily->id,
+                'activity' => 'Merubah kategori task ' . $task->task . ' menjadi ' . $category->task_category . ' dan status task menjadi ' . $status->task_status,
+            ]);
+            $dailyLog->save();
+            
+            return redirect('/teams/daily')->with(['success' => 'berhasil update status task']);
+        } catch (Exception $e) {
+            return redirect('/teams/daily')->with(['error' => $e->getMessage()]);
+        }
     }
 
     public function templateUser(Request $request)
@@ -194,11 +323,22 @@ class DailyController extends Controller
             $daily = Daily::findOrFail($request->id);
             $requesteds = ModelsRequest::where('user_id', auth()->id())->where('jenistodo', 'Daily')->get();
 
+            ##CEK TASK PUNYA SENDIRI ATAU BUKAN
+            if ($daily->user_id != auth()->id()) {
+                if ($request->page == 'teams') {
+                    return redirect('/teams/daily')->with(['error' => 'Bukan task milik anda !']);
+                }
+                return redirect('daily')->with(['error' => 'Tidak bisa merubah status, task ini bukan milik anda']);
+            }
+
             ##CEK TASK DI REQUEST ATAU TIDAK
             foreach ($requesteds as $requested) {
                 $idTaskExistings = explode(',', $requested->todo_request);
                 foreach ($idTaskExistings as $idTaskExisting) {
                     if ($request->id == $idTaskExisting && $requested->status == 'PENDING') {
+                        if ($request->page == 'teams') {
+                            return redirect('/teams/daily')->with(['error' => 'Tidak bisa merubah status, task ini ada di pengajuan request task']);
+                        }
                         return redirect('daily')->with(['error' => 'Tidak bisa merubah status, task ini ada di pengajuan request task']);
                     }
                 }
@@ -206,12 +346,15 @@ class DailyController extends Controller
                 $idTaskReplaces = explode(',', $requested->todo_replace);
                 foreach ($idTaskReplaces as $idTaskReplace) {
                     if ($request->id == $idTaskReplace && $requested->status == 'PENDING') {
+                        if ($request->page == 'teams') {
+                            return redirect('/teams/daily')->with(['error' => 'Tidak bisa merubah status, task ini ada di pengajuan request task dan belum di approve']);
+                        }
                         return redirect('daily')->with(['error' => 'Tidak bisa merubah status, task ini ada di pengajuan request task dan belum di approve']);
                     }
                 }
             }
 
-            // ##VALIDASI JIKA TASK LEBIH DARI 2 HARI
+            ##VALIDASI JIKA TASK LEBIH DARI 2 HARI
             if (
                 Carbon::parse($daily->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->weekOfYear
                 <=
@@ -221,12 +364,18 @@ class DailyController extends Controller
                 >
                 Carbon::parse($daily->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->addDay(2)
             ) {
+                if ($request->page == 'teams') {
+                    return redirect('/teams/daily')->with(['error' => 'Tidak bisa merubah status sudah lebih dari H+2 dari daily']);
+                }
                 return redirect('daily')->with(['error' => 'Tidak bisa merubah status sudah lebih dari H+2 dari daily']);
             }
 
             ##VALIDASI TIDAK BISA RUBAH STATUS H+1
             $H = Carbon::parse($daily->date / 1000);
             if ($H > now()) {
+                if ($request->page == 'teams') {
+                    return redirect('/teams/daily')->with(['error' => 'Tidak bisa merubah status yang lebih dari ' . now()->format('d M Y')]);
+                }
                 return redirect('daily')->with(['error' => 'Tidak bisa merubah status yang lebih dari ' . now()->format('d M Y')]);
             }
 
@@ -246,11 +395,41 @@ class DailyController extends Controller
             ) {
                 $daily['status'] ? $daily['ontime'] = 0 : $daily['ontime'] = 0.5;
             }
+
+            ##KALAU GANTI CEKLIS DONE, STATUS = DONE, GANTI CEKLIS UNDONE, STATUS = PROGRESS
+            if ($request->page == 'teams') {
+                if ($daily->status == 1) {
+                    $daily->task_status_id = 2;
+                } 
+                if ($daily->status == 0) {
+                    $daily->task_status_id = 1;
+                }
+                $daily->save();
+
+            }
+
             ##KONVERSI DARI OPEN <=> CLOSE UNTUK STATUS
             $daily['status'] = !$daily['status'];
             $daily->save();
+
+            $dailyLog = DailyLog::create([
+                'user_id' => auth()->user()->id,
+                'task_id' => $daily->id,
+                'activity' => auth()->user()->nama_lengkap . ' merubah status task ' . $daily->task . ' menjadi ' . ($daily->status == 0 ? 'UNDONE' : 'DONE'),
+            ]);
+            $dailyLog->save();
+
+            ##REDIRECT TEAMS DAILY
+            if ($request->page == 'teams') {
+                return redirect('/teams/daily/')->with(['success' => 'Berhasil merubah status daily']);
+            }
+
             return redirect('daily/?tasktype=' . $request->tasktype)->with(['success' => 'Berhasil merubah status daily']);
         } catch (Exception $e) {
+            if ($request->page == 'teams') {
+                return redirect('/teams/daily')->with(['error' => $e->getMessage()]);
+            }
+
             return redirect('daily')->with(['error' => $e->getMessage()]);
         }
     }

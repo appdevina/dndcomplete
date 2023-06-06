@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Area;
 use App\Models\Divisi;
 use App\Models\Role;
+use App\Models\TaskCategory;
+use App\Models\TaskStatus;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -192,5 +194,57 @@ class SettingController extends Controller
             'Content-Type' => 'application/vnd.android.package-archive',
             'Content-Disposition' => 'attachment; filename="android.apk"',
         ]);
+    }
+
+    public function taskcategory()
+    {
+        $taskcategories = TaskCategory::all();
+        return view('setting.index', [
+            'title' => 'Task Category',
+            'active' => 'task-category',
+            'taskcategories' => $taskcategories,
+        ]);
+    }
+
+    public function taskcategoryadd(Request $request)
+    {
+        try {
+            $request->validate([
+                'task_category' => 'required',
+            ]);
+            TaskCategory::create([
+                'task_category' => preg_replace('/\s+/', '', strtoupper($request->task_category)),
+            ]);
+
+            return redirect('setting/taskcategory')->with(['success' => 'Berhasil menambahkan task category !']);
+        } catch (Exception $e) {
+            return redirect('setting/taskcategory')->with(['error' => 'Gagal menambahkan task category !,' . $e->getMessage()]);
+        }
+    }
+
+    public function taskstatus()
+    {
+        $taskstatus = TaskStatus::all();
+        return view('setting.index', [
+            'title' => 'Task Status',
+            'active' => 'task-status',
+            'taskstatus' => $taskstatus,
+        ]);
+    }
+
+    public function taskstatusadd(Request $request)
+    {
+        try {
+            $request->validate([
+                'task_status' => 'required',
+            ]);
+            TaskStatus::create([
+                'task_status' => preg_replace('/\s+/', '', strtoupper($request->task_status)),
+            ]);
+
+            return redirect('setting/taskstatus')->with(['success' => 'Berhasil menambahkan task status !']);
+        } catch (Exception $e) {
+            return redirect('setting/taskstatus')->with(['error' => 'Gagal menambahkan task status !,' . $e->getMessage()]);
+        }
     }
 }

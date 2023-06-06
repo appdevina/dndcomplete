@@ -32,4 +32,14 @@ class Daily extends Model
             return Carbon::parse($value)->getPreciseTimestamp(3);
         }
     }
+
+    public function taskcategory()
+    {
+        return $this->belongsTo(TaskCategory::class, 'task_category_id');
+    }
+
+    public function taskstatus()
+    {
+        return $this->belongsTo(TaskStatus::class, 'task_status_id');
+    }
 }
