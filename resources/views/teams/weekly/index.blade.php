@@ -11,6 +11,20 @@
                             <div class="card-header bg-dark">
                                 <div class="row d-inline-flex">
                                     <h3 class="card-title">Team's Weekly</h3>
+                                    <a href="#">
+                                        <button class="badge bg-success mx-3 elevation-0" data-toggle="modal"
+                                            data-target="#addWeekly">+ ADD</button>
+                                    </a>
+                                    @if (auth()->user()->role->name != 'STAFF')
+                                        <a href="#">
+                                            <button class="badge bg-info mx-3 elevation-0" data-toggle="modal"
+                                                data-target="#sendWeekly">+ SEND TASK</button>
+                                        </a>
+                                        <a href="#">
+                                            <button class="badge bg-primary mx-3 elevation-0" data-toggle="modal"
+                                                data-target="#sendWeeklyBulk">+ SEND TASK BULK</button>
+                                        </a>
+                                    @endif
                                 </div>
                                 <div class="card-tools d-flex">
                                     <div class="input-group input-group-sm mr-3" style="width: 220px;">
@@ -105,6 +119,7 @@
                                                     <form action="/weekly/delete" method="POST">
                                                         @csrf
                                                         <input type="hidden" name="id" value="{{ $weekly->id }}">
+                                                        <input type="hidden" name="page" value="teams">
                                                         <button type="submit" class="btn"
                                                         style="color: rgb(204, 26, 26);"><i
                                                         class="fas fa-trash"></i></button>
@@ -235,18 +250,18 @@
     </section>
 
 
-    <!-- Modal -->
-    <form action={{ auth()->user()->role_id == 1 ? '/admin/weekly/import' : '/weekly/import' }} method="POST"
+    <!-- Modal Import Weekly -->
+    <form action={{ auth()->user()->role->name != 'STAFF' ? '/admin/weekly/import' : '/weekly/import' }} method="POST"
         enctype="multipart/form-data">
         @csrf
-        <div class="modal fade" id="importWeekly" tabindex="-1" aria-labelledby="importWeeklyLabel" aria-hidden="true">
+        <div class="modal fade" id="sendWeeklyBulk" tabindex="-1" aria-labelledby="sendWeeklyBulkLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="importWeeklyLabel">Import Weekly</h5>
+                        <h5 class="modal-title" id="sendWeeklyBulkLabel">Send Weekly</h5>
                     </div>
                     <div class="modal-body">
-                        @if (auth()->user()->role_id == 1)
+                        @if (auth()->user()->role->nama != 'STAFF')
                             <div class="col-12 mt-3">
                                 <label for="userid" class="form-label">Nama</label>
                                 <select class="custom-select form-control" id="userid" name="userid">
@@ -260,6 +275,7 @@
                         <div class="col-12 mt-3">
                             <label for="formFile" class="form-label">Pilih File</label>
                             <input class="form-control" type="file" id="formFile" name="file">
+                            <input type="hidden" name="page" value="teams">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -272,7 +288,7 @@
     </form>
 
     <!-- Modal -->
-    <form action="/admin/weekly/export" method="POST" enctype="multipart/form-data">
+    <!-- <form action="/admin/weekly/export" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="modal fade" id="exportWeekly" tabindex="-1" aria-labelledby="exportWeeklytLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -302,9 +318,9 @@
                 </div>
             </div>
         </div>
-    </form>
+    </form> -->
 
-    <!-- Modal -->
+    <!-- Modal Add Weekly -->
     <form action="/weekly" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="modal fade" id="addWeekly" tabindex="-1" aria-labelledby="addWeeklytLabel" aria-hidden="true">
@@ -315,20 +331,99 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3 col-lg-12 ml-4">
-                            <input type="checkbox" class="form-check-input" id="extraTaskWeekly" name="isplan">
+                            <input type="checkbox" class="form-check-input" id="extraTaskWeekly" name="is_add">
                             <label class="form-check-label" for="extraTaskWeekly">Extra Task</label>
                         </div>
                         <div class="mb-3 col-lg-12">
-                            <label for="date" class="form-label">Date</label>
-                            <input type="date" class="form-control" id="date" name="date" required>
+                            <label for="year" class="form-label">Year</label>
+                            <input type="number" class="form-control" id="year" name="year" value="{{ now()->year }}"
+                                required>
                         </div>
-                        <div class="mb-3 col-lg-12" id="addWeeklyTime">
-                            <label for="time" class="form-label">Time</label>
-                            <input type="time" class="form-control" id="time" name="time">
+                        <div class="mb-3 col-lg-12" id="addWeeklyWeek">
+                            <label for="week" class="form-label">Week</label>
+                            <input type="number" class="form-control" id="week" name="week" max="52"
+                                value="{{ now()->weekOfYear }}">
                         </div>
                         <div class="mb-3 col-lg-12">
                             <label for="task" class="form-label">Task</label>
                             <input type="text" class="form-control" id="task" name="task" autocomplete="off" required>
+                        </div>
+                        @if (auth()->user()->wr)
+                            <div class="mb-3 col-lg-12 ml-4 d-flex">
+                                <input type="checkbox" class="form-check-input" id="resultkWeekly" name="result">
+                                <label class="form-check-label" for="resultkWeekly">Result ?</label>
+                                <div class="col-md-8">
+                                    <input type="number" class="form-control ml-4 value_plan" id="value_plan"
+                                        name="value_plan" autocomplete="off">
+                                    <span class="ml-4" id="nominal"></span>
+                                </div>
+                            </div>
+                        @endif
+                        <div class="mb-3 col-lg-12">
+                            <input type="hidden" class="form-control" name="page" value="teams">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">+ Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Modal Send Weekly -->
+    <form action="/teams/sendWeekly" method="POST" enctype="multipart/form-data">
+        @csrf
+        <div class="modal fade" id="sendWeekly" tabindex="-1" aria-labelledby="sendWeeklytLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="sendWeeklytLabel">Send Weekly</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3 col-lg-12 ml-4">
+                            <input type="checkbox" class="form-check-input" id="extraTaskWeekly" name="is_add">
+                            <label class="form-check-label" for="extraTaskWeekly">Extra Task</label>
+                        </div>
+                        <div class="mb-3 col-lg-12">
+                            <div class="mb-3">
+                                <label for="user_id" class="form-label">User</label>
+                                <select class="custom-select col-lg-12" name="user_id">
+                                    <option value="">-- Choose --</option>
+                                    @foreach ($users as $user)
+                                        <option value="{{ $user->id }}">{{ $user->nama_lengkap }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3 col-lg-12">
+                            <label for="year" class="form-label">Year</label>
+                            <input type="number" class="form-control" id="year" name="year" value="{{ now()->year }}"
+                                required>
+                        </div>
+                        <div class="mb-3 col-lg-12" id="sendWeeklyWeek">
+                            <label for="week" class="form-label">Week</label>
+                            <input type="number" class="form-control" id="week" name="week" max="52"
+                                value="{{ now()->weekOfYear }}">
+                        </div>
+                        <div class="mb-3 col-lg-12">
+                            <label for="task" class="form-label">Task</label>
+                            <input type="text" class="form-control" id="task" name="task" autocomplete="off" required>
+                        </div>
+                        @if (auth()->user()->wr)
+                            <div class="mb-3 col-lg-12 ml-4 d-flex">
+                                <input type="checkbox" class="form-check-input" id="resultkWeekly" name="result">
+                                <label class="form-check-label" for="resultkWeekly">Result ?</label>
+                                <div class="col-md-8">
+                                    <input type="number" class="form-control ml-4 value_plan" id="value_plan"
+                                        name="value_plan" autocomplete="off">
+                                    <span class="ml-4" id="nominal"></span>
+                                </div>
+                            </div>
+                        @endif
+                        <div class="mb-3 col-lg-12">
+                            <input type="hidden" class="form-control" name="page" value="teams">
                         </div>
                     </div>
                     <div class="modal-footer">

@@ -3,7 +3,9 @@
 namespace App\Imports;
 
 use App\Helpers\ConvertDate;
+use App\Models\User;
 use App\Models\Weekly;
+use App\Models\WeeklyLog;
 use Exception;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -11,11 +13,12 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class WeeklyImportUser implements ToModel, WithHeadingRow
 {
-    protected $user;
+    protected $user, $page;
 
-    function __construct($user)
+    function __construct($user, $page)
     {
         $this->user = $user;
+        $this->page = $page;
     }
 
     /**
@@ -42,7 +45,7 @@ class WeeklyImportUser implements ToModel, WithHeadingRow
             throw new Exception("Tidak bisa import weekly lebih dari week 52 atau minimal tahun 2022");
         }
         if ($tipe == "NON") {
-            return new Weekly([
+            $weekly = new Weekly([
                 'user_id' => $this->user->id,
                 'task' => $row['task'],
                 'year' => $year,
@@ -50,6 +53,7 @@ class WeeklyImportUser implements ToModel, WithHeadingRow
                 'tipe' => $tipe,
                 'status_non' => 0,
             ]);
+            $weekly->save();
         } else if ($tipe == 'RESULT') {
             if (!$row['value_plan_result']) {
                 throw new Exception('Untuk task bertipe result wajib isi kolom "value_plan_result"');
@@ -58,7 +62,7 @@ class WeeklyImportUser implements ToModel, WithHeadingRow
                 throw new Exception('Tidak bisa import weekly untuk kolom "value_plan_result" harus berisi nominal angka');
             }
             if ($this->user->wr) {
-                return new Weekly([
+                $weekly = new Weekly([
                     'user_id' => $this->user->id,
                     'task' => $row['task'],
                     'year' => $year,
@@ -68,9 +72,20 @@ class WeeklyImportUser implements ToModel, WithHeadingRow
                     'value_actual' => 0,
                     'status_result' => 0,
                 ]);
+                $weekly->save();
             } else {
                 throw new Exception('Tidak bisa import weekly anda tidak memiliki task weekly result');
             }
+        }
+            if ($this->page == 'teams') {
+            $weeklyLog = WeeklyLog::create([
+                'user_id' => auth()->user()->id,
+                'task_id' => $weekly->id,
+                'activity' => 'Mengirim task ' . Weekly::find($weekly->id)->task . ' ke ' . $this->user->nama_lengkap,
+            ]);
+            $weeklyLog->save();
+            
+            return $weekly;
         } else {
             throw new Exception('ada kesalahan format kolom tipe harus berisi NON atau RESULT');
         }

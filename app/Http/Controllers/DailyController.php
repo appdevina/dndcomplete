@@ -178,6 +178,59 @@ class DailyController extends Controller
         }
     }
 
+    public function sendDaily(Request $request)
+    {
+        try {
+            $data = $request->all();
+            $data['date'] = Carbon::parse(strtotime($request->date))->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'));
+            $date = Carbon::parse(strtotime($request->date))->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'));
+
+            ##EXTRA TASK / TAMBAHAN
+            if ($request->isplan) {
+                if (!Daily::whereDate('date', Carbon::parse(strtotime($request->date))->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->format('Y-m-d'))->where('user_id', auth()->id())->get()) {
+                    return redirect('daily')->with(['error' => "Tidak bisa menambahkan daily extra karena hari ini ".Carbon::parse(strtotime($request->date))->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->format('d M Y')." anda tidak ada plan"]);
+                }
+                $data['isplan'] = false;
+                $data['ontime'] = true;
+                ##TAMBAHAN LEBIH DARI H+1 JAM 10:00
+                if (
+                    $date->diffInDays(now()) > 0
+                    &&
+                    now()->subDay(1) > $date->addHour(10)
+                ) {
+                    $data['status'] = true;
+                    $data['ontime'] = 0.5;
+                }
+
+                ##TAMBAHAN LEBIH DARI H+2
+                if (
+                    $date->diffInDays(now()) > 0
+                    &&
+                    now() > $date->addDay(2)
+                ) {
+                    return redirect('daily')->with(['error' => 'Tidak bisa menambahkan daily extra, sudah lebih dari H+2']);
+                }
+            }
+
+            ##CONVERT KE 24 JAM
+            if (!$request->isplan) {
+                $data['time'] = date('H:i', strtotime($request->time));
+            }
+            $daily = Daily::create($data);
+
+            $dailyLog = DailyLog::create([
+                'user_id' => auth()->user()->id,
+                'task_id' => $daily->id,
+                'activity' => 'Mengirim task ' . $daily->task . ' ke ' . $daily->user->nama_lengkap,
+            ]);
+            $dailyLog->save();
+            
+            return redirect('/teams/daily')->with(['success' => "Berhasil mengirim daily !"]);
+        } catch (Exception $e) {
+            return redirect('/teams/daily')->with(['error' => $e->getMessage()]);
+        }
+    }
+
     public function templateUser(Request $request)
     {
         return Excel::download(new TamplateDaily, 'daily_template.xlsx',);
@@ -189,11 +242,20 @@ class DailyController extends Controller
         $namaFile = $file->getClientOriginalName();
         $file->move(public_path('import'), $namaFile);
         try {
-            Excel::import(new DailyImportUser(auth()->user()->role_id == 1 ? $request->userid :  auth()->id()), public_path('/import/' . $namaFile));
+            if ($request->page == 'teams') {
+                Excel::import(new DailyImportUser(auth()->user()->role->name != 'STAFF' ? $request->userid :  auth()->id(), $request->page ?? ''), public_path('/import/' . $namaFile));
+            } else {
+                Excel::import(new DailyImportUser(auth()->user()->role_id == 1 ? $request->userid :  auth()->id(), $request->page ?? ''), public_path('/import/' . $namaFile));
+            }
         } catch (Exception $e) {
+            if ($request->page == 'teams') {
+                return redirect(auth()->user()->role->name != 'STAFF' ? '/teams/daily' : 'daily')->with(['error' => $e->getMessage()]);
+            }
             return redirect(auth()->user()->role_id == 1 ? 'admin/daily' : 'daily')->with(['error' => $e->getMessage()]);
         }
-
+        if ($request->page == 'teams') {
+            return redirect(auth()->user()->role->name != 'STAFF' ? '/teams/daily' : 'daily')->with(['success' => 'berhasil import daily']);
+        }
         return redirect(auth()->user()->role_id == 1 ? 'admin/daily' : 'daily')->with(['success' => 'berhasil import daily']);
     }
 
@@ -267,6 +329,9 @@ class DailyController extends Controller
             ##EXTRA TASK / TAMBAHAN
             if ($request->isplan) {
                 if (!Daily::whereDate('date', Carbon::parse(strtotime($request->date))->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->format('Y-m-d'))->where('user_id', auth()->id())->get()) {
+                    if ($request->page == 'teams') {
+                        return redirect('/teams/daily')->with(['error' => "Tidak bisa menambahkan daily extra karena hari ini ".Carbon::parse(strtotime($request->date))->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->format('d M Y')." anda tidak ada plan"]);
+                    }
                     return redirect('daily')->with(['error' => "Tidak bisa menambahkan daily extra karena hari ini ".Carbon::parse(strtotime($request->date))->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->format('d M Y')." anda tidak ada plan"]);
                 }
                 $data['isplan'] = false;
@@ -287,6 +352,9 @@ class DailyController extends Controller
                     &&
                     now() > $date->addDay(2)
                 ) {
+                    if ($request->page == 'teams') {
+                        return redirect('/teams/daily')->with(['error' => 'Tidak bisa menambahkan daily extra, sudah lebih dari H+2']);
+                    }
                     return redirect('daily')->with(['error' => 'Tidak bisa menambahkan daily extra, sudah lebih dari H+2']);
                 }
             }
@@ -297,6 +365,9 @@ class DailyController extends Controller
                 && now() > $date->startOfWeek()->addDay(1)->addHour(10)
                 && !$request->isplan
             ) {
+                if ($request->page == 'teams') {
+                    return redirect('/teams/daily')->with(['error' => 'Tidak bisa menambahkan daily, sudah lebih dari hari hari selasa Jam 10:00']);
+                }
                 return redirect('daily')->with(['error' => 'Tidak bisa menambahkan daily, sudah lebih dari hari hari selasa Jam 10:00']);
             }
 
@@ -307,6 +378,9 @@ class DailyController extends Controller
                 && now() > $date2->startOfWeek()->addHour(17)
                 && !$request->isplan
             ) {
+                if ($request->page == 'teams') {
+                    return redirect('/teams/daily')->with(['error' => 'Tidak bisa menambahkan daily, sudah lebih dari hari hari senin Jam 17:00']);
+                }
                 return redirect('daily')->with(['error' => 'Tidak bisa menambahkan daily, sudah lebih dari hari hari senin Jam 17:00']);
             }
 
@@ -315,8 +389,15 @@ class DailyController extends Controller
                 $data['time'] = date('H:i', strtotime($request->time));
             }
             Daily::create($data);
+
+            if ($request->page == 'teams') {
+                return redirect('/teams/daily')->with(['success' => "Berhasil menambahkan daily"]);
+            }
             return redirect('daily')->with(['success' => "Berhasil menambahkan daily"]);
         } catch (Exception $e) {
+            if ($request->page == 'teams') {
+                return redirect('/teams/daily')->with(['error' => $e->getMessage()]);
+            }
             return redirect('daily')->with(['error' => $e->getMessage()]);
         }
     }
@@ -531,11 +612,20 @@ class DailyController extends Controller
         try {
             $daily = Daily::findOrFail($request->id);
             $requesteds = ModelsRequest::where('user_id', auth()->id())->where('jenistodo', 'Daily')->get();
+
+            ##CEK TASK PUNYA SENDIRI ATAU BUKAN
+            if ($daily->user_id != auth()->id()) {
+                return redirect('/teams/daily')->with(['error' => 'Task ini bukan milik anda !']);
+            }
+            
             ##CEK TASK DI REQUEST
             foreach ($requesteds as $requested) {
                 $idTaskExistings = explode(',', $requested->todo_request);
                 foreach ($idTaskExistings as $idTaskExisting) {
                     if ($request->id == $idTaskExisting && $requested->status == 'PENDING') {
+                        if ($request->page == 'teams') {
+                            return redirect('/teams/daily')->with(['error' => "Tidak bisa menghapus, task ini ada di pengajuan request task"]);
+                        }
                         return redirect('daily')->with(['error' => "Tidak bisa menghapus, task ini ada di pengajuan request task"]);
                     }
                 }
@@ -543,20 +633,32 @@ class DailyController extends Controller
                 $idTaskReplaces = explode(',', $requested->todo_replace);
                 foreach ($idTaskReplaces as $idTaskReplace) {
                     if ($request->id == $idTaskReplace && $requested->status == 'PENDING') {
-                        redirect('daily')->with(['error' => "Tidak bisa menghapus, task ini ada di pengajuan request task"]);
+                        if ($request->page == 'teams') {
+                            return redirect('/teams/daily')->with(['error' => "Tidak bisa menghapus, task ini ada di pengajuan request task"]);
+                        }
+                        return redirect('daily')->with(['error' => "Tidak bisa menghapus, task ini ada di pengajuan request task"]);
                     }
                 }
             }
             ##VALIDASI TIDAK BISA DETELET TASK TAG KECUALI OLEH PEMBUAT TAG
             if ($daily->tag_id) {
+                if ($request->page == 'teams') {
+                    return redirect('/teams/daily')->with(['error' => "Tidak bisa menghapus tag daily, tag daily hanya bisa di hapus oleh pembuatan tag"]);
+                }
                 return redirect('daily')->with(['error' => "Tidak bisa menghapus tag daily, tag daily hanya bisa di hapus oleh pembuatan tag"]);
             }
             ##VALIDASI JIKA TASK PLAN
             if ($daily->isplan) {
                 if (Carbon::parse($daily->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->weekOfYear <= now()->weekOfYear && !$daily->tag_id) {
                     if (auth()->user()->area_id == 2 && now() > Carbon::parse($daily->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->startOfWeek()->addDay(1)->addHour(10)) {
+                        if ($request->page == 'teams') {
+                            return redirect('/teams/daily')->with(['error' => "Tidak bisa menghapus daily di week yang sudah berjalan dan lebih dari selasa jam 10.00"]);
+                        }
                         return redirect('daily')->with(['error' => "Tidak bisa menghapus daily di week yang sudah berjalan dan lebih dari selasa jam 10.00"]);
                     } else if (auth()->user()->area_id != 2 && now() > Carbon::parse($daily->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->startOfWeek()->addHour(17)) {
+                        if ($request->page == 'teams') {
+                            return redirect('/teams/daily')->with(['error' => "Tidak bisa menghapus daily di week yang sudah berjalan dan lebih dari senin jam 17.00"]);
+                        }
                         return redirect('daily')->with(['error' => "Tidak bisa menghapus daily di week yang sudah berjalan dan lebih dari senin jam 17.00"]);
                     }
                 }
@@ -568,6 +670,9 @@ class DailyController extends Controller
                     &&
                     now() > $date->addDay(2)
                 ) {
+                    if ($request->page == 'teams') {
+                        return redirect('/teams/daily')->with(['error' => 'Tidak bisa menghapus daily extra, sudah lebih dari H+2']);
+                    }
                     return redirect('daily')->with(['error' => 'Tidak bisa menghapus daily extra, sudah lebih dari H+2']);
                 }
             }
@@ -580,9 +685,15 @@ class DailyController extends Controller
                 }
             }
             $daily->delete();
+
+            if ($request->page == 'teams') {
+                return redirect('/teams/daily')->with(['success' => "Berhasil menghapus daily"]);
+            }
             return redirect('daily')->with(['success' => "Berhasil menghapus daily"]);
         } catch (Exception $e) {
-
+            if ($request->page == 'teams') {
+                return redirect('/teams/daily')->with(['error' => $e->getMessage()]);
+            }
             return redirect('daily')->with(['error' => $e->getMessage()]);
         }
     }

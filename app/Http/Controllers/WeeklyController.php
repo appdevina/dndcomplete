@@ -209,6 +209,55 @@ class WeeklyController extends Controller
         }
     }
 
+    public function sendWeekly(Request $request)
+    {
+        try {
+            $data = $request->all();
+
+            ##EXTRA TASK / TAMBAHAN
+            if ($request->is_add) {
+                $data['is_add'] = 1;
+                $monday = ConvertDate::getMondayOrSaturday($data['year'], $data['week'], true);
+                if (auth()->user()->area_id == 2 && now() > $monday->addDay(8)->addHour(10)) {
+                    return redirect('/teams/weekly')->with(['error' => "Tidak bisa menambahkan extra task weekly di week ' . $request->week . ' sudah lebih dari hari selasa jam 10:00"]);
+                } else if (auth()->user()->area_id != 2 && now() > $monday->addDay(7)->addHour(17)) {
+                    return redirect('/teams/weekly')->with(['error' => 'Tidak bisa menambahkan extra task weekly di week ' . $request->week . ' sudah lebih dari hari senin jam 17:00']);
+                }
+            } else {
+                $monday = ConvertDate::getMondayOrSaturday($data['year'], $data['week'], true);
+                if (auth()->user()->area_id == 2 && now() > $monday->addDay(1)->addHour(10)) {
+                    return redirect('/teams/weekly')->with(['error' => "Tidak bisa menambahkan weekly di week ' . $request->week . ' sudah lebih dari hari selasa jam 10:00"]);
+                } else if (auth()->user()->area_id != 2 && now() > $monday->addHour(17)) {
+                    return redirect('/teams/weekly')->with(['error' => 'Tidak bisa menambahkan weekly di week ' . $request->week . ' sudah lebih dari hari senin jam 17:00']);
+                }
+            }
+            unset($data['_token']);
+            if ($request->result) {
+                if (!$request->value_plan) {
+                    return redirect('/teams/weekly')->with(['error' => 'Task result harus memasukkan value plan']);
+                }
+                $data['tipe'] = 'RESULT';
+                $data['status_result'] = 0;
+            } else {
+                $data['tipe'] = 'NON';
+                $data['status_non'] = 0;
+            }
+            unset($data['result']);
+            $weekly = Weekly::create($data);
+
+            $weeklyLog = WeeklyLog::create([
+                'user_id' => auth()->user()->id,
+                'task_id' => $weekly->id,
+                'activity' => 'Mengirim task ' . $weekly->task . ' ke ' . $weekly->user->nama_lengkap,
+            ]);
+            $weeklyLog->save();
+
+            return redirect('/teams/weekly')->with(['success' => 'Berhasil menambahkan weekly']);
+        } catch (Exception $e) {
+            return redirect('/teams/weekly')->with(['error' => $e->getMessage()]);
+        }
+    }
+
     public function templateUser(Request $request)
     {
         return Excel::download(new TemplateWeekly, 'weekly_template.xlsx',);
@@ -220,11 +269,21 @@ class WeeklyController extends Controller
         $namaFile = $file->getClientOriginalName();
         $file->move(public_path('import'), $namaFile);
         try {
-            Excel::import(new WeeklyImportUser(auth()->user()->role_id == 1 ? User::find($request->userid) : auth()->user()), public_path('/import/' . $namaFile));
+            if ($request->page == 'teams') {
+                Excel::import(new WeeklyImportUser(auth()->user()->role->name != 'STAFF' ? User::find($request->userid) : auth()->user(), $request->page ?? ''), public_path('/import/' . $namaFile));
+            } else {
+                Excel::import(new WeeklyImportUser(auth()->user()->role_id == 1 ? User::find($request->userid) : auth()->user(), $request->page ?? ''), public_path('/import/' . $namaFile));
+            }
         } catch (Exception $e) {
+            if ($request->page == 'teams') {
+                return redirect(auth()->user()->role->name != 'STAFF' ? 'teams/weekly' : 'weekly')->with(['error' => $e->getMessage()]);
+            }
             return redirect(auth()->user()->role_id == 1 ? 'admin/weekly' : 'weekly')->with(['error' => $e->getMessage()]);
         }
 
+        if ($request->page == 'teams') {
+            return redirect(auth()->user()->role->name!= 'STAFF' ? '/teams/weekly' : 'weekly')->with(['success' => 'berhasil import weekly']);
+        }
         return redirect(auth()->user()->role_id == 1 ? 'admin/weekly' : 'weekly')->with(['success' => 'berhasil import weekly']);
     }
 
@@ -415,19 +474,32 @@ class WeeklyController extends Controller
         try {
             $data = $request->all();
 
+            ##EXTRA TASK / TAMBAHAN
             if ($request->is_add) {
                 $data['is_add'] = 1;
                 $monday = ConvertDate::getMondayOrSaturday($data['year'], $data['week'], true);
                 if (auth()->user()->area_id == 2 && now() > $monday->addDay(8)->addHour(10)) {
+                    if ($request->page == 'teams') {
+                        return redirect('/teams/weekly')->with(['error' => "Tidak bisa menambahkan extra task weekly di week ' . $request->week . ' sudah lebih dari hari selasa jam 10:00"]);
+                    }
                     return redirect('weekly')->with(['error' => "Tidak bisa menambahkan extra task weekly di week ' . $request->week . ' sudah lebih dari hari selasa jam 10:00"]);
                 } else if (auth()->user()->area_id != 2 && now() > $monday->addDay(7)->addHour(17)) {
+                    if ($request->page == 'teams') {
+                        return redirect('/teams/weekly')->with(['error' => 'Tidak bisa menambahkan extra task weekly di week ' . $request->week . ' sudah lebih dari hari senin jam 17:00']);
+                    }
                     return redirect('weekly')->with(['error' => 'Tidak bisa menambahkan extra task weekly di week ' . $request->week . ' sudah lebih dari hari senin jam 17:00']);
                 }
             } else {
                 $monday = ConvertDate::getMondayOrSaturday($data['year'], $data['week'], true);
                 if (auth()->user()->area_id == 2 && now() > $monday->addDay(1)->addHour(10)) {
+                    if ($request->page == 'teams') {
+                        return redirect('/teams/weekly')->with(['error' => "Tidak bisa menambahkan weekly di week ' . $request->week . ' sudah lebih dari hari selasa jam 10:00"]);
+                    }
                     return redirect('weekly')->with(['error' => "Tidak bisa menambahkan weekly di week ' . $request->week . ' sudah lebih dari hari selasa jam 10:00"]);
                 } else if (auth()->user()->area_id != 2 && now() > $monday->addHour(17)) {
+                    if ($request->page == 'teams') {
+                        return redirect('/teams/weekly')->with(['error' => 'Tidak bisa menambahkan weekly di week ' . $request->week . ' sudah lebih dari hari senin jam 17:00']);
+                    }
                     return redirect('weekly')->with(['error' => 'Tidak bisa menambahkan weekly di week ' . $request->week . ' sudah lebih dari hari senin jam 17:00']);
                 }
             }
@@ -435,6 +507,9 @@ class WeeklyController extends Controller
             unset($data['_token']);
             if ($request->result) {
                 if (!$request->value_plan) {
+                    if ($request->page == 'teams') {
+                        return redirect('/teams/weekly')->with(['error' => 'Task result harus memasukkan value plan']);
+                    }
                     return redirect('weekly')->with(['error' => 'Task result harus memasukkan value plan']);
                 }
                 $data['tipe'] = 'RESULT';
@@ -445,8 +520,15 @@ class WeeklyController extends Controller
             }
             unset($data['result']);
             Weekly::create($data);
+
+            if ($request->page == 'teams') {
+                return redirect('/teams/weekly')->with(['success' => 'Berhasil menambahkan weekly']);
+            }
             return redirect('weekly')->with(['success' => 'Berhasil menambahkan weekly']);
         } catch (Exception $e) {
+            if ($request->page == 'teams') {
+                return redirect('/teams/weekly')->with(['error' => $e->getMessage()]);
+            }
             return redirect('weekly')->with(['error' => $e->getMessage()]);
         }
     }
@@ -532,10 +614,20 @@ class WeeklyController extends Controller
         try {
             $weekly = Weekly::findOrFail($request->id);
             $requesteds = ModelsRequest::where('user_id', auth()->id())->where('jenistodo', 'Weekly')->get();
+
+            ##CEK TASK PUNYA SENDIRI ATAU BUKAN
+            if ($weekly->user_id != auth()->id()) {
+                return redirect('/teams/weekly')->with(['error' => 'Task ini bukan milik anda !']);
+            }
+
+            ##CEK TASK DI REQUEST
             foreach ($requesteds as $requested) {
                 $idTaskExistings = explode(',', $requested->todo_request);
                 foreach ($idTaskExistings as $idTaskExisting) {
                     if ($request->id == $idTaskExisting && $requested->status == 'PENDING') {
+                        if ($request->page == 'teams') {
+                            return redirect('/teams/weekly')->with(['error' => "Tidak bisa menghapus, task ini ada di pengajuan request task"]);
+                        }
                         return redirect('weekly')->with(['error' => "Tidak bisa menghapus, task ini ada di pengajuan request task"]);
                     }
                 }
@@ -543,6 +635,9 @@ class WeeklyController extends Controller
                 $idTaskReplaces = explode(',', $requested->todo_replace);
                 foreach ($idTaskReplaces as $idTaskReplace) {
                     if ($request->id == $idTaskReplace && $requested->status == 'PENDING') {
+                        if ($request->page == 'teams') {
+                            return redirect('/teams/weekly')->with(['error' => "Tidak bisa menghapus, task ini ada di pengajuan request task"]);
+                        }
                         return redirect('weekly')->with(['error' => "Tidak bisa menghapus, task ini ada di pengajuan request task"]);
                     }
                 }
@@ -550,14 +645,27 @@ class WeeklyController extends Controller
 
             $monday = ConvertDate::getMondayOrSaturday($weekly->year, $weekly->week, true);
             if (auth()->user()->area_id == 2 && now() > $monday->addDay(1)->addHour(10)) {
+                if ($request->page == 'teams') {
+                    return redirect('/teams/weekly')->with(['error' => "Tidak bisa menghapus weekly sudah lebih dari hari selasa jam 10:00"]);
+                }
                 return redirect('weekly')->with(['error' => "Tidak bisa menghapus weekly sudah lebih dari hari selasa jam 10:00"]);
             } else if (auth()->user()->area_id != 2 && now() > $monday->addHour(17)) {
+                if ($request->page == 'teams') {
+                    return redirect('/teams/weekly')->with(['error' => "Tidak bisa menghapus weekly sudah lebih dari hari senin jam 17:00"]);
+                }
                 return redirect('weekly')->with(['error' => "Tidak bisa menghapus weekly sudah lebih dari hari senin jam 17:00"]);
             }
 
             $weekly->delete();
+
+            if ($request->page == 'teams') {
+                return redirect('/teams/weekly')->with(['success' => "Berhasil menghapus weekly"]);
+            }
             return redirect('weekly')->with(['success' => "Berhasil menghapus weekly"]);
         } catch (Exception $e) {
+            if ($request->page == 'teams') {
+                return redirect('/teams/weekly')->with(['error' => $e->getMessage()]);
+            }
             return redirect('weekly')->with(['error' => $e->getMessage()]);
         }
     }

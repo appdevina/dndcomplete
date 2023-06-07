@@ -85,10 +85,19 @@ Route::middleware('auth')->group(
         Route::get('/teams/daily', [DailyController::class, 'indexTeamsDaily']);
         Route::get('/teams/daily/edit/{daily}', [DailyController::class, 'teamsDailyEdit']);
         Route::post('/teams/daily/edit/{daily}', [DailyController::class, 'teamsDailyUpdate']);
+        Route::post('/teams/sendDaily', [DailyController::class, 'sendDaily']);
+
+        //keluarin dari middleware isAdmin
+        Route::post('admin/daily/import', [DailyController::class, 'importDailyUser']);
+
         #WEEKLY
         Route::get('/teams/weekly', [WeeklyController::class, 'indexTeamsWeekly']);
         Route::get('/teams/weekly/edit/{weekly}', [WeeklyController::class, 'teamsWeeklyEdit']);
         Route::post('/teams/weekly/edit/{weekly}', [WeeklyController::class, 'teamsWeeklyUpdate']);
+        Route::post('/teams/sendWeekly', [WeeklyController::class, 'sendWeekly']);
+
+        //keluarin dari middleware isAdmin
+        Route::post('admin/weekly/import', [WeeklyController::class, 'importWeeklyUser']);
 
         // Route::get('/teams/weekly/change/result/{id}', [WeeklyController::class, 'teamsShowResult']);
 
@@ -110,13 +119,11 @@ Route::middleware('auth')->group(
             ##DAILY ADMIN
             Route::get('admin/daily', [DailyController::class, 'index']);
             Route::post('admin/daily/export', [DailyController::class, 'exportAdmin']);
-            Route::post('admin/daily/import', [DailyController::class, 'importDailyUser']);
             Route::get('admin/daily/{id}', [DailyController::class, 'edit']);
             Route::post('admin/daily/{id}', [DailyController::class, 'update']);
             ##WEEKLY ADMIN
             Route::get('admin/weekly', [WeeklyController::class, 'index']);
             Route::post('admin/weekly/export', [WeeklyController::class, 'exportAdmin']);
-            Route::post('admin/weekly/import', [WeeklyController::class, 'importWeeklyUser']);
             ##MONTLY ADMIN
             Route::get('admin/monthly', [MonthlyController::class, 'index']);
             Route::post('admin/monthly/export', [MonthlyController::class, 'exportAdmin']);
