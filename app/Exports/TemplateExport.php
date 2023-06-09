@@ -18,6 +18,7 @@ class TemplateExport implements WithHeadings
             'role',
             'area',
             'divisi',
+            'dr',
             'wn',
             'wr',
             'mn',

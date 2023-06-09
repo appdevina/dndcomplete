@@ -28,4 +28,9 @@ class Weekly extends Model
     {
         return $this->belongsTo(TaskStatus::class, 'task_status_id');
     }
+
+    public function add()
+    {
+        return $this->belongsTo(User::class, 'add_id')->withTrashed();
+    }
 }

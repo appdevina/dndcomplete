@@ -92,6 +92,7 @@
                                             <th>Status</th>
                                             <th>Type</th>
                                             <th>Tagged By</th>
+                                            <th>Added By</th>
                                             @if (auth()->user()->role_id == 1)
                                                 <th>Status</th>
                                             @endif
@@ -158,6 +159,13 @@
                                                 <td>
                                                     @if ($daily->tag_id)
                                                         {{ $daily->tag->nama_lengkap }}
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($daily->add_id)
+                                                        {{ $daily->add->nama_lengkap }}
                                                     @else
                                                         -
                                                     @endif
@@ -268,7 +276,8 @@
                         @if (auth()->user()->role->name != 'STAFF')
                             <div class="col-12 mt-3">
                                 <label for="userid" class="form-label">Nama</label>
-                                <select class="custom-select form-control" id="userid" name="userid">
+                                <br>
+                                <select class="custom-select form-control select2" id="userid" name="userid[]" multiple>
                                     @foreach ($users as $user)
                                         <option value="{{ $user->id }}">{{ $user->nama_lengkap }}
                                         </option>
@@ -380,7 +389,8 @@
                         <div class="mb-3 col-lg-12">
                             <div class="mb-3">
                                 <label for="user_id" class="form-label">User</label>
-                                <select class="custom-select col-lg-12" name="user_id">
+                                <br>
+                                <select class="custom-select col-lg-12 select2" name="user_id[]" multiple>
                                     <option value="">-- Choose --</option>
                                     @foreach ($users as $user)
                                         <option value="{{ $user->id }}">{{ $user->nama_lengkap }}</option>

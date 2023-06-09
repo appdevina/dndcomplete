@@ -216,14 +216,24 @@ class DailyController extends Controller
             if (!$request->isplan) {
                 $data['time'] = date('H:i', strtotime($request->time));
             }
-            $daily = Daily::create($data);
 
-            $dailyLog = DailyLog::create([
-                'user_id' => auth()->user()->id,
-                'task_id' => $daily->id,
-                'activity' => 'Mengirim task ' . $daily->task . ' ke ' . $daily->user->nama_lengkap,
-            ]);
-            $dailyLog->save();
+            $selectedUserIds = $request->input('user_id');
+
+            foreach ($selectedUserIds as $userId) {
+                $data['user_id'] = $userId;
+                $data['add_id'] = auth()->user()->id;
+
+                // Create the daily task
+                $daily = Daily::create($data);
+
+                // Create the daily log
+                $dailyLog = DailyLog::create([
+                    'user_id' => auth()->user()->id,
+                    'task_id' => $daily->id,
+                    'activity' => 'Mengirim task ' . $daily->task . ' ke ' . $daily->user->nama_lengkap,
+                ]);
+                $dailyLog->save();
+            }
             
             return redirect('/teams/daily')->with(['success' => "Berhasil mengirim daily !"]);
         } catch (Exception $e) {
@@ -242,10 +252,12 @@ class DailyController extends Controller
         $namaFile = $file->getClientOriginalName();
         $file->move(public_path('import'), $namaFile);
         try {
+            $userIds = $request->input('userid', []);
+
             if ($request->page == 'teams') {
-                Excel::import(new DailyImportUser(auth()->user()->role->name != 'STAFF' ? $request->userid :  auth()->id(), $request->page ?? ''), public_path('/import/' . $namaFile));
+                Excel::import(new DailyImportUser(auth()->user()->role->name != 'STAFF' ? $userIds :  [auth()->id()], $request->page ?? ''), public_path('/import/' . $namaFile));
             } else {
-                Excel::import(new DailyImportUser(auth()->user()->role_id == 1 ? $request->userid :  auth()->id(), $request->page ?? ''), public_path('/import/' . $namaFile));
+                Excel::import(new DailyImportUser(auth()->user()->role_id == 1 ? $userIds :  [auth()->id()], $request->page ?? ''), public_path('/import/' . $namaFile));
             }
         } catch (Exception $e) {
             if ($request->page == 'teams') {
@@ -560,6 +572,10 @@ class DailyController extends Controller
         if ($daily->tag_id) {
             return redirect('daily')->with(['error' => 'Tidak bisa merubah, task tagging hanya bisa di rubah oleh pembuat tag']);
         }
+        ##VALIDASI TASK ADDED TIDAK BISA DI RUBAH SELAIN PEMBUAT TASK
+        if ($daily->add_id) {
+            return redirect('daily')->with(['error' => 'Tidak bisa merubah, task added hanya bisa di rubah oleh pembuat task']);
+        }
         ##VALIDASI TIDAK BISA EDIT PADA WEEK YANG SEDANG BERJALAN SETELAH MAKSIMAL WAKTU INPUT
         if (Carbon::parse($daily->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->weekOfYear <= now()->weekOfYear) {
             if (auth()->user()->area_id == 2 && now() > Carbon::parse($daily->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->startOfWeek()->addDay(1)->addHour(10)) {
@@ -646,6 +662,13 @@ class DailyController extends Controller
                     return redirect('/teams/daily')->with(['error' => "Tidak bisa menghapus tag daily, tag daily hanya bisa di hapus oleh pembuatan tag"]);
                 }
                 return redirect('daily')->with(['error' => "Tidak bisa menghapus tag daily, tag daily hanya bisa di hapus oleh pembuatan tag"]);
+            }
+            ##VALIDASI TIDAK BISA DELETE TASK ADDED KECUALI OLEH PEMBUAT TASK
+            if ($daily->add_id) {
+                if ($request->page == 'teams') {
+                    return redirect('/teams/daily')->with(['error' => "Tidak bisa menghapus added daily, added daily hanya bisa di hapus oleh pembuat task"]);
+                }
+                return redirect('daily')->with(['error' => "Tidak bisa menghapus added daily, added daily hanya bisa di hapus oleh pembuat task"]);
             }
             ##VALIDASI JIKA TASK PLAN
             if ($daily->isplan) {

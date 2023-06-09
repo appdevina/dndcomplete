@@ -43,6 +43,7 @@ class UsersImport implements ToModel, WithHeadingRow
                 'role_id' => Role::where('name', $row['role'])->first()->id,
                 'area_id' => Area::where('name', preg_replace('/\s+/', '', $row['area']))->first()->id,
                 'divisi_id' => Divisi::where('name', preg_replace('/\s+/', '', $row['divisi']))->first()->id,
+                'dr' => strtoupper($row['dr']) == 'YES' ? true : false,
                 'wn' => strtoupper($row['wn']) == 'YES' ? true : false,
                 'wr' => strtoupper($row['wr']) == 'YES' ? true : false,
                 'mn' => strtoupper($row['mn']) == 'YES' ? true : false,

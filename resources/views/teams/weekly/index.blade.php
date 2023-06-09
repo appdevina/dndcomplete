@@ -88,6 +88,7 @@
                                             <th>Actual Result</th>
                                             <th>Status</th>
                                             <th>Task Plan</th>
+                                            <th>Added By</th>
                                             <th>Change Task</th>
                                         </tr>
                                     </thead>
@@ -155,6 +156,13 @@
                                                 ">
                                                 {{ $weekly->value ? 'CLOSED' : 'OPEN', }}</td>
                                                 <td>{{ !$weekly->is_add ? 'Plan' : 'Extra Task' }}</td>
+                                                <td>
+                                                    @if ($weekly->add_id)
+                                                        {{ $weekly->add->nama_lengkap }}
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     @if ($weekly->isupdate)
                                                         <i class="far fa-check-circle" style="color: green;"></i>
@@ -261,14 +269,22 @@
                         <h5 class="modal-title" id="sendWeeklyBulkLabel">Send Weekly</h5>
                     </div>
                     <div class="modal-body">
+                        <div class="mb-3 col-lg-12">
+                            <div class="mb-3">
+                                <label for="type" class="form-label">Tipe</label>
+                                <br>
+                                <select class="custom-select col-lg-12 addtypeweeklybulk" name="type" id="type">
+                                    <option value="">-- Choose --</option>
+                                        <option value="1">RESULT</option>
+                                        <option value="0">NON RESULT</option>
+                                </select>
+                            </div>
+                        </div>
                         @if (auth()->user()->role->nama != 'STAFF')
                             <div class="col-12 mt-3">
                                 <label for="userid" class="form-label">Nama</label>
-                                <select class="custom-select form-control" id="userid" name="userid">
-                                    @foreach ($users as $user)
-                                        <option value="{{ $user->id }}">{{ $user->nama_lengkap }}
-                                        </option>
-                                    @endforeach
+                                <br>
+                                <select class="custom-select form-control select2 adduserweeklybulk" id="userid" name="userid[]" multiple>
                                 </select>
                             </div>
                         @endif
@@ -276,6 +292,8 @@
                             <label for="formFile" class="form-label">Pilih File</label>
                             <input class="form-control" type="file" id="formFile" name="file">
                             <input type="hidden" name="page" value="teams">
+                            <input type="hidden" class="form-control userdivisiweeklybulk" name="userdivisiweeklybulk" id="userdivisiweeklybulk" value="{{ auth()->user()->divisi_id }}">
+
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -388,12 +406,20 @@
                         </div>
                         <div class="mb-3 col-lg-12">
                             <div class="mb-3">
-                                <label for="user_id" class="form-label">User</label>
-                                <select class="custom-select col-lg-12" name="user_id">
+                                <label for="type" class="form-label">Tipe</label>
+                                <br>
+                                <select class="custom-select col-lg-12 addtype" name="type" id="type">
                                     <option value="">-- Choose --</option>
-                                    @foreach ($users as $user)
-                                        <option value="{{ $user->id }}">{{ $user->nama_lengkap }}</option>
-                                    @endforeach
+                                        <option value="1">RESULT</option>
+                                        <option value="0">NON RESULT</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3 col-lg-12">
+                            <div class="mb-3">
+                                <label for="user_id" class="form-label">User</label>
+                                <br>
+                                <select class="custom-select col-lg-12 select2 adduser" name="user_id[]" id="user_id" multiple>
                                 </select>
                             </div>
                         </div>
@@ -411,19 +437,11 @@
                             <label for="task" class="form-label">Task</label>
                             <input type="text" class="form-control" id="task" name="task" autocomplete="off" required>
                         </div>
-                        @if (auth()->user()->wr)
-                            <div class="mb-3 col-lg-12 ml-4 d-flex">
-                                <input type="checkbox" class="form-check-input" id="resultkWeekly" name="result">
-                                <label class="form-check-label" for="resultkWeekly">Result ?</label>
-                                <div class="col-md-8">
-                                    <input type="number" class="form-control ml-4 value_plan" id="value_plan"
-                                        name="value_plan" autocomplete="off">
-                                    <span class="ml-4" id="nominal"></span>
-                                </div>
-                            </div>
-                        @endif
+                        <div class="mb-3 col-lg-12 ml-4 d-flex inputresult">
+                        </div>
                         <div class="mb-3 col-lg-12">
                             <input type="hidden" class="form-control" name="page" value="teams">
+                            <input type="hidden" class="form-control userdivisi" name="userdivisi" id="userdivisi" value="{{ auth()->user()->divisi_id }}">
                         </div>
                     </div>
                     <div class="modal-footer">

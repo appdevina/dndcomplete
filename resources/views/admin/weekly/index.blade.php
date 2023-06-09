@@ -117,6 +117,7 @@
                                         <th>Actual Result</th>
                                         <th>Status</th>
                                         <th>Task Plan</th>
+                                        <th>Added By</th>
                                         <th>Change Task</th>
                                     </tr>
                                 </thead>
@@ -168,6 +169,13 @@
                                             <td>{{ $weekly->value ? 'CLOSED' : 'OPEN', }}</td>
                                             <td>{{ !$weekly->is_add ? 'Plan' : 'Extra Task' }}</td>
                                             <td>
+                                                @if ($weekly->add_id)
+                                                    {{ $weekly->add->nama_lengkap }}
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+                                            <td>
                                                 @if ($weekly->isupdate)
                                                     <i class="far fa-check-circle" style="color: green;"></i>
                                                 @else
@@ -195,13 +203,13 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="importWeeklyLabel">Import Outlet</h5>
+                        <h5 class="modal-title" id="importWeeklyLabel">Import Weekly</h5>
                     </div>
                     <div class="modal-body">
                         @if (auth()->user()->role_id == 1)
                             <div class="col-12 mt-3">
                                 <label for="userid" class="form-label">Nama</label>
-                                <select class="custom-select form-control" id="userid" name="userid">
+                                <select class="custom-select form-control" id="userid" name="userid[]">
                                     @foreach ($users as $user)
                                         <option value="{{ $user->id }}">{{ $user->nama_lengkap }}
                                         </option>

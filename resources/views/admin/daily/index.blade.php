@@ -116,6 +116,7 @@
                                             <th>Task</th>
                                             <th>Type</th>
                                             <th>Tagged By</th>
+                                            <th>Added By</th>
                                             @if (auth()->user()->role_id == 1)
                                                 <th>Status</th>
                                             @endif
@@ -170,6 +171,13 @@
                                                         -
                                                     @endif
                                                 </td>
+                                                <td>
+                                                    @if ($daily->add_id)
+                                                        {{ $daily->add->nama_lengkap }}
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </td>
                                                 @if (auth()->user()->role_id == 1)
                                                     <td>{{ $daily->status ? 'Closed' : 'Open' }}</td>
                                                 @endif
@@ -207,7 +215,7 @@
                         @if (auth()->user()->role_id == 1)
                             <div class="col-12 mt-3">
                                 <label for="userid" class="form-label">Nama</label>
-                                <select class="custom-select form-control" id="userid" name="userid">
+                                <select class="custom-select form-control" id="userid" name="userid[]">
                                     @foreach ($users as $user)
                                         <option value="{{ $user->id }}">{{ $user->nama_lengkap }}
                                         </option>

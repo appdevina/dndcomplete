@@ -14,7 +14,7 @@ class DailyImportUser implements ToModel, WithHeadingRow
 {
     protected $userId, $page;
 
-    function __construct($userId, $page)
+    function __construct(array $userId, $page)
     {
         $this->userId = $userId;
         $this->page = $page;
@@ -52,24 +52,40 @@ class DailyImportUser implements ToModel, WithHeadingRow
             throw new Exception("Tidak bisa import daily kurang dari week " . now()->weekOfYear);
         }
 
-        $daily = new Daily([
-            'user_id' => $this->userId,
-            'date' => Carbon::parse($row['date']),
-            'task' => $row['task'],
-            'time' => date('H:i', strtotime($row['time'])),
-        ]);
-        $daily->save();
+        $dailyTasks = [];
 
-        if ($this->page == 'teams') {
-            $user = User::find($this->userId)->nama_lengkap;
-            $dailyLog = DailyLog::create([
-                'user_id' => auth()->user()->id,
-                'task_id' => $daily->id,
-                'activity' => 'Mengirim task ' . Daily::find($daily->id)->task . ' ke ' . $user,
+        foreach ($this->userId as $userId) {
+            $daily = new Daily([
+                'user_id' => $userId,
+                'date' => Carbon::parse($row['date']),
+                'task' => $row['task'],
+                'time' => date('H:i', strtotime($row['time'])),
             ]);
-            $dailyLog->save();
+            $daily->save();
+
+            //KALAU IMPORT DARI PAGE TEAMS, SIMPAN ADDED BY ID
+            if ($this->page == 'teams') {
+                $daily->add_id = auth()->user()->id;
+                $daily->save();
+            }
+            $dailyTasks[] = $daily;
+
+            if ($this->page == 'teams') {
+                $user = User::find($userId)->nama_lengkap;
+                $dailyLog = DailyLog::create([
+                    'user_id' => auth()->user()->id,
+                    'task_id' => $daily->id,
+                    'activity' => 'Mengirim task ' . $daily->task . ' ke ' . $user,
+                ]);
+                $dailyLog->save();
+            }
         }
 
-        return $daily;
+        return $dailyTasks;
+    }
+
+    private function getSelectedUsers($userIds)
+    {
+        return User::whereIn('id', $userIds)->get();
     }
 }

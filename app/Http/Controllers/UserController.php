@@ -78,6 +78,7 @@ class UserController extends Controller
                 'role_id' => (int) $request->role_id,
                 'area_id' => (int) $request->area_id,
                 'divisi_id' => (int) $request->divisi_id,
+                'dr' => $request->dr,
                 'wn' => $request->wn,
                 'wr' => $request->wr,
                 'mn' => $request->mn,
@@ -229,5 +230,24 @@ class UserController extends Controller
         } catch (Exception $e) {
             return redirect('user')->with(['error' => $e->getMessage()]);
         }
+    }
+
+    public function getuserresult(Request $request)
+    {
+        switch ($request->result) {
+            case 1:
+                $user = User::where('wr', 1)
+                ->where('divisi_id', $request->divisi_id)
+                ->get();
+                break;
+
+            default:
+                $user = User::where('wn', 1)
+                ->where('divisi_id', $request->divisi_id)
+                ->get();
+                break;
+        }
+
+        return response()->json($user);
     }
 }

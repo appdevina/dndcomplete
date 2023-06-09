@@ -22,7 +22,14 @@
 <script src="{{ asset('template') }}/plugins/daterangepicker/daterangepicker.js"></script>
 <!-- Bootstrap4 Duallistbox -->
 <script src="{{ asset('template') }}/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+<!-- Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script src="{{ asset('script.js') }}"></script>
+<script>
+    $(document).ready(function() {
+        $('.select2').select2();
+    });
+</script>
 </body>
 
 </html>

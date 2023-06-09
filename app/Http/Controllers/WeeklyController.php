@@ -73,6 +73,7 @@ class WeeklyController extends Controller
                 ->whereHas('user', function ($query) {
                         $query->where('divisi_id', auth()->user()->divisi_id);
                     })
+                ->orderBy('year', 'DESC')
                 ->orderBy('week', 'DESC')
                 ->simplePaginate(30);
                 break;
@@ -243,14 +244,24 @@ class WeeklyController extends Controller
                 $data['status_non'] = 0;
             }
             unset($data['result']);
-            $weekly = Weekly::create($data);
 
-            $weeklyLog = WeeklyLog::create([
-                'user_id' => auth()->user()->id,
-                'task_id' => $weekly->id,
-                'activity' => 'Mengirim task ' . $weekly->task . ' ke ' . $weekly->user->nama_lengkap,
-            ]);
-            $weeklyLog->save();
+            $selectedUserIds = $request->input('user_id');
+
+            foreach ($selectedUserIds as $userId) {
+                $data['user_id'] = $userId;
+                $data['add_id'] = auth()->user()->id;
+
+                // Create the weekly task
+                $weekly = Weekly::create($data);
+
+                // Create the weekly log
+                $weeklyLog = WeeklyLog::create([
+                    'user_id' => auth()->user()->id,
+                    'task_id' => $weekly->id,
+                    'activity' => 'Mengirim task ' . $weekly->task . ' ke ' . $weekly->user->nama_lengkap,
+                ]);
+                $weeklyLog->save();
+            }
 
             return redirect('/teams/weekly')->with(['success' => 'Berhasil menambahkan weekly']);
         } catch (Exception $e) {
@@ -269,10 +280,12 @@ class WeeklyController extends Controller
         $namaFile = $file->getClientOriginalName();
         $file->move(public_path('import'), $namaFile);
         try {
+            $userIds = $request->input('userid', []);
+
             if ($request->page == 'teams') {
-                Excel::import(new WeeklyImportUser(auth()->user()->role->name != 'STAFF' ? User::find($request->userid) : auth()->user(), $request->page ?? ''), public_path('/import/' . $namaFile));
+                Excel::import(new WeeklyImportUser(auth()->user()->role->name != 'STAFF' ? $userIds : [auth()->id()], $request->page ?? ''), public_path('/import/' . $namaFile));
             } else {
-                Excel::import(new WeeklyImportUser(auth()->user()->role_id == 1 ? User::find($request->userid) : auth()->user(), $request->page ?? ''), public_path('/import/' . $namaFile));
+                Excel::import(new WeeklyImportUser(auth()->user()->role_id == 1 ? $userIds : [auth()->id()], $request->page ?? ''), public_path('/import/' . $namaFile));
             }
         } catch (Exception $e) {
             if ($request->page == 'teams') {
@@ -560,6 +573,11 @@ class WeeklyController extends Controller
                 }
             }
         }
+        ##VALIDASI TASK ADDED TIDAK BISA DI RUBAH SELAIN PEMBUAT TASK
+        if ($weekly->add_id) {
+            return redirect('weekly')->with(['error' => 'Tidak bisa merubah, task added hanya bisa di rubah oleh pembuat task']);
+        }
+
         if (auth()->id() != $weekly->user_id) {
             return back();
         }
@@ -641,6 +659,14 @@ class WeeklyController extends Controller
                         return redirect('weekly')->with(['error' => "Tidak bisa menghapus, task ini ada di pengajuan request task"]);
                     }
                 }
+            }
+
+            ##VALIDASI TIDAK BISA DELETE TASK ADDED KECUALI OLEH PEMBUAT TASK
+            if ($weekly->add_id) {
+                if ($request->page == 'teams') {
+                    return redirect('/teams/weekly')->with(['error' => "Tidak bisa menghapus added weekly, added weekly hanya bisa di hapus oleh pembuat task"]);
+                }
+                return redirect('weekly')->with(['error' => "Tidak bisa menghapus added weekly, added weekly hanya bisa di hapus oleh pembuat task"]);
             }
 
             $monday = ConvertDate::getMondayOrSaturday($weekly->year, $weekly->week, true);

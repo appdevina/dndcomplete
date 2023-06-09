@@ -60,6 +60,7 @@
                                         <th>Area</th>
                                         <th>Divisi</th>
                                         <th>D</th>
+                                        <th>DR</th>
                                         <th>WN</th>
                                         <th>WR</th>
                                         <th>MN</th>
@@ -80,6 +81,13 @@
                                             <td>{{ $user->divisi->name }}</td>
                                             <td>
                                                 @if ($user->d)
+                                                    <i class="far fa-check-circle" style="color: green;"></i>
+                                                @else
+                                                    <i class="far fa-times-circle" style="color: red;"></i>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($user->dr)
                                                     <i class="far fa-check-circle" style="color: green;"></i>
                                                 @else
                                                     <i class="far fa-times-circle" style="color: red;"></i>

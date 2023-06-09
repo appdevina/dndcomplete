@@ -178,3 +178,4 @@ Route::get('download/app', [SettingController::class, 'download']);
 Route::get('daily/get', [DailyController::class, 'getdaily']);
 Route::get('weekly/get', [WeeklyController::class, 'getweekly']);
 Route::get('monthly/get', [MonthlyController::class, 'getmonthly']);
+Route::get('userresult/get', [UserController::class, 'getuserresult']);

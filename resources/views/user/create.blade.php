@@ -70,6 +70,17 @@
                                     <div class="mb-3">
                                         <div class="row">
                                             <div class="col-lg-3">
+                                                <label for="dr" class="form-label col-lg-12">Daily Result</label>
+                                                <select class="custom-select col-lg-12" id="dr" name="dr" required>
+                                                    <option value="1" selected>YES</option>
+                                                    <option value="0">NO</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="row">
+                                            <div class="col-lg-3">
                                                 <label for="wn" class="form-label col-lg-12">Weekly Non</label>
                                                 <select class="custom-select col-lg-12" id="wn" name="wn" required>
                                                     <option value="1" selected>YES</option>
