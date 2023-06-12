@@ -548,7 +548,7 @@ class DailyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edituser($id)
+    public function edituser($id, Request $request)
     {
         $daily = Daily::find($id);
         $requesteds = ModelsRequest::where('user_id', auth()->id())->where('jenistodo', 'Daily')->get();
@@ -573,11 +573,26 @@ class DailyController extends Controller
             return redirect('daily')->with(['error' => 'Tidak bisa merubah, task tagging hanya bisa di rubah oleh pembuat tag']);
         }
         ##VALIDASI TASK ADDED TIDAK BISA DI RUBAH SELAIN PEMBUAT TASK
-        if ($daily->add_id) {
-            return redirect('daily')->with(['error' => 'Tidak bisa merubah, task added hanya bisa di rubah oleh pembuat task']);
+        if ($daily->add_id != null) {
+            if ($daily->add_id != auth()->user()->id) {
+                if ($request->page == 'teams') {
+                    return redirect('/teams/daily')->with(['error' => 'Tidak bisa merubah, task bukan ditambahkan oleh anda']);
+                }
+                return redirect('daily')->with(['error' => 'Tidak bisa merubah, task bukan ditambahkan oleh anda']);
+            }
         }
-        ##VALIDASI TIDAK BISA EDIT PADA WEEK YANG SEDANG BERJALAN SETELAH MAKSIMAL WAKTU INPUT
-        if (Carbon::parse($daily->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->weekOfYear <= now()->weekOfYear) {
+
+        if ($daily->add_id == null) {
+            if ($daily->user_id != auth()->user()->id) {
+                if ($request->page == 'teams') {
+                    return redirect('/teams/daily')->with(['error' => 'Tidak bisa merubah, task bukan ditambahkan oleh anda']);
+                }
+                return redirect('daily')->with(['error' => 'Tidak bisa merubah, task bukan ditambahkan oleh anda']);
+            }
+        }
+        ##VALIDASI TIDAK BISA EDIT PADA WEEK YANG SEDANG BERJALAN SETELAH MAKSIMAL WAKTU INPUT DAN USER BUKAN PEMBERI TASK/PEMILIK TASK
+        ##CEK LAGI DI HARI SELASA
+        if (Carbon::parse($daily->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->weekOfYear <= now()->weekOfYear && (auth()->user()->id != ($daily->add_id ?? $daily->user_id))) {
             if (auth()->user()->area_id == 2 && now() > Carbon::parse($daily->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->startOfWeek()->addDay(1)->addHour(10)) {
                 return redirect('daily')->with(['error' => 'Tidak bisa merubah daily di week yang sudah berjalan dan lebih dari hari selasa jam 10.00']);
             } else if (auth()->user()->area_id != 2 && now() > Carbon::parse($daily->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->startOfWeek()->addHour(17)) {
@@ -588,6 +603,7 @@ class DailyController extends Controller
             'title' => 'Daily',
             'active' => 'daily',
             'daily' => Daily::find($id),
+            'page' => $request->page,
         ]);
     }
 
@@ -611,6 +627,10 @@ class DailyController extends Controller
             $data['date'] = Carbon::parse(strtotime($request->date))->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'));
             $data['time'] = date('H:i', strtotime($request->time));
             $daily->update($data);
+
+            if ($request->page == 'teams') {
+                return redirect('/teams/daily')->with(['success' => 'Berhasil merubah daily']);
+            }
             return redirect('daily')->with(['success' => 'Berhasil merubah daily']);
         } catch (Exception $e) {
             return redirect('daily')->with(['error' => $e->getMessage()]);
@@ -629,9 +649,23 @@ class DailyController extends Controller
             $daily = Daily::findOrFail($request->id);
             $requesteds = ModelsRequest::where('user_id', auth()->id())->where('jenistodo', 'Daily')->get();
 
-            ##CEK TASK PUNYA SENDIRI ATAU BUKAN
-            if ($daily->user_id != auth()->id()) {
-                return redirect('/teams/daily')->with(['error' => 'Task ini bukan milik anda !']);
+            ##VALIDASI TASK ADDED TIDAK BISA DI DELETE SELAIN PEMBUAT TASK
+            if ($daily->add_id != null) {
+                if ($daily->add_id != auth()->user()->id) {
+                    if ($request->page == 'teams') {
+                        return redirect('/teams/daily')->with(['error' => 'Tidak bisa menghapus, task bukan ditambahkan oleh anda']);
+                    }
+                    return redirect('daily')->with(['error' => 'Tidak bisa menghapus, task bukan ditambahkan oleh anda']);
+                }
+            }
+
+            if ($daily->add_id == null) {
+                if ($daily->user_id != auth()->user()->id) {
+                    if ($request->page == 'teams') {
+                        return redirect('/teams/daily')->with(['error' => 'Tidak bisa menghapus, task bukan ditambahkan oleh anda']);
+                    }
+                    return redirect('daily')->with(['error' => 'Tidak bisa menghapus, task bukan ditambahkan oleh anda']);
+                }
             }
             
             ##CEK TASK DI REQUEST
@@ -662,13 +696,6 @@ class DailyController extends Controller
                     return redirect('/teams/daily')->with(['error' => "Tidak bisa menghapus tag daily, tag daily hanya bisa di hapus oleh pembuatan tag"]);
                 }
                 return redirect('daily')->with(['error' => "Tidak bisa menghapus tag daily, tag daily hanya bisa di hapus oleh pembuatan tag"]);
-            }
-            ##VALIDASI TIDAK BISA DELETE TASK ADDED KECUALI OLEH PEMBUAT TASK
-            if ($daily->add_id) {
-                if ($request->page == 'teams') {
-                    return redirect('/teams/daily')->with(['error' => "Tidak bisa menghapus added daily, added daily hanya bisa di hapus oleh pembuat task"]);
-                }
-                return redirect('daily')->with(['error' => "Tidak bisa menghapus added daily, added daily hanya bisa di hapus oleh pembuat task"]);
             }
             ##VALIDASI JIKA TASK PLAN
             if ($daily->isplan) {

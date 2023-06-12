@@ -53,6 +53,7 @@
                                                     id="nominal">Value : {{ number_format($weekly->value_plan, 0, ',', '.') }}</span>
                                             </div>
                                         @endif
+                                        <input type="hidden" name="page" value="{{ $page }}">
                                     </div>
                                     <button type="submit" class="btn btn-success mt-3">Update</button>
                                 </form>

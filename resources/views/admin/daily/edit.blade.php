@@ -18,7 +18,7 @@
                             </div>
                         @endif
                             <div class="card-body">
-                                <form action="{{ auth()->user()->role_id == 1 ? '/admin/daily/edit/'.$daily->id : '/daily/edit/' }}" method="POST">
+                                <form action="{{ auth()->user()->role_id == 1 ? '/admin/daily/edit/'.$daily->id : '/daily/edit' }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="id" value="{{ $daily->id }}">
                                     <div class="row">
@@ -73,6 +73,7 @@
                                             </div>
                                         </div>
                                     @endif
+                                    <input type="hidden" name="page" value="{{ $page }}">
                                     <button type="submit" class="btn btn-success mt-3">Update</button>
                                 </form>
                             </div>

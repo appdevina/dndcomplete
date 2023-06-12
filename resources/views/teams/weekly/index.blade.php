@@ -81,8 +81,8 @@
                                             <th>Year</th>
                                             <th>Week</th>
                                             <th>Task</th>
-                                            <th>Category</th>
-                                            <th>Task Status</th>
+                                            <!-- <th>Category</th>
+                                            <th>Task Status</th> -->
                                             <th>Type</th>
                                             <th>Plan Result</th>
                                             <th>Actual Result</th>
@@ -101,7 +101,7 @@
                                                     class="fas fa-edit"></i></span></a>
                                                 </td> --}}
                                                 <td class="d-flex" style="text-align: center;">
-                                                    <!-- @if ($weekly->tipe == 'NON')
+                                                    @if ($weekly->tipe == 'NON')
                                                     <form action="/weekly/change" method="POST">
                                                         @csrf
                                                             <input type="hidden" name="id" value="{{ $weekly->id }}">
@@ -114,9 +114,13 @@
                                                         <a href="/weekly/change/result/{{ $weekly->id }}"><i
                                                                 class="btn far fa-check-circle"
                                                                 style="color: {{ $weekly->value ? 'green' : 'grey' }};"></i></a>
-                                                    @endif -->
-                                                    <a href="/teams/weekly/edit/{{ $weekly->id }}"><i class="btn fas fa-edit"
-                                                            style="color: rgb(239, 239, 54)"></i></a>
+                                                    @endif
+                                                    <form action="/weekly/edit/{{ $weekly->id }}" method="GET">
+                                                        @csrf
+                                                        <button type="submit" class="btn" style="color: rgb(239, 239, 54)"><i 
+                                                        class="fas fa-edit"></i></button>
+                                                        <input type="hidden" name="page" value="teams">
+                                                    </form>
                                                     <form action="/weekly/delete" method="POST">
                                                         @csrf
                                                         <input type="hidden" name="id" value="{{ $weekly->id }}">
@@ -131,7 +135,7 @@
                                                 <td>{{ $weekly->year }}</td>
                                                 <td>{{ $weekly->week }}</td>
                                                 <td>{{ $weekly->task }}</td>
-                                                <td>{{ $weekly->taskcategory->task_category ?? '' }}</td>
+                                                <!-- <td>{{ $weekly->taskcategory->task_category ?? '' }}</td>
                                                 <td class="
                                                     @if ($weekly->taskstatus != null)
                                                         @if ($weekly->taskstatus->task_status == 'PROGRESS')
@@ -145,7 +149,7 @@
                                                         @endif
                                                     @endif
                                                 ">
-                                                {{ $weekly->taskstatus->task_status ?? '' }}</td>
+                                                {{ $weekly->taskstatus->task_status ?? '' }}</td> -->
                                                 <td>{{ $weekly->tipe }}</td>
                                                 <td>{{ $weekly->value_plan ? number_format($weekly->value_plan, 0, ',', '.') : '-' }}
                                                 </td>

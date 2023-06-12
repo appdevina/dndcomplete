@@ -132,6 +132,11 @@ class DailyController extends Controller
             $data['time'] = date('H:i', strtotime($request->time));
             $daily = Daily::findOrFail($id);
 
+            // CEK TASK KIRIMAN ATAU BUKAN
+            if ($daily->add_id) {
+                return ResponseFormatter::error(null, "Tidak bisa merubah, task ini kiriman dari manager/coor/leader");
+            }
+
             if ($daily->tag_id) {
                 return ResponseFormatter::error(null, "Tidak bisa merubah daily tag");
             }
@@ -179,6 +184,12 @@ class DailyController extends Controller
                     }
                 }
             }
+
+             // CEK TASK KIRIMAN ATAU BUKAN
+            if ($daily->add_id) {
+                return ResponseFormatter::error(null, "Tidak bisa dihapus, task ini kiriman dari manager/coor/leader");
+            }
+
             if ($daily->tag_id) {
                 return ResponseFormatter::error(null, "Tidak bisa menghapus tag daily, tag daily hanya bisa di hapus oleh pembuatan tag");
             }
@@ -234,7 +245,7 @@ class DailyController extends Controller
                 &&
                 now()
                 >
-                Carbon::parse($daily->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->addDay(2)
+                Carbon::parse($daily->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->addDay(3)
             ) {
                 return ResponseFormatter::error(null, "Tidak bisa merubah status sudah lebih dari H+2 dari daily");
             }

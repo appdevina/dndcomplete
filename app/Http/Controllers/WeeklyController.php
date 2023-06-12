@@ -460,7 +460,7 @@ class WeeklyController extends Controller
             }
         }
         if (auth()->id() != $weekly->user_id) {
-            return back();
+            return back()->with(['error' => 'Bukan task anda']);
         }
         $monday = ConvertDate::getMondayOrSaturday($weekly->year, $weekly->week, true);
         if (auth()->user()->area_id == 2 && now() > $monday->addDay(8)->addHour(10)) {
@@ -553,7 +553,7 @@ class WeeklyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, Request $request)
     {
         $weekly = Weekly::find($id);
         $requesteds = ModelsRequest::where('user_id', auth()->id())->where('jenistodo', 'Weekly')->get();
@@ -574,23 +574,43 @@ class WeeklyController extends Controller
             }
         }
         ##VALIDASI TASK ADDED TIDAK BISA DI RUBAH SELAIN PEMBUAT TASK
-        if ($weekly->add_id) {
-            return redirect('weekly')->with(['error' => 'Tidak bisa merubah, task added hanya bisa di rubah oleh pembuat task']);
+        if ($weekly->add_id != null) {
+            if ($weekly->add_id != auth()->user()->id) {
+                if ($request->page == 'teams') {
+                    return redirect('/teams/weekly')->with(['error' => 'Tidak bisa merubah, task bukan ditambahkan oleh anda']);
+                }
+                return redirect('weekly')->with(['error' => 'Tidak bisa merubah, task bukan ditambahkan oleh anda']);
+            }
         }
 
-        if (auth()->id() != $weekly->user_id) {
-            return back();
+        if ($weekly->add_id == null) {
+            if ($weekly->user_id != auth()->user()->id) {
+                if ($request->page == 'teams') {
+                    return redirect('/teams/weekly')->with(['error' => 'Tidak bisa merubah, task bukan ditambahkan oleh anda']);
+                }
+                return redirect('weekly')->with(['error' => 'Tidak bisa merubah, task bukan ditambahkan oleh anda']);
+            }
         }
+
+        // if (auth()->id() != $weekly->user_id) {
+        //     return back();
+        // }
+
+        ##VALIDASI TIDAK BISA EDIT PADA WEEK YANG SEDANG BERJALAN SETELAH MAKSIMAL WAKTU INPUT DAN USER BUKAN PEMBERI TASK/PEMILIK TASK
         $monday = ConvertDate::getMondayOrSaturday($weekly->year, $weekly->week, true);
-        if (auth()->user()->area_id == 2 && now() > $monday->addDay(1)->addHour(10)) {
-            return redirect('weekly')->with(['error' => 'Tidak bisa merubah weekly sudah lebih dari week ' . now()->weekOfYear . ' hari selasa jam 10:00']);
-        } else if (auth()->user()->area_id != 2 && now() > $monday->addHour(17)) {
-            return redirect('weekly')->with(['error' => 'Tidak bisa merubah weekly sudah lebih dari week ' . now()->weekOfYear . ' hari senin jam 17:00']);
+        if (auth()->user()->id != ($weekly->add_id ?? $weekly->user_id)) {
+            if (auth()->user()->area_id == 2 && now() > $monday->addDay(1)->addHour(10)) {
+                return redirect('weekly')->with(['error' => 'Tidak bisa merubah weekly sudah lebih dari week ' . now()->weekOfYear . ' hari selasa jam 10:00']);
+            } else if (auth()->user()->area_id != 2 && now() > $monday->addHour(17)) {
+                return redirect('weekly')->with(['error' => 'Tidak bisa merubah weekly sudah lebih dari week ' . now()->weekOfYear . ' hari senin jam 17:00']);
+            }
         }
+
         return view('admin.weekly.edit')->with([
             'title' => 'Weekly',
             'active' => 'weekly',
             'weekly' => $weekly,
+            'page' => $request->page,
         ]);
     }
 
@@ -615,6 +635,10 @@ class WeeklyController extends Controller
                 $weekly['value_plan'] = (int) $request->value_plan;
             }
             $weekly->save();
+
+            if ($request->page == 'teams') {
+                return redirect('/teams/weekly')->with(['success' => 'Berhasil merubah weekly']);
+            }
             return redirect('weekly')->with(['success' => 'Berhasil merubah weekly']);
         } catch (Exception $e) {
             return redirect('weekly')->with(['error' => $e->getMessage()]);
@@ -633,9 +657,23 @@ class WeeklyController extends Controller
             $weekly = Weekly::findOrFail($request->id);
             $requesteds = ModelsRequest::where('user_id', auth()->id())->where('jenistodo', 'Weekly')->get();
 
-            ##CEK TASK PUNYA SENDIRI ATAU BUKAN
-            if ($weekly->user_id != auth()->id()) {
-                return redirect('/teams/weekly')->with(['error' => 'Task ini bukan milik anda !']);
+            ##VALIDASI TASK ADDED TIDAK BISA DI DELETE SELAIN PEMBUAT TASK
+            if ($weekly->add_id != null) {
+                if ($weekly->add_id != auth()->user()->id) {
+                    if ($request->page == 'teams') {
+                        return redirect('/teams/weekly')->with(['error' => 'Tidak bisa menghapus, task bukan ditambahkan oleh anda']);
+                    }
+                    return redirect('weekly')->with(['error' => 'Tidak bisa menghapus, task bukan ditambahkan oleh anda']);
+                }
+            }
+
+            if ($weekly->add_id == null) {
+                if ($weekly->user_id != auth()->user()->id) {
+                    if ($request->page == 'teams') {
+                        return redirect('/teams/weekly')->with(['error' => 'Tidak bisa menghapus, task bukan ditambahkan oleh anda']);
+                    }
+                    return redirect('weekly')->with(['error' => 'Tidak bisa menghapus, task bukan ditambahkan oleh anda']);
+                }
             }
 
             ##CEK TASK DI REQUEST
@@ -659,14 +697,6 @@ class WeeklyController extends Controller
                         return redirect('weekly')->with(['error' => "Tidak bisa menghapus, task ini ada di pengajuan request task"]);
                     }
                 }
-            }
-
-            ##VALIDASI TIDAK BISA DELETE TASK ADDED KECUALI OLEH PEMBUAT TASK
-            if ($weekly->add_id) {
-                if ($request->page == 'teams') {
-                    return redirect('/teams/weekly')->with(['error' => "Tidak bisa menghapus added weekly, added weekly hanya bisa di hapus oleh pembuat task"]);
-                }
-                return redirect('weekly')->with(['error' => "Tidak bisa menghapus added weekly, added weekly hanya bisa di hapus oleh pembuat task"]);
             }
 
             $monday = ConvertDate::getMondayOrSaturday($weekly->year, $weekly->week, true);

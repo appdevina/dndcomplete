@@ -88,8 +88,8 @@
                                             <th>Date</th>
                                             <th>Time</th>
                                             <th>Task</th>
-                                            <th>Category</th>
-                                            <th>Status</th>
+                                            <!-- <th>Category</th>
+                                            <th>Status</th> -->
                                             <th>Type</th>
                                             <th>Tagged By</th>
                                             <th>Added By</th>
@@ -123,9 +123,13 @@
                                                             <button type="submit" class="btn far fa-check-circle"
                                                             style="color: {{ $daily->status ? 'green' : 'grey' }};"></button>
                                                         </form>
-                                                        <a href="/teams/daily/edit/{{ $daily->id }}"><i
-                                                                class="btn fas fa-edit"
-                                                                style="color: rgb(239, 239, 54)"></i></a>
+                                                        <form action="/daily/edit/{{ $daily->id }}" method="GET">
+                                                            @csrf
+                                                            <button type="submit" class="btn" style="color: rgb(239, 239, 54)"><i
+                                                                    class="fas fa-edit"
+                                                                    ></i></button>
+                                                            <input type="hidden" name="page" value="teams">
+                                                        </form>
                                                         <form action="/daily/delete" method="POST">
                                                             @csrf
                                                             <input type="hidden" name="id" value="{{ $daily->id }}">
@@ -140,7 +144,7 @@
                                                 <td>{{ date('d M Y', $daily->date / 1000) }}</td>
                                                 <td>{{ $daily->time ?? '-' }}</td>
                                                 <td>{{ $daily->task }}</td>
-                                                <td>{{ $daily->taskcategory->task_category ?? '' }}</td>
+                                                <!-- <td>{{ $daily->taskcategory->task_category ?? '' }}</td>
                                                 <td class="
                                                     @if ($daily->taskstatus != null)
                                                         @if ($daily->taskstatus->task_status == 'PROGRESS')
@@ -154,7 +158,7 @@
                                                         @endif
                                                     @endif
                                                 "
-                                                >{{ $daily->taskstatus->task_status ?? '' }}</td>
+                                                >{{ $daily->taskstatus->task_status ?? '' }}</td> -->
                                                 <td>{{ $daily->isplan ? 'Plan' : 'Extra Task' }}</td>
                                                 <td>
                                                     @if ($daily->tag_id)
