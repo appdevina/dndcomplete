@@ -33,4 +33,9 @@ class Weekly extends Model
     {
         return $this->belongsTo(User::class, 'add_id')->withTrashed();
     }
+
+    public function tag()
+    {
+        return $this->belongsTo(User::class, 'tag_id')->withTrashed();
+    }
 }

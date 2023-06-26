@@ -218,19 +218,19 @@ class WeeklyController extends Controller
             ##EXTRA TASK / TAMBAHAN
             if ($request->is_add) {
                 $data['is_add'] = 1;
-                $monday = ConvertDate::getMondayOrSaturday($data['year'], $data['week'], true);
-                if (auth()->user()->area_id == 2 && now() > $monday->addDay(8)->addHour(10)) {
-                    return redirect('/teams/weekly')->with(['error' => "Tidak bisa menambahkan extra task weekly di week ' . $request->week . ' sudah lebih dari hari selasa jam 10:00"]);
-                } else if (auth()->user()->area_id != 2 && now() > $monday->addDay(7)->addHour(17)) {
-                    return redirect('/teams/weekly')->with(['error' => 'Tidak bisa menambahkan extra task weekly di week ' . $request->week . ' sudah lebih dari hari senin jam 17:00']);
-                }
+                // $monday = ConvertDate::getMondayOrSaturday($data['year'], $data['week'], true);
+                // if (auth()->user()->area_id == 2 && now() > $monday->addDay(8)->addHour(10)) {
+                //     return redirect('/teams/weekly')->with(['error' => "Tidak bisa menambahkan extra task weekly di week ' . $request->week . ' sudah lebih dari hari selasa jam 10:00"]);
+                // } else if (auth()->user()->area_id != 2 && now() > $monday->addDay(7)->addHour(17)) {
+                //     return redirect('/teams/weekly')->with(['error' => 'Tidak bisa menambahkan extra task weekly di week ' . $request->week . ' sudah lebih dari hari senin jam 17:00']);
+                // }
             } else {
-                $monday = ConvertDate::getMondayOrSaturday($data['year'], $data['week'], true);
-                if (auth()->user()->area_id == 2 && now() > $monday->addDay(1)->addHour(10)) {
-                    return redirect('/teams/weekly')->with(['error' => "Tidak bisa menambahkan weekly di week ' . $request->week . ' sudah lebih dari hari selasa jam 10:00"]);
-                } else if (auth()->user()->area_id != 2 && now() > $monday->addHour(17)) {
-                    return redirect('/teams/weekly')->with(['error' => 'Tidak bisa menambahkan weekly di week ' . $request->week . ' sudah lebih dari hari senin jam 17:00']);
-                }
+                // $monday = ConvertDate::getMondayOrSaturday($data['year'], $data['week'], true);
+                // if (auth()->user()->area_id == 2 && now() > $monday->addDay(1)->addHour(10)) {
+                //     return redirect('/teams/weekly')->with(['error' => "Tidak bisa menambahkan weekly di week ' . $request->week . ' sudah lebih dari hari selasa jam 10:00"]);
+                // } else if (auth()->user()->area_id != 2 && now() > $monday->addHour(17)) {
+                //     return redirect('/teams/weekly')->with(['error' => 'Tidak bisa menambahkan weekly di week ' . $request->week . ' sudah lebih dari hari senin jam 17:00']);
+                // }
             }
             unset($data['_token']);
             if ($request->result) {
@@ -386,22 +386,22 @@ class WeeklyController extends Controller
                     }
                 }
             }
-            $monday = ConvertDate::getMondayOrSaturday($weekly->year, $weekly->week, true);
+            // $monday = ConvertDate::getMondayOrSaturday($weekly->year, $weekly->week, true);
 
-            if (auth()->user()->area_id == 2 && now() > $monday->addDay(8)->addHour(10)) {
-                if ($request->page == 'teams') {
-                    return redirect('/teams/weekly')->with(['error' => "Tidak bisa merubah status weekly sudah lebih dari hari selasa jam 10:00"]);
-                }
-                return redirect('weekly')->with(['error' => "Tidak bisa merubah status weekly sudah lebih dari hari selasa jam 10:00"]);
-            }
+            // if (auth()->user()->area_id == 2 && now() > $monday->addDay(8)->addHour(10)) {
+            //     if ($request->page == 'teams') {
+            //         return redirect('/teams/weekly')->with(['error' => "Tidak bisa merubah status weekly sudah lebih dari hari selasa jam 10:00"]);
+            //     }
+            //     return redirect('weekly')->with(['error' => "Tidak bisa merubah status weekly sudah lebih dari hari selasa jam 10:00"]);
+            // }
 
-            $monday2 = ConvertDate::getMondayOrSaturday($weekly->year, $weekly->week, true);
-            if (auth()->user()->area_id != 2 && now() > $monday2->addDay(7)->addHour(17)) {
-                if ($request->page == 'teams') {
-                    return redirect('/teams/weekly')->with(['error' => "Tidak bisa merubah status weekly sudah lebih dari hari senin jam 17:00"]);
-                }
-                return redirect('weekly')->with(['error' => "Tidak bisa merubah status weekly sudah lebih dari hari senin jam 17:00"]);
-            }
+            // $monday2 = ConvertDate::getMondayOrSaturday($weekly->year, $weekly->week, true);
+            // if (auth()->user()->area_id != 2 && now() > $monday2->addDay(7)->addHour(17)) {
+            //     if ($request->page == 'teams') {
+            //         return redirect('/teams/weekly')->with(['error' => "Tidak bisa merubah status weekly sudah lebih dari hari senin jam 17:00"]);
+            //     }
+            //     return redirect('weekly')->with(['error' => "Tidak bisa merubah status weekly sudah lebih dari hari senin jam 17:00"]);
+            // }
 
             if (now()->year == $weekly->year && now()->weekOfYear < $weekly->week) {
                 if ($request->page == 'teams') {
@@ -462,12 +462,12 @@ class WeeklyController extends Controller
         if (auth()->id() != $weekly->user_id) {
             return back()->with(['error' => 'Bukan task anda']);
         }
-        $monday = ConvertDate::getMondayOrSaturday($weekly->year, $weekly->week, true);
-        if (auth()->user()->area_id == 2 && now() > $monday->addDay(8)->addHour(10)) {
-            return redirect('weekly')->with(['error' => 'Tidak bisa merubah weekly sudah lebih dari week ' . now()->weekOfYear . ' hari selasa jam 10:00']);
-        } else if (auth()->user()->area_id != 2 && now() > $monday->addDay(7)->addHour(17)) {
-            return redirect('weekly')->with(['error' => 'Tidak bisa merubah weekly sudah lebih dari week ' . now()->weekOfYear . ' hari senin jam 17:00']);
-        }
+        // $monday = ConvertDate::getMondayOrSaturday($weekly->year, $weekly->week, true);
+        // if (auth()->user()->area_id == 2 && now() > $monday->addDay(8)->addHour(10)) {
+        //     return redirect('weekly')->with(['error' => 'Tidak bisa merubah weekly sudah lebih dari week ' . now()->weekOfYear . ' hari selasa jam 10:00']);
+        // } else if (auth()->user()->area_id != 2 && now() > $monday->addDay(7)->addHour(17)) {
+        //     return redirect('weekly')->with(['error' => 'Tidak bisa merubah weekly sudah lebih dari week ' . now()->weekOfYear . ' hari senin jam 17:00']);
+        // }
 
         return view('admin.weekly.change')->with([
             'title' => 'Weekly',
@@ -700,12 +700,12 @@ class WeeklyController extends Controller
             }
 
             $monday = ConvertDate::getMondayOrSaturday($weekly->year, $weekly->week, true);
-            if (auth()->user()->area_id == 2 && now() > $monday->addDay(1)->addHour(10)) {
+            if (auth()->user()->area_id == 2 && now() > $monday->addDay(1)->addHour(10) && $weekly->add_id == null && $weekly->tag_id == null) {
                 if ($request->page == 'teams') {
                     return redirect('/teams/weekly')->with(['error' => "Tidak bisa menghapus weekly sudah lebih dari hari selasa jam 10:00"]);
                 }
                 return redirect('weekly')->with(['error' => "Tidak bisa menghapus weekly sudah lebih dari hari selasa jam 10:00"]);
-            } else if (auth()->user()->area_id != 2 && now() > $monday->addHour(17)) {
+            } else if (auth()->user()->area_id != 2 && now() > $monday->addHour(17) && $weekly->add_id == null && $weekly->tag_id == null) {
                 if ($request->page == 'teams') {
                     return redirect('/teams/weekly')->with(['error' => "Tidak bisa menghapus weekly sudah lebih dari hari senin jam 17:00"]);
                 }

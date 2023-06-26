@@ -34,4 +34,14 @@ class Monthly extends Model
     {
         return Carbon::parse($value)->getPreciseTimestamp(3);
     }
+
+    public function add()
+    {
+        return $this->belongsTo(User::class, 'add_id')->withTrashed();
+    }
+
+    public function tag()
+    {
+        return $this->belongsTo(User::class, 'tag_id')->withTrashed();
+    }
 }

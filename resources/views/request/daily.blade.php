@@ -23,6 +23,8 @@
                                             <th>User</th>
                                             <th>Date</th>
                                             <th>Task</th>
+                                            <th>Type</th>
+                                            <th>Value Plan</th>
                                             <th>Time</th>
                                         </tr>
                                     </thead>
@@ -33,6 +35,8 @@
                                                 <td>{{ $daily->user->nama_lengkap }}</td>
                                                 <td>{{ date('d M Y', $daily->date / 1000) }}</td>
                                                 <td>{{ $daily->task }}</td>
+                                                <td>{{ $daily->tipe }}</td>
+                                                <td>{{ $daily->value_plan }}</td>
                                                 <td>{{ $daily->time ?? '-' }}</td>
                                             </tr>
                                         @endforeach

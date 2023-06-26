@@ -90,7 +90,11 @@
                                             <th>Task</th>
                                             <!-- <th>Category</th>
                                             <th>Status</th> -->
-                                            <th>Type</th>
+                                            <!-- <th>Type</th>
+                                            <th>Plan Result</th>
+                                            <th>Actual Result</th> -->
+                                            <th>Status</th>
+                                            <th>Task Plan</th>
                                             <th>Tagged By</th>
                                             <th>Added By</th>
                                             @if (auth()->user()->role_id == 1)
@@ -159,6 +163,13 @@
                                                     @endif
                                                 "
                                                 >{{ $daily->taskstatus->task_status ?? '' }}</td> -->
+                                                <!-- <td>{{ $daily->tipe }}</td>
+                                                <td>{{ $daily->value_plan }}</td>
+                                                <td>{{ $daily->value_actual }}</td> -->
+                                                <!-- KALAU JADI PAKE DAILY RESULT GANTI $daily->value -->
+                                                <td class="
+                                                    {{ $daily->status ? 'text-success' : 'text-warning', }}
+                                                ">{{ $daily->status ? 'CLOSED' : 'OPEN', }}</td>
                                                 <td>{{ $daily->isplan ? 'Plan' : 'Extra Task' }}</td>
                                                 <td>
                                                     @if ($daily->tag_id)

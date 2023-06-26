@@ -88,6 +88,7 @@
                                             <th>Actual Result</th>
                                             <th>Status</th>
                                             <th>Task Plan</th>
+                                            <th>Tagged By</th>
                                             <th>Added By</th>
                                             <th>Change Task</th>
                                         </tr>
@@ -160,6 +161,13 @@
                                                 ">
                                                 {{ $weekly->value ? 'CLOSED' : 'OPEN', }}</td>
                                                 <td>{{ !$weekly->is_add ? 'Plan' : 'Extra Task' }}</td>
+                                                <td>
+                                                    @if ($weekly->tag_id)
+                                                        {{ $weekly->tag->nama_lengkap }}
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     @if ($weekly->add_id)
                                                         {{ $weekly->add->nama_lengkap }}

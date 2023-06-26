@@ -27,7 +27,7 @@ class ReportController extends Controller
                 ->orderBy('nama_lengkap')
                 ->get();
         } else {
-            $users = User::with('area', 'divisi')->orderBy('nama_lengkap')->simplePaginate(20)->except(1);
+            $users = User::with('area', 'divisi')->orderBy('nama_lengkap')->limit(1)->skip(1)->get();
         }
         // $users = User::where('id', 1165)->get();
         $report = array();

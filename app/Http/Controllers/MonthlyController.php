@@ -171,7 +171,7 @@ class MonthlyController extends Controller
     public function index(Request $request)
     {
         if ($request->name && $request->month) {
-            $monthlys = Monthly::with('user', 'user.area', 'user.divisi')
+            $monthlys = Monthly::with('user', 'user.area', 'user.divisi', 'tag', 'add')
                 ->whereDate('date', $request->month . '-01')
                 ->whereHas('user', function ($q) use ($request) {
                     $q->where('nama_lengkap', "like", '%' . $request->name . '%');

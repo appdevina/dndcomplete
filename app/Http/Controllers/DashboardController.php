@@ -397,9 +397,9 @@ class DashboardController extends Controller
                     $idTaskExistings = explode(',', $requested->todo_request);
                     foreach ($idTaskExistings as $idTaskExisting) {
                         $dailyExisting = Monthly::find($idTaskExisting);
-                        if (now() > Carbon::parse($idTaskExisting['date'])->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->addMonth(1)->addDay(4)) {
-                            return redirect('req')->with(['error' => 'Tidak bisa approve task yang melebihi 1 bulan']);
-                        }
+                        // if (now() > Carbon::parse($dailyExisting->date)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->addMonth(1)->addDay(4)) {
+                        //     return redirect('req')->with(['error' => 'Tidak bisa approve task yang melebihi 1 bulan']);
+                        // }
                         $dailyExisting->delete();
                     }
                     break;

@@ -39,7 +39,7 @@ class WeeklyImportUser implements ToModel, WithHeadingRow
         }
 
         foreach ($userAreaIds as $userAreaId) {
-            if (auth()->user()->role_id != 1) {
+            if (auth()->user()->role_id == 2) {
                 $monday = ConvertDate::getMondayOrSaturday($year, $week, true);
                 if ($userAreaId == 2 && now() > $monday->addDay(1)->addHour(10)) {
                     throw new Exception('Tidak bisa import weekly week ' . now()->week . ' sudah lebih dari '.$monday->format('d M y'));

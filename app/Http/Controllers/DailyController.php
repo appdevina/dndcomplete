@@ -187,9 +187,9 @@ class DailyController extends Controller
 
             ##EXTRA TASK / TAMBAHAN
             if ($request->isplan) {
-                if (!Daily::whereDate('date', Carbon::parse(strtotime($request->date))->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->format('Y-m-d'))->where('user_id', auth()->id())->get()) {
-                    return redirect('daily')->with(['error' => "Tidak bisa menambahkan daily extra karena hari ini ".Carbon::parse(strtotime($request->date))->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->format('d M Y')." anda tidak ada plan"]);
-                }
+                // if (!Daily::whereDate('date', Carbon::parse(strtotime($request->date))->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->format('Y-m-d'))->where('user_id', auth()->id())->get()) {
+                //     return redirect('daily')->with(['error' => "Tidak bisa menambahkan daily extra karena hari ini ".Carbon::parse(strtotime($request->date))->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->format('d M Y')." anda tidak ada plan"]);
+                // }
                 $data['isplan'] = false;
                 $data['ontime'] = true;
                 ##TAMBAHAN LEBIH DARI H+1 JAM 10:00
@@ -203,13 +203,13 @@ class DailyController extends Controller
                 }
 
                 ##TAMBAHAN LEBIH DARI H+2
-                if (
-                    $date->diffInDays(now()) > 0
-                    &&
-                    now() > $date->addDay(2)
-                ) {
-                    return redirect('daily')->with(['error' => 'Tidak bisa menambahkan daily extra, sudah lebih dari H+2']);
-                }
+                // if (
+                //     $date->diffInDays(now()) > 0
+                //     &&
+                //     now() > $date->addDay(2)
+                // ) {
+                //     return redirect('daily')->with(['error' => 'Tidak bisa menambahkan daily extra, sudah lebih dari H+2']);
+                // }
             }
 
             ##CONVERT KE 24 JAM
@@ -359,42 +359,42 @@ class DailyController extends Controller
                 }
 
                 ##TAMBAHAN LEBIH DARI H+2
-                if (
-                    $date->diffInDays(now()) > 0
-                    &&
-                    now() > $date->addDay(2)
-                ) {
-                    if ($request->page == 'teams') {
-                        return redirect('/teams/daily')->with(['error' => 'Tidak bisa menambahkan daily extra, sudah lebih dari H+2']);
-                    }
-                    return redirect('daily')->with(['error' => 'Tidak bisa menambahkan daily extra, sudah lebih dari H+2']);
-                }
+                // if (
+                //     $date->diffInDays(now()) > 0
+                //     &&
+                //     now() > $date->addDay(2)
+                // ) {
+                //     if ($request->page == 'teams') {
+                //         return redirect('/teams/daily')->with(['error' => 'Tidak bisa menambahkan daily extra, sudah lebih dari H+2']);
+                //     }
+                //     return redirect('daily')->with(['error' => 'Tidak bisa menambahkan daily extra, sudah lebih dari H+2']);
+                // }
             }
 
             ##VALIDASI WAKTU INPUT
-            if (
-                auth()->user()->area_id == 2
-                && now() > $date->startOfWeek()->addDay(1)->addHour(10)
-                && !$request->isplan
-            ) {
-                if ($request->page == 'teams') {
-                    return redirect('/teams/daily')->with(['error' => 'Tidak bisa menambahkan daily, sudah lebih dari hari hari selasa Jam 10:00']);
-                }
-                return redirect('daily')->with(['error' => 'Tidak bisa menambahkan daily, sudah lebih dari hari hari selasa Jam 10:00']);
-            }
+            // if (
+            //     auth()->user()->area_id == 2
+            //     && now() > $date->startOfWeek()->addDay(1)->addHour(10)
+            //     && !$request->isplan
+            // ) {
+            //     if ($request->page == 'teams') {
+            //         return redirect('/teams/daily')->with(['error' => 'Tidak bisa menambahkan daily, sudah lebih dari hari hari selasa Jam 10:00']);
+            //     }
+            //     return redirect('daily')->with(['error' => 'Tidak bisa menambahkan daily, sudah lebih dari hari hari selasa Jam 10:00']);
+            // }
 
-            $date2 = Carbon::parse(strtotime($request->date))->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'));
+            // $date2 = Carbon::parse(strtotime($request->date))->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'));
 
-            if (
-                auth()->user()->area_id != 2
-                && now() > $date2->startOfWeek()->addHour(17)
-                && !$request->isplan
-            ) {
-                if ($request->page == 'teams') {
-                    return redirect('/teams/daily')->with(['error' => 'Tidak bisa menambahkan daily, sudah lebih dari hari hari senin Jam 17:00']);
-                }
-                return redirect('daily')->with(['error' => 'Tidak bisa menambahkan daily, sudah lebih dari hari hari senin Jam 17:00']);
-            }
+            // if (
+            //     auth()->user()->area_id != 2
+            //     && now() > $date2->startOfWeek()->addHour(17)
+            //     && !$request->isplan
+            // ) {
+            //     if ($request->page == 'teams') {
+            //         return redirect('/teams/daily')->with(['error' => 'Tidak bisa menambahkan daily, sudah lebih dari hari hari senin Jam 17:00']);
+            //     }
+            //     return redirect('daily')->with(['error' => 'Tidak bisa menambahkan daily, sudah lebih dari hari hari senin Jam 17:00']);
+            // }
 
             ##CONVERT KE 24 JAM
             if (!$request->isplan) {
@@ -452,29 +452,29 @@ class DailyController extends Controller
             }
 
             ##VALIDASI JIKA TASK LEBIH DARI 2 HARI
-            if (
-                Carbon::parse($daily->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->weekOfYear
-                <=
-                now()->weekOfYear
-                &&
-                now()
-                >
-                Carbon::parse($daily->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->addDay(2)
-            ) {
-                if ($request->page == 'teams') {
-                    return redirect('/teams/daily')->with(['error' => 'Tidak bisa merubah status sudah lebih dari H+2 dari daily']);
-                }
-                return redirect('daily')->with(['error' => 'Tidak bisa merubah status sudah lebih dari H+2 dari daily']);
-            }
+            // if (
+            //     Carbon::parse($daily->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->weekOfYear
+            //     <=
+            //     now()->weekOfYear
+            //     &&
+            //     now()
+            //     >
+            //     Carbon::parse($daily->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->addDay(2)
+            // ) {
+            //     if ($request->page == 'teams') {
+            //         return redirect('/teams/daily')->with(['error' => 'Tidak bisa merubah status sudah lebih dari H+2 dari daily']);
+            //     }
+            //     return redirect('daily')->with(['error' => 'Tidak bisa merubah status sudah lebih dari H+2 dari daily']);
+            // }
 
             ##VALIDASI TIDAK BISA RUBAH STATUS H+1
-            $H = Carbon::parse($daily->date / 1000);
-            if ($H > now()) {
-                if ($request->page == 'teams') {
-                    return redirect('/teams/daily')->with(['error' => 'Tidak bisa merubah status yang lebih dari ' . now()->format('d M Y')]);
-                }
-                return redirect('daily')->with(['error' => 'Tidak bisa merubah status yang lebih dari ' . now()->format('d M Y')]);
-            }
+            // $H = Carbon::parse($daily->date / 1000);
+            // if ($H > now()) {
+            //     if ($request->page == 'teams') {
+            //         return redirect('/teams/daily')->with(['error' => 'Tidak bisa merubah status yang lebih dari ' . now()->format('d M Y')]);
+            //     }
+            //     return redirect('daily')->with(['error' => 'Tidak bisa merubah status yang lebih dari ' . now()->format('d M Y')]);
+            // }
 
             // ##EXTRA TASK TIDAK BISA DI RUBAH
             // if (!$daily->isplan) {
@@ -699,7 +699,7 @@ class DailyController extends Controller
             }
             ##VALIDASI JIKA TASK PLAN
             if ($daily->isplan) {
-                if (Carbon::parse($daily->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->weekOfYear <= now()->weekOfYear && !$daily->tag_id) {
+                if (Carbon::parse($daily->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->weekOfYear <= now()->weekOfYear && !$daily->tag_id && $daily->add_id == null) {
                     if (auth()->user()->area_id == 2 && now() > Carbon::parse($daily->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->startOfWeek()->addDay(1)->addHour(10)) {
                         if ($request->page == 'teams') {
                             return redirect('/teams/daily')->with(['error' => "Tidak bisa menghapus daily di week yang sudah berjalan dan lebih dari selasa jam 10.00"]);

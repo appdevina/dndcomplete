@@ -115,6 +115,13 @@
                                             <th>Time</th>
                                             <th>Task</th>
                                             <th>Type</th>
+                                            <th>Plan Result</th>
+                                            <th>Actual Result</th>
+                                            <!-- <th>Value</th> -->
+                                            <!-- <th>status_non</th>
+                                            <th>status_result</th> -->
+                                            <th>Status</th>
+                                            <th>Task Plan</th>
                                             <th>Tagged By</th>
                                             <th>Added By</th>
                                             @if (auth()->user()->role_id == 1)
@@ -163,6 +170,13 @@
                                                 <td>{{ date('d M Y', $daily->date / 1000) }}</td>
                                                 <td>{{ $daily->time ?? '-' }}</td>
                                                 <td>{{ $daily->task }}</td>
+                                                <td>{{ $daily->tipe }}</td>
+                                                <td>{{ $daily->value_plan }}</td>
+                                                <td>{{ $daily->value_actual }}</td>
+                                                <!-- <td>{{ $daily->value }}</td> -->
+                                                <!-- <td>{{ $daily->status }}</td>
+                                                <td>{{ $daily->status_result }}</td> -->
+                                                <td>{{ $daily->status ? 'CLOSED' : 'OPEN', }}</td>
                                                 <td>{{ $daily->isplan ? 'Plan' : 'Extra Task' }}</td>
                                                 <td>
                                                     @if ($daily->tag_id)

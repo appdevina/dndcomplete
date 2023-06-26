@@ -311,9 +311,9 @@ class RequestTaskController extends Controller
                     $idTaskExistings = explode(',', $requested->todo_request);
                     foreach ($idTaskExistings as $idTaskExisting) {
                         $dailyExisting = Daily::find($idTaskExisting);
-                        if (now() > Carbon::parse($dailyExisting->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->startOfWeek()->addWeek(1)->addDay(2)) {
-                            return ResponseFormatter::error(null, 'Tidak bisa approved task yang lebih Task request tanggal ' . Carbon::parse($dailyExisting->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->format('d M Y'));
-                        }
+                        // if (now() > Carbon::parse($dailyExisting->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->startOfWeek()->addWeek(1)->addDay(2)) {
+                        //     return ResponseFormatter::error(null, 'Tidak bisa approved task yang lebih Task request tanggal ' . Carbon::parse($dailyExisting->date / 1000)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->format('d M Y'));
+                        // }
                         $dailyExisting->delete();
                     }
                     //TASK REPLACE
@@ -332,9 +332,9 @@ class RequestTaskController extends Controller
                     $idTaskExistings = explode(',', $requested->todo_request);
                     foreach ($idTaskExistings as $idTaskExisting) {
                         $dailyExisting = Weekly::find($idTaskExisting);
-                        if (now()->weekOfYear > $dailyExisting->week) {
-                            return ResponseFormatter::error(null, 'Tidak bisa approved task yang lebih dari 1 week, Task request week ' . $dailyExisting->week);
-                        }
+                        // if (now()->weekOfYear > $dailyExisting->week) {
+                        //     return ResponseFormatter::error(null, 'Tidak bisa approved task yang lebih dari 1 week, Task request week ' . $dailyExisting->week);
+                        // }
                         $dailyExisting->delete();
                     }
                     break;
@@ -344,9 +344,9 @@ class RequestTaskController extends Controller
                     $idTaskExistings = explode(',', $requested->todo_request);
                     foreach ($idTaskExistings as $idTaskExisting) {
                         $dailyExisting = Monthly::find($idTaskExisting);
-                        if (now() > Carbon::parse($idTaskExisting['date'])->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->addMonth(1)->addDay(4)) {
-                            return ResponseFormatter::error(null, 'Tidak bisa approved task yang lebih dari 1 bulan, Task request bulan ' . Carbon::parse($idTaskExisting['date'])->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta')));
-                        }
+                        // if (now() > Carbon::parse($dailyExisting->date)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->addMonth(1)->addDay(4)) {
+                        //     return ResponseFormatter::error(null, 'Tidak bisa approved task yang lebih dari 1 bulan, Task request bulan ' . Carbon::parse($dailyExisting->date)->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta')));
+                        // }
                         $dailyExisting->delete();
                     }
                     break;

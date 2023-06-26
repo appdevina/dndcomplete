@@ -110,8 +110,11 @@
                                         <th>Type</th>
                                         <th>Plan Result</th>
                                         <th>Value Result</th>
+                                        <!-- <th>Value</th> -->
                                         <th>Status</th>
                                         <th>Task Plan</th>
+                                        <th>Tagged By</th>
+                                        <th>Added By</th>
                                         <th>Change Task</th>
                                         {{-- @if (auth()->user()->role_id == 1)
                                             <th>Action</th>
@@ -159,8 +162,23 @@
                                             </td>
                                             <td>{{ $monthly->value_actual ? number_format($monthly->value_actual, 0, ',', '.') : '-' }}
                                             </td>
+                                            <!-- <td>{{ $monthly->value ? number_format($monthly->value, 0, ',', '.') : '-' }}</td> -->
                                             <td>{{ $monthly->value ? 'CLOSED' : 'OPEN' }}</td>
                                             <td>{{ !$monthly->is_add ? 'Plan' : 'Extra Task' }}</td>
+                                            <td>
+                                                @if ($monthly->tag_id)
+                                                    {{ $monthly->tag->nama_lengkap }}
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($monthly->add_id)
+                                                    {{ $monthly->add->nama_lengkap }}
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
                                             <td>
                                                 @if ($monthly->isupdate)
                                                     <i class="far fa-check-circle" style="color: green;"></i>
