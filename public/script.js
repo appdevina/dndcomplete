@@ -481,4 +481,61 @@ $(document).ready(function () {
             }
         });
     });
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
+    var kpiindex = 0;
+    $("#addKpi").on("click", function () {
+        var kpi_type_id = $("#kpi_type_id").val();
+        var kpi_category_id = $("#kpi_category_id").val();
+        var baseUrl = window.location.protocol + "//" + window.location.host;
+
+        $.ajax({
+            type: "get",
+            url: `${baseUrl}/kpidescription/get?kpi_category_id=${kpi_category_id}`,
+            success: function (data) {
+                console.log(data);
+
+                console.log(kpi_type_id);
+
+                console.log(kpi_category_id);
+
+                $("#tablekpi").append(
+                    '<tr id="rowkpi' +
+                        kpiindex +
+                        '"><td><select class="form-control select2" id="selectkpi' +
+                        kpiindex +
+                        '" name="kpis[]" required></select></td>' +
+                        '<td><select class="form-control" name="count_type[]" required"><option value="NON">NON</option><option value="RESULT">RESULT</option></select></td><td><input type="number" placeholder="value_plan" class="form-control col-lg-4" name="value_plan[]" min="1" style="width: 250px;"></td><td><a href="#formreplacekpi" class="badge bg-danger btn_remove" id="kpi' +
+                        kpiindex +
+                        '"><span class="fas fa-minus"></span></a></td></tr>'
+                );
+                // Initialize Select2 on the select element
+                $("#selectkpi" + kpiindex).select2({
+                    placeholder: "Search for a kpi",
+                });
+
+                $.each(data, function (index, value) {
+                    var kpiDesc =
+                        value.description + " - " + value.kpi_category.name;
+                    $("#selectkpi" + kpiindex).append(
+                        '<option value="' +
+                            value.id +
+                            '"> ' +
+                            kpiDesc +
+                            " </option>"
+                    );
+                });
+                kpiindex++;
+            },
+        });
+    });
+
+    $("#monthpicker").datepicker({
+        autoclose: true,
+        minViewMode: 1,
+        format: "mm/yyyy",
+    });
 });

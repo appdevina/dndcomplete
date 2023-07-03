@@ -3,12 +3,20 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DailyController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KpiCategoryController;
+use App\Http\Controllers\KpiController;
+use App\Http\Controllers\KpiDashboardController;
+use App\Http\Controllers\KpiDescriptionController;
+use App\Http\Controllers\KpiTypeController;
 use App\Http\Controllers\MonthlyController;
 use App\Http\Controllers\OverOpenController;
+use App\Http\Controllers\PositionController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\WeeklyController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
+use App\Models\KpiDescription;
+use App\Models\Position;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -101,6 +109,15 @@ Route::middleware('auth')->group(
 
         // Route::get('/teams/weekly/change/result/{id}', [WeeklyController::class, 'teamsShowResult']);
 
+        ##KPI DASHBOARD
+        Route::post('/dash/change', [KpiDashboardController::class, 'changeStatus']);
+
+        #DAILY
+        Route::get('dash-daily', [KpiDashboardController::class, 'indexDaily']);
+        #WEEKLY
+        Route::get('dash-weekly', [KpiDashboardController::class, 'indexWeekly']);
+        #MONTHLY
+        Route::get('dash-monthly', [KpiDashboardController::class, 'indexMonthly']);
 
         ##ROUTE ADMIN
         Route::middleware('isAdmin')->group(function () {
@@ -167,6 +184,46 @@ Route::middleware('auth')->group(
 
             ##BROADCAST
             Route::post('broadcast', [DashboardController::class, 'broadcast']);
+
+            ##KPI
+            #KPI CATEGORY
+            Route::get('kpicategory', [KpiCategoryController::class, 'index']);
+            Route::post('kpicategory', [KpiCategoryController::class, 'store']);
+            Route::get('/kpicategory/{kpiCategory}/edit', [KpiCategoryController::class, 'edit']);
+            Route::post('/kpicategory/{kpiCategory}/update', [KpiCategoryController::class, 'update']);
+            Route::get('/kpicategory/{kpiCategory}/delete', [KpiCategoryController::class, 'destroy']);
+
+            #KPI DESCRIPTION
+            Route::get('kpidescription', [KpiDescriptionController::class, 'index']);
+            Route::post('kpidescription', [KpiDescriptionController::class, 'store']);
+            Route::get('/kpidescription/{kpiDescription}/edit', [KpiDescriptionController::class, 'edit']);
+            Route::post('/kpidescription/{kpiDescription}/update', [KpiDescriptionController::class, 'update']);
+            Route::get('/kpidescription/{kpiDescription}/delete', [KpiDescriptionController::class, 'destroy']);
+
+            #KPI TYPE
+            Route::get('kpitype', [KpiTypeController::class, 'index']);
+            Route::post('kpitype', [KpiTypeController::class, 'store']);
+            Route::get('/kpitype/{kpiType}/edit', [KpiTypeController::class, 'edit']);
+            Route::post('/kpitype/{kpiType}/update', [KpiTypeController::class, 'update']);
+            Route::get('/kpitype/{kpiType}/delete', [KpiTypeController::class, 'destroy']);
+
+            #POSITION
+            Route::get('position', [PositionController::class, 'index']);
+            Route::post('position', [PositionController::class, 'store']);
+            Route::get('/position/{position}/edit', [PositionController::class, 'edit']);
+            Route::post('/position/{position}/update', [PositionController::class, 'update']);
+            Route::get('/position/{position}/delete', [PositionController::class, 'destroy']);
+
+            #KPI
+            Route::get('kpi', [KpiController::class, 'index']);
+            Route::get('/kpi/create', [KpiController::class, 'create']);
+            Route::post('kpi', [KpiController::class, 'store']);
+            Route::get('/kpi/{kpi}/show', [KpiController::class, 'show']);
+            Route::get('/kpi/{kpi}/edit', [KpiController::class, 'edit']);
+            Route::get('/kpi/{kpiId}/kpiDetail', [KpiController::class, 'getKpiDetail']);
+            Route::post('/kpi/{kpi}/update', [KpiController::class, 'update']);
+            Route::get('/kpi/{kpi}/delete', [KpiController::class, 'destroy']);  
+
         });
     }
 );
@@ -179,3 +236,5 @@ Route::get('daily/get', [DailyController::class, 'getdaily']);
 Route::get('weekly/get', [WeeklyController::class, 'getweekly']);
 Route::get('monthly/get', [MonthlyController::class, 'getmonthly']);
 Route::get('userresult/get', [UserController::class, 'getuserresult']);
+
+Route::get('kpidescription/get', [KpiDescriptionController::class, 'get']);
