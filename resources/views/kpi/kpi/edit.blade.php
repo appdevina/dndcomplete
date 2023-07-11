@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     @if ($message = Session::get('success'))
-                        <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        <div class="alert alert-sucess alert-dismissible fade show" role="alert">
                             <strong>{{ $message }}</strong>
                         </div>
                     @endif
@@ -26,7 +26,7 @@
                                     <form action="/kpi/{{ $kpi->id }}/update" method="POST" enctype="multipart/form-data">
                                     {{csrf_field()}}
                                     <div class="mb-3 col-lg-12">
-                                        <label for="kpi_type_id" class="form-label">KPI Type</label>
+                                        <!-- <label for="kpi_type_id" class="form-label">KPI Type</label>
                                         <select class="form-control" id="kpi_type_id" name="kpi_type_id" required onchange="toggleOption()">
                                             <option selected disabled>-- Choose Type --</option>
                                             @foreach ($kpitypes as $kpit)
@@ -34,7 +34,8 @@
                                                     {{ $kpit->id === $kpi->kpi_type->id ? 'selected' : '' }}>
                                                     {{ $kpit->name }}</option>
                                             @endforeach
-                                        </select>
+                                        </select> -->
+                                        <input type="hidden" name="kpi_type_id" value="{{ $kpi->kpi_type_id }}">
                                     </div>
                                     <div class="mb-3 col-lg-12">
                                         <label for="kpi_category_id" class="form-label">KPI Category</label>
@@ -59,8 +60,8 @@
                                         </select>
                                     </div>
                                     <div class="mb-3 col-lg-12">
-                                        <label for="date" class="form-label">Date</label>
-                                        <input data-format="dd/mm/yyyy" type="text" class="form-control" value="{{ Carbon\Carbon::parse($kpi->date)->format('d/m/Y') }}" id="date" name="date" required>
+                                        <label for="date" class="form-label">Month</label>
+                                        <input data-format="mm/yyyy" type="text" class="form-control" value="{{ Carbon\Carbon::parse($kpi->date)->format('m/Y') }}" id="monthpicker" name="date" required>
                                     </div>
                                     <div class="mb-3 col-lg-12">
                                         <label for="percentage" class="form-label">Percentage %</label>
@@ -134,7 +135,7 @@ $(document).ready(function() {
             $.each(data, function (index, value) {
                 var kpiDetailId = value.id;
                 var description = value.kpi_description.description;
-                var kpiDescriptionId = value.kpi_description_id;
+                var kpiDescription = value.kpi_description.description;
 
                 var countTypeSelect =
                 '<select class="form-control" name="count_type[]" required>' +
@@ -152,11 +153,9 @@ $(document).ready(function() {
                 '">';
 
                 $("#tablekpi").append(
-                    '<tr class="kpi-row"><td><select class="form-control select2" name="kpis[]" required><option value="' +
-                    kpiDescriptionId +
-                    '">' +
+                    '<tr class="kpi-row"><td><input type="text" placeholder="KPI description .." class="form-control" name="kpis[]" style="width: 100%;" value="' +
                     description +
-                    '</option></select></td><td>' +
+                    '"></td><td>' +
                     countTypeSelect +
                     '</td><td>' +
                     valuePlanInput +

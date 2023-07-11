@@ -110,6 +110,7 @@ Route::middleware('auth')->group(
         // Route::get('/teams/weekly/change/result/{id}', [WeeklyController::class, 'teamsShowResult']);
 
         ##KPI DASHBOARD
+        Route::get('dash-kpi', [KpiDashboardController::class, 'indexKpi']);
         Route::post('/dash/change', [KpiDashboardController::class, 'changeStatus']);
 
         #DAILY
@@ -118,6 +119,18 @@ Route::middleware('auth')->group(
         Route::get('dash-weekly', [KpiDashboardController::class, 'indexWeekly']);
         #MONTHLY
         Route::get('dash-monthly', [KpiDashboardController::class, 'indexMonthly']);
+
+        #KPI
+        Route::get('kpi', [KpiController::class, 'index']);
+        Route::get('/kpi/create', [KpiController::class, 'create']);
+        Route::post('kpi', [KpiController::class, 'store']);
+        Route::get('/kpi/{kpi}/show', [KpiController::class, 'show']);
+        Route::get('/kpi/{kpi}/edit', [KpiController::class, 'edit']);
+        Route::get('/kpi/{kpiId}/kpiDetail', [KpiController::class, 'getKpiDetail']);
+        Route::post('/kpi/{kpi}/update', [KpiController::class, 'update']);
+        Route::get('/kpi/{kpi}/delete', [KpiController::class, 'destroy']);  
+        Route::post('/kpi/import', [KpiController::class, 'import']);
+        Route::get('/kpi/exportMonthly', [KpiController::class, 'exportMonthly']);
 
         ##ROUTE ADMIN
         Route::middleware('isAdmin')->group(function () {
@@ -213,16 +226,8 @@ Route::middleware('auth')->group(
             Route::get('/position/{position}/edit', [PositionController::class, 'edit']);
             Route::post('/position/{position}/update', [PositionController::class, 'update']);
             Route::get('/position/{position}/delete', [PositionController::class, 'destroy']);
-
-            #KPI
-            Route::get('kpi', [KpiController::class, 'index']);
-            Route::get('/kpi/create', [KpiController::class, 'create']);
-            Route::post('kpi', [KpiController::class, 'store']);
-            Route::get('/kpi/{kpi}/show', [KpiController::class, 'show']);
-            Route::get('/kpi/{kpi}/edit', [KpiController::class, 'edit']);
-            Route::get('/kpi/{kpiId}/kpiDetail', [KpiController::class, 'getKpiDetail']);
-            Route::post('/kpi/{kpi}/update', [KpiController::class, 'update']);
-            Route::get('/kpi/{kpi}/delete', [KpiController::class, 'destroy']);  
+            Route::post('/position/import', [PositionController::class, 'import']);
+            Route::get('/position/template', [PositionController::class, 'template']);
 
         });
     }

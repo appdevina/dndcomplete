@@ -496,19 +496,11 @@ $(document).ready(function () {
             type: "get",
             url: `${baseUrl}/kpidescription/get?kpi_category_id=${kpi_category_id}`,
             success: function (data) {
-                console.log(data);
-
-                console.log(kpi_type_id);
-
-                console.log(kpi_category_id);
-
                 $("#tablekpi").append(
                     '<tr id="rowkpi' +
                         kpiindex +
-                        '"><td><select class="form-control select2" id="selectkpi' +
-                        kpiindex +
-                        '" name="kpis[]" required></select></td>' +
-                        '<td><select class="form-control" name="count_type[]" required"><option value="NON">NON</option><option value="RESULT">RESULT</option></select></td><td><input type="number" placeholder="value_plan" class="form-control col-lg-4" name="value_plan[]" min="1" style="width: 250px;"></td><td><a href="#formreplacekpi" class="badge bg-danger btn_remove" id="kpi' +
+                        '"><td><input type="text" placeholder="KPI description .." class="form-control" name="kpis[]" style="width: 100%;"></td>' +
+                        '<td><select class="form-control" name="count_type[]" required"><option value="NON">NON</option><option value="RESULT">RESULT</option></select></td><td><input type="number" placeholder="value_plan" class="form-control" name="value_plan[]" min="1" style="width: 110px;"></td><td><a href="#formreplacekpi" class="badge bg-danger btn_remove" id="kpi' +
                         kpiindex +
                         '"><span class="fas fa-minus"></span></a></td></tr>'
                 );
@@ -533,9 +525,89 @@ $(document).ready(function () {
         });
     });
 
+    var kpiindexRep = 0;
+    $("#addKpiRep").on("click", function () {
+        var kpi_type_id = $("#kpi_type_id").val();
+        var kpi_category_id = $("#kpi_category_id").val();
+        var baseUrl = window.location.protocol + "//" + window.location.host;
+
+        $.ajax({
+            type: "get",
+            url: `${baseUrl}/kpidescription/get?kpi_category_id=${kpi_category_id}`,
+            success: function (data) {
+                $("#tablekpiRep").append(
+                    '<tr id="rowkpi' +
+                        kpiindexRep +
+                        '"><td><input type="text" placeholder="KPI description .." class="form-control" name="kpisRep[]" style="width: 100%;"></td>' +
+                        '<td><select class="form-control" name="count_typeRep[]" required"><option value="NON">NON</option><option value="RESULT">RESULT</option></select></td><td><input type="number" placeholder="value_plan" class="form-control" name="value_planRep[]" min="1" style="width: 110px;"></td><td><a href="#formreplacekpi" class="badge bg-danger btn_remove" id="kpi' +
+                        kpiindexRep +
+                        '"><span class="fas fa-minus"></span></a></td></tr>'
+                );
+                kpiindexRep++;
+            },
+        });
+    });
+
+    var kpiindexMain = 0;
+    $("#addKpiMain").on("click", function () {
+        var kpi_type_id = $("#kpi_type_id").val();
+        var kpi_category_id = $("#kpi_category_id").val();
+        var baseUrl = window.location.protocol + "//" + window.location.host;
+
+        $.ajax({
+            type: "get",
+            url: `${baseUrl}/kpidescription/get?kpi_category_id=${kpi_category_id}`,
+            success: function (data) {
+                $("#tablekpiMain").append(
+                    '<tr id="rowkpi' +
+                        kpiindexMain +
+                        '"><td><input type="text" placeholder="KPI description .." class="form-control" name="kpisMain[]" style="width: 100%;"></td>' +
+                        '<td><select class="form-control" name="count_typeMain[]" required"><option value="NON">NON</option><option value="RESULT">RESULT</option></select></td><td><input type="number" placeholder="value_plan" class="form-control" name="value_planMain[]" min="1" style="width: 110px;"></td><td><a href="#formreplacekpi" class="badge bg-danger btn_remove" id="kpi' +
+                        kpiindexMain +
+                        '"><span class="fas fa-minus"></span></a></td></tr>'
+                );
+                kpiindexMain++;
+            },
+        });
+    });
+
     $("#monthpicker").datepicker({
         autoclose: true,
         minViewMode: 1,
         format: "mm/yyyy",
+    });
+
+    $("#monthpickermonthly").datepicker({
+        autoclose: true,
+        minViewMode: 1,
+        format: "mm/yyyy",
+    });
+
+    $("#yearpicker").datepicker({
+        format: "yyyy",
+        weekStart: 1,
+        language: "{{ app.request.locale }}",
+        keyboardNavigation: false,
+        viewMode: "years",
+        minViewMode: "years",
+    });
+
+    $("#usersyearpicker").datepicker({
+        format: "yyyy",
+        weekStart: 1,
+        language: "{{ app.request.locale }}",
+        keyboardNavigation: false,
+        viewMode: "years",
+        minViewMode: "years",
+    });
+
+    $("#exportMonthly").datepicker({
+        format: "yyyy",
+        weekStart: 1,
+        language: "{{ app.request.locale }}",
+        keyboardNavigation: false,
+        viewMode: "years",
+        minViewMode: "years",
+        parentEl: "#exportKpi .modal-body",
     });
 });

@@ -37,6 +37,6 @@ class Kpi extends Model
 
     public function kpi_detail()
     {
-        return $this->hasMany(KpiDetail::class);
+        return $this->hasMany(KpiDetail::class, 'kpi_id');
     }
 }

@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PositionExport;
+use App\Exports\TemplatePosition;
+use App\Imports\PositionImport;
 use App\Models\Position;
 use Exception;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PositionController extends Controller
 {
@@ -18,7 +22,7 @@ class PositionController extends Controller
         return view('kpi.position.index', [
             'title' => 'Position',
             'active' => 'position',
-            'positions' => Position::all(),
+            'positions' => Position::orderBy('name')->get(),
         ]);
     }
 
@@ -115,5 +119,24 @@ class PositionController extends Controller
         } catch (Exception $e) {
             return redirect('position')->with(['error' => $e->getMessage()]);
         }
+    }
+
+    public function import(Request $request)
+    {
+        $file = $request->file('file');
+        $namaFile = $file->getClientOriginalName();
+        $file->move(public_path('import'), $namaFile);
+
+        try {
+            Excel::import(new PositionImport(), public_path('/import/' . $namaFile));
+        } catch (Exception $e) {
+            return redirect('position')->with(['error' => $e->getMessage()]);
+        }
+        return redirect('position')->with(['success' => 'Successfully Uploaded !']);
+    }
+
+    public function template(){
+        
+        return Excel::download(new TemplatePosition(), 'Job_Position_Template.xlsx');
     }
 }
