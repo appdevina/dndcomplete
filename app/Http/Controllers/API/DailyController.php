@@ -70,9 +70,9 @@ class DailyController extends Controller
                 // ) {
                     //     return ResponseFormatter::error(null, "Tidak bisa menambahkan daily, sudah lebih dari hari hari selasa Jam 10:00");
                 // }
-                
+
                 // $date2 = Carbon::parse(strtotime($request->date))->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'));
-                
+
                 // if (
                 //     Auth::user()->area_id != 2
                 //     && now() > $date2->startOfWeek()->addHour(17)
@@ -80,16 +80,16 @@ class DailyController extends Controller
                     //     return ResponseFormatter::error(null, "Tidak bisa menambahkan daily, sudah lebih dari hari hari senin Jam 17:00");
                 // }
             }
-            
-            
+
+
             if ($request->isplan) {
                 $data['time'] = date('H:i', strtotime($request->time));
             }
 
-            if ($data['tipe'] == 'RESULT') {
-                $data['value_actual'] = 0;
-                $data['status_result'] = 0;
-            }
+            // if ($data['tipe'] == 'RESULT') {
+            //     $data['value_actual'] = 0;
+            //     $data['status_result'] = 0;
+            // }
 
             if (!$request->add_id) {
                 Daily::create([
@@ -97,10 +97,10 @@ class DailyController extends Controller
                     'date' => $data['date'],
                     'time' => $data['time'],
                     'isplan' => $data['isplan'],
-                    'isupdate' => $data['isupdate'],
-                    'value_plan' => $data['value_plan'],
+                    'isupdate' => $data['isupdate'] ?? false,
+                    'value_plan' => $data['value_plan'] ?? 0,
                     'value_actual' => $data['value_actual'] ?? 0,
-                    'tipe' => $data['tipe'],
+                    'tipe' => $data['tipe'] ?? 'NON',
                     'user_id' => $data['user_id'],
                     'status' => $data['status'] ?? 0,
                     'ontime' => $data['ontime'] ?? 1,
@@ -221,9 +221,9 @@ class DailyController extends Controller
                         'date' => $data['date'],
                         'time' => $data['time'],
                         'isplan' => $data['isplan'],
-                        'isupdate' => $data['isupdate'],
-                        'value_plan' => $data['value_plan'],
-                        'tipe' => $data['tipe'],
+                        'isupdate' => $data['isupdate'] ?? false,
+                        'value_plan' => $data['value_plan'] ?? null,
+                        'tipe' => $data['tipe'] ?? 'NON',
                     ]);
                 }
             }
@@ -232,9 +232,9 @@ class DailyController extends Controller
                 'date' => $data['date'],
                 'time' => $data['time'],
                 'isplan' => $data['isplan'],
-                'isupdate' => $data['isupdate'],
-                'value_plan' => $data['value_plan'],
-                'tipe' => $data['tipe'],
+                'isupdate' => $data['isupdate'] ?? false,
+                'value_plan' => $data['value_plan'] ?? null,
+                'tipe' => $data['tipe'] ?? 'NON',
             ]);
             return ResponseFormatter::success(null, 'Berhasil merubah daily');
         } catch (Exception $e) {
@@ -382,8 +382,8 @@ class DailyController extends Controller
             // }
             $dailys = Daily::where('user_id', Auth::id())
                 ->where('isplan', 1)
-                ->where('tag_id', null)
-                ->where('add_id', null)
+                // ->where('tag_id', null)
+                // ->where('add_id', null)
                 ->where('isupdate', 0)
                 ->whereBetween('date', [$monday->format('y-m-d'), $sunday->format('y-m-d')])
                 ->get()
@@ -443,16 +443,16 @@ class DailyController extends Controller
                     $daily = Daily::where('date', $monday)
                     ->where('user_id', $userId)
                     ->where('isplan', 1)
-                    ->where('tag_id', null)
-                    ->where('add_id', null)
+                    // ->where('tag_id', null)
+                    // ->where('add_id', null)
                     ->where('isupdate', 0)
                     ->orderBy('time')
                     ->get() :
                     $daily = Daily::where('date', $monday->addDay($i))
                     ->where('user_id', $userId)
                     ->where('isplan', 1)
-                    ->where('tag_id', null)
-                    ->where('add_id', null)
+                    // ->where('tag_id', null)
+                    // ->where('add_id', null)
                     ->where('isupdate', 0)
                     ->orderBy('time')
                     ->get();

@@ -63,7 +63,7 @@ class WeeklyController extends Controller
             if ($request->tipe == 'RESULT' && $request->value_plan == null) {
                 return ResponseFormatter::error(null, 'Tipe task result harus isi value plan resultnya');
             }
-            
+
             if (!$request->add_id) {
                 Weekly::create([
                     'user_id' => $data['user_id'],
@@ -77,7 +77,7 @@ class WeeklyController extends Controller
                     'status_result' => $data['status_result'] ?? 0,
                     'value' => $data['value'] ?? 0,
                     'is_add' => $data['is_add'],
-                    'is_update' => $data['is_update'],
+                    'is_update' => $data['is_update'] ?? 0,
                 ]);
             }
 
@@ -235,12 +235,12 @@ class WeeklyController extends Controller
                 return ResponseFormatter::error(null, "Tidak bisa menghapus tag daily, tag daily hanya bisa di hapus oleh pembuatan tag");
             }
 
-            $deletes = Weekly::where('task', $weekly->task)->where('tag_id', Auth::id())->where('week', $weekly->week)->get();
-            if ($deletes) {
-                foreach ($deletes as $delete) {
-                    $delete->delete();
-                }
-            }
+            // $deletes = Weekly::where('task', $weekly->task)->where('tag_id', Auth::id())->where('week', $weekly->week)->get();
+            // if ($deletes) {
+            //     foreach ($deletes as $delete) {
+            //         $delete->delete();
+            //     }
+            // }
 
             $weekly->delete();
             return ResponseFormatter::success(null, 'Berhasil menghapus weekly');
@@ -277,13 +277,13 @@ class WeeklyController extends Controller
             //     return ResponseFormatter::error(null, 'Tidak bisa merubah weekly sudah lebih dari hari senin jam 17:00');
             // }
 
-            if ($weekly->add_id) {
-                return ResponseFormatter::error(null, "Tidak bisa merubah, task ini kiriman dari manager/coor/leader");
-            }
+            // if ($weekly->add_id) {
+            //     return ResponseFormatter::error(null, "Tidak bisa merubah, task ini kiriman dari manager/coor/leader");
+            // }
 
-            if ($weekly->tag_id) {
-                return ResponseFormatter::error(null, "Tidak bisa merubah weekly tag");
-            }
+            // if ($weekly->tag_id) {
+            //     return ResponseFormatter::error(null, "Tidak bisa merubah weekly tag");
+            // }
 
             if ($weekly->is_add) {
                 return ResponseFormatter::error(null, "Extra task tidak bisa di rubah");
@@ -293,26 +293,26 @@ class WeeklyController extends Controller
                 $data['value'] = 0;
             }
 
-            $changes = Weekly::where('task', $weekly->task)->where('tag_id', Auth::id())->where('week', $weekly->week)->get();
-            if ($changes) {
-                foreach ($changes as $change) {
-                    $change->update([
-                        'task' => $data['task'],
-                        'week' => $data['week'],
-                        'year' => $data['year'],
-                        'is_add' => $data['is_add'],
-                        'is_update' => $data['is_update'],
-                        'tipe' => $data['tipe'],
-                        'value_plan' => $data['value_plan'],
-                    ]);
-                }
-            }
+            // $changes = Weekly::where('task', $weekly->task)->where('tag_id', Auth::id())->where('week', $weekly->week)->get();
+            // if ($changes) {
+            //     foreach ($changes as $change) {
+            //         $change->update([
+            //             'task' => $data['task'],
+            //             'week' => $data['week'],
+            //             'year' => $data['year'],
+            //             'is_add' => $data['is_add'],
+            //             'is_update' => $data['is_update'],
+            //             'tipe' => $data['tipe'],
+            //             'value_plan' => $data['value_plan'],
+            //         ]);
+            //     }
+            // }
             $weekly->update([
                 'task' => $data['task'],
                 'week' => $data['week'],
                 'year' => $data['year'],
                 'is_add' => $data['is_add'],
-                'is_update' => $data['is_update'],
+                'is_update' => $data['is_update'] ?? 0,
                 'tipe' => $data['tipe'],
                 'value_plan' => $data['value_plan'],
             ]);
@@ -338,8 +338,8 @@ class WeeklyController extends Controller
                 ->where('user_id', Auth::id())
                 ->where('is_update', 0)
                 ->where('is_add', 0)
-                ->where('tag_id', null)
-                ->where('add_id', null)
+                // ->where('tag_id', null)
+                // ->where('add_id', null)
                 ->get()
                 ->toArray();
             foreach ($weeklys as $weekly) {

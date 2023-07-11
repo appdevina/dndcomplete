@@ -255,12 +255,12 @@ class MonthlyController extends Controller
                 return ResponseFormatter::error(null, "Tidak bisa menghapus tag daily, tag daily hanya bisa di hapus oleh pembuatan tag");
             }
 
-            $deletes = Monthly::where('task', $monthly->task)->where('tag_id', Auth::id())->whereDate('date', date('y-m-d', $monthly->date / 1000))->get();
-            if ($deletes) {
-                foreach ($deletes as $delete) {
-                    $delete->delete();
-                }
-            }
+            // $deletes = Monthly::where('task', $monthly->task)->where('tag_id', Auth::id())->whereDate('date', date('y-m-d', $monthly->date / 1000))->get();
+            // if ($deletes) {
+            //     foreach ($deletes as $delete) {
+            //         $delete->delete();
+            //     }
+            // }
 
             $monthly->delete();
             return ResponseFormatter::success(null, 'Berhasil menghapus monthly');
@@ -345,8 +345,8 @@ class MonthlyController extends Controller
                 ->where('user_id', Auth::id())
                 ->where('is_update', 0)
                 ->where('is_add', 0)
-                ->where('tag_id', null)
-                ->where('add_id', null)
+                // ->where('tag_id', null)
+                // ->where('add_id', null)
                 ->get()
                 ->toArray();
             if (!$monthlys) {
