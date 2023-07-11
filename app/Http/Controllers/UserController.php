@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\UsersExport;
 use App\Imports\UsersImport;
+use App\Models\Position;
 use Laravel\Sanctum\PersonalAccessToken;
 
 class UserController extends Controller
@@ -26,7 +27,7 @@ class UserController extends Controller
         return view('user.index')
             ->with(
                 [
-                    'users' => User::with(['area', 'role', 'divisi', 'approval'])->orderBy('nama_lengkap')->withTrashed()->filter()->simplePaginate(100),
+                    'users' => User::with(['area', 'role', 'divisi', 'approval', 'position'])->orderBy('nama_lengkap')->withTrashed()->filter()->simplePaginate(100),
                     'title' => 'User',
                     'active' => 'user',
                     'approvals' => User::whereIn('role_id', [3, 4, 5, 6])->get(),
@@ -50,6 +51,7 @@ class UserController extends Controller
             'areas' => $areas,
             'title' => 'Create User',
             'active' => 'user',
+            'positions' => Position::all(),
         ]);
     }
 
@@ -84,6 +86,7 @@ class UserController extends Controller
                 'mn' => $request->mn,
                 'mr' => $request->mn,
                 'approval_id' => $request->approval_id,
+                'position_id' => $request->position_id,
             ]);
 
             return redirect('/user')->with(['success' => "Berhasil menambahkan user baru."]);
@@ -119,6 +122,7 @@ class UserController extends Controller
             'divisis' => Divisi::orderBy('name')->get(),
             'roles' => Role::orderBy('name')->get(),
             'approvals' => User::whereIn('role_id', [3, 4, 5, 6])->withTrashed()->get(),
+            'positions' => Position::all(),
         ]);
     }
 

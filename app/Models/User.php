@@ -99,4 +99,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Overopen::class);
     }
+
+    public function position()
+    {
+        return $this->belongsTo(Position::class);
+    }
 }

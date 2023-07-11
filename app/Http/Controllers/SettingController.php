@@ -18,7 +18,7 @@ class SettingController extends Controller
         $roles = Role::orderBy('name')->get();
         return view('setting.index', [
             'title' => 'Role',
-            'active' => 'setting',
+            'active' => 'setting-role',
             'roles' => $roles,
         ]);
     }
@@ -74,7 +74,7 @@ class SettingController extends Controller
         $areas = Area::all();
         return view('setting.index', [
             'title' => 'Area',
-            'active' => 'setting',
+            'active' => 'setting-area',
             'areas' => $areas,
         ]);
     }
@@ -133,7 +133,7 @@ class SettingController extends Controller
         $areas = Area::all();
         return view('setting.index', [
             'title' => 'Divisi',
-            'active' => 'setting',
+            'active' => 'setting-divisi',
             'divisis' => $divisis,
             'areas' => $areas,
         ]);

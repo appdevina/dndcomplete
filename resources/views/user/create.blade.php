@@ -34,17 +34,8 @@
                                     </div>
                                     <div class="mb-3">
                                         <div class="row">
-                                            <div class="col-lg-3">
-                                                <label for="role_id" class="form-label col-lg-12">Role</label>
-                                                <select class="custom-select col-lg-12" name="role_id" id="role_id"
-                                                    required>
-                                                    @foreach ($roles as $role)
-                                                        <option value="{{ $role->id }}">{{ $role->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <label for="area_id" class="form-label col-lg-12 ">area</label>
+                                            <div class="col-lg-6">
+                                                <label for="area_id" class="form-label col-lg-12 ">Area</label>
                                                 <select class="custom-select col-lg-12 adduserarea" name="area_id"
                                                     id="area_id" required>
                                                     <option value="">--Choose Area--</option>
@@ -53,13 +44,37 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div class="col-lg-3">
+                                            <div class="col-lg-6">
                                                 <label for="divisi_id" class="form-label col-lg-12">Divisi</label>
                                                 <select class="custom-select col-lg-12 adduserdivisi" id="divisi_id"
                                                     name="divisi_id" required>
                                                 </select>
                                             </div>
-                                            <div class="col-lg-3">
+
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <label for="position_id" class="form-label col-lg-12">Position</label>
+                                                <select class="custom-select col-lg-12" name="position_id" id="position_id"
+                                                    required>
+                                                    @foreach ($positions as $post)
+                                                        <option value="{{ $post->id }}">
+                                                            {{ $post->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <label for="role_id" class="form-label col-lg-12">Role</label>
+                                                <select class="custom-select col-lg-12" name="role_id" id="role_id"
+                                                    required>
+                                                    @foreach ($roles as $role)
+                                                        <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-lg-4">
                                                 <label for="approval_id" class="form-label col-lg-12">Approval</label>
                                                 <select class="custom-select col-lg-12 adduserapproval" id="approval_id"
                                                     name="approval_id" required>

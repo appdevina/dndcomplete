@@ -1,8 +1,8 @@
 <footer class="main-footer">
     <div class="float-right d-none d-sm-block">
-        <b>Version</b> 1.0.0
+        <b>Version</b> 2.0.0
     </div>
-    <strong>Copyright &copy; 2021 <a href="#">DEVELOPMENT TEAM</a>.</strong> All rights reserved.
+    <strong>Copyright &copy; 2023 <a href="#" style="color: #917FB3;">APP DEVELOPMENT TEAM</a>.</strong> All rights reserved.
 </footer>
 
 <!-- jQuery -->
@@ -24,12 +24,15 @@
 <script src="{{ asset('template') }}/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
 <!-- Select2 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<!-- datepicker -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
 <script src="{{ asset('script.js') }}"></script>
 <script>
     $(document).ready(function() {
         $('.select2').select2();
     });
 </script>
+    @yield('footer')
 </body>
 
 </html>

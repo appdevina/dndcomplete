@@ -33,7 +33,18 @@
                                     </div>
                                     <div class="mb-3">
                                         <div class="row">
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
+                                                <label for="position_id" class="form-label col-lg-12">Position</label>
+                                                <select class="custom-select col-lg-12" name="position_id" id="position_id"
+                                                    required>
+                                                    @foreach ($positions as $post)
+                                                        <option value="{{ $post->id }}"
+                                                            @if ($user->position_id === $post->id) selected @endif>
+                                                            {{ $post->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-lg-3">
                                                 <label for="role_id" class="form-label col-lg-12">Role</label>
                                                 <select class="custom-select col-lg-12" name="role_id" id="role_id"
                                                     required>
@@ -44,7 +55,7 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
                                                 <label for="divisi_id" class="form-label col-lg-12">Divisi</label>
                                                 <select class="custom-select col-lg-12" id="divisi_id" name="divisi_id"
                                                     required>
@@ -55,7 +66,7 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
                                                 <label for="approval_id" class="form-label col-lg-12">Approval</label>
                                                 <select class="custom-select col-lg-12" id="approval_id" name="approval_id"
                                                     required>
