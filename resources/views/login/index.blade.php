@@ -20,15 +20,15 @@
 <body class="hold-transition login-page">
     <div class="login-box">
         <!-- /.login-logo -->
-        <div class="card card-outline card-danger">
+        <div class="card card-outline card-danger" style="border-color: #917FB3;">
             <div class="card-header text-center">
                 <a href="#" class="h1"><b>DnD App</b></a>
             </div>
             <div class="card-body">
-                <p class="login-box-msg">Sign in</p>
+                <!-- <p class="login-box-msg">Sign in</p> -->
                 <form action="/login" method="POST">
                     @csrf
-                    <div class="input-group mb-3">
+                    <div class="input-group mb-3 mt-3">
                         <input type="text" class="form-control" placeholder="User Name" name="username" autofocus>
                         <div class="input-group-append">
                             <div class="input-group-text">
@@ -47,7 +47,7 @@
                     <div class="row justify-content-center">
                         <!-- /.col -->
                         <div class="col-4 ">
-                            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                            <button type="submit" class="btn btn-block" style="background-color: #917FB3; color: white;">Sign In</button>
                         </div>
                         <!-- /.col -->
                     </div>

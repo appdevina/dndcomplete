@@ -56,6 +56,7 @@
                                         <th>No</th>
                                         <th>Nama Lengkap</th>
                                         <th>User Name</th>
+                                        <th>Job Position</th>
                                         <th>Role</th>
                                         <th>Area</th>
                                         <th>Divisi</th>
@@ -76,6 +77,7 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $user->nama_lengkap }}</td>
                                             <td>{{ $user->username }}</td>
+                                            <td>{{ $user->position->name ?? '-'}}</td>
                                             <td>{{ $user->role->name }}</td>
                                             <td>{{ $user->area->name }}</td>
                                             <td>{{ $user->divisi->name }}</td>
