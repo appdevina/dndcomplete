@@ -8,9 +8,9 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header bg-dark">
+                            <div class="card-header">
                                 <div class="row d-inline-flex">
-                                    <h3 class="card-title">Detail Request &raquo; Task
+                                    <h3 class="card-title"><strong>Detail Request &raquo;</strong> Task
                                         {{ $exist ? 'Existing' : 'Replace' }} Weekly
                                     </h3>
                                 </div>

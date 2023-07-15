@@ -8,9 +8,9 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header bg-dark">
+                            <div class="card-header">
                                 <div class="row d-inline-flex">
-                                    <h3 class="card-title">Request List</h3>
+                                    <h3 class="card-title"><strong>Request List</strong></h3>
                                 </div>
                                 {{-- <div class="card-tools">
                                     <div class="input-group input-group-sm" style="width: 150px;">

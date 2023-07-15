@@ -8,33 +8,26 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header bg-dark">
+                            <div class="card-header">
                                 <div class="row d-inline-flex">
-                                    <h3 class="card-title">Report Week {{ $now ? $now->weekOfYear : now()->weekOfYear }} - Periode :
+                                    <h3 class="card-title"><strong>Report Week {{ $now ? $now->weekOfYear : now()->weekOfYear }} - Periode :
                                         {{ $now ? $now->format('d M') :  now()->startOfWeek()->format('d M') }} -
-                                        {{ $now ? $now->endOfWeek()->format('d M Y') : now()->endOfWeek()->format('d M Y') }}</h3>
-                                    @if (auth()->user()->role_id == 1)
-                                        <button class="badge bg-success mx-3 elevation-0" data-toggle="modal"
-                                            data-target="#exportReport">EXPORT</button>
-                                        <a href="#">
-                                            <button class="badge bg-warning mx-3 elevation-0" data-toggle="modal"
-                                                data-target="#broadcast">BROADCAST</button>
-                                        </a>
-                                    @endif
+                                        {{ $now ? $now->endOfWeek()->format('d M Y') : now()->endOfWeek()->format('d M Y') }}
+                                    </strong></h3>
                                 </div>
                                 <div class="card-tools d-flex">
                                     <div class="input-group input-group-sm mr-3" style="width: 400px;">
                                         <form action="/admin/report" class="d-inline-flex">
-                                            <select class="custom-select col-lg-5 mx-2" name="divisi_id" id="divisi_id"
+                                            <select class="custom-select col-lg-5 mx-1" name="divisi_id" id="divisi_id"
                                                 required>
                                                 <option value="">--Choose Divisi--</option>
                                                 @foreach ($divisis as $divisi)
                                                     <option value="{{ $divisi->id }}">{{ $divisi->name }}</option>
                                                 @endforeach
                                             </select>
-                                            <input type="number" name="year" class="form-control mr-3 float-right"
+                                            <input type="number" name="year" class="form-control mr-1 float-right"
                                                 placeholder="tahun" value="{{ now()->year }}" min="2022" required>
-                                            <input type="number" name="week" class="form-control mr-3 float-right"
+                                            <input type="number" name="week" class="form-control mr-1 float-right"
                                                 placeholder="tahun" value="{{ now()->weekOfYear }}" min="1" max="52"
                                                 required>
                                             <div class="input-group-append">
@@ -44,6 +37,22 @@
                                             </div>
                                         </form>
                                     </div>
+                                    @if (auth()->user()->role_id == 1)
+                                        <div class="input-group input-group-sm" style="width: 100px;">
+                                            <div class="input-group-append ml-1">
+                                                <a href="#">
+                                                    <button class="btn btn-primary" data-toggle="modal"
+                                                        data-target="#exportReport" data-toggle="tooltip" data-placement="top" title="Export Report"><i class="fas fa-file-alt" style="color: white"></i></button>
+                                                </a>
+                                            </div>
+                                            <div class="input-group-append ml-1">
+                                                <a href="#">
+                                                    <button class="btn btn-warning" data-toggle="modal"
+                                                        data-target="#broadcast" data-toggle="tooltip" data-placement="top" title="Broadcast Message"><i class="fas fa-bullhorn" style="color: white"></i></button>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                             <!-- /.card-header -->
@@ -171,7 +180,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Send</button>
+                        <button type="submit" class="btn btn-warning">Send</button>
                     </div>
                 </div>
             </div>

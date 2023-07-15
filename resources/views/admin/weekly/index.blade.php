@@ -6,35 +6,13 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header bg-dark">
+                        <div class="card-header">
                             <div class="row d-inline-flex">
-                                <h3 class="card-title">Weekly</h3>
-                                @if (auth()->user()->role_id == 1)
-                                    <a href="#">
-                                        <button class="badge bg-success mx-3 elevation-0" data-toggle="modal"
-                                            data-target="#exportWeekly">EXPORT</button>
-                                    </a>
-                                    <a href="#">
-                                        <button class="badge bg-warning mx-3 elevation-0" data-toggle="modal"
-                                            data-target="#importWeekly">IMPORT</button>
-                                    </a>
-                                @else
-                                    <a href="/weekly/template">
-                                        <button class="badge bg-primary mx-3 elevation-0">TEMPLATE IMPORT</button>
-                                    </a>
-                                    <a href="#">
-                                        <button class="badge bg-warning mx-3 elevation-0" data-toggle="modal"
-                                            data-target="#importWeekly">IMPORT</button>
-                                    </a>
-                                    <a href="#">
-                                        <button class="badge bg-success mx-3 elevation-0" data-toggle="modal"
-                                            data-target="#addWeekly">+ ADD</button>
-                                    </a>
-                                @endif
+                                <h3 class="card-title"><strong>Weekly</strong></h3>
                             </div>
                             @if (auth()->user()->role_id == 1)
                                 <div class="card-tools d-flex">
-                                    <div class="input-group input-group-sm mr-3" style="width: 400px;">
+                                    <div class="input-group input-group-sm mr-3" style="width: 300px;">
                                         <form action="/admin/weekly" class="d-inline-flex">
                                             <select class="custom-select col-lg-12 mx-2" name="divisi_id" id="divisi_id"
                                                 required>
@@ -52,12 +30,12 @@
                                     </div>
                                     <div class="input-group input-group-sm" style="width: 400px;">
                                         <form action="/admin/weekly" class="d-inline-flex">
-                                            <input type="number" name="year" class="form-control mr-3 float-right"
+                                            <input type="number" name="year" class="form-control mr-1 float-right"
                                                 placeholder="tahun" value="{{ now()->year }}" min="2022" required>
-                                            <input type="number" name="week" class="form-control mr-3 float-right"
+                                            <input type="number" name="week" class="form-control mr-1 float-right"
                                                 placeholder="tahun" value="{{ now()->weekOfYear }}" min="1" max="52"
                                                 required>
-                                            <input type="text" name="name" class="form-control mr-3 float-right"
+                                            <input type="text" name="name" class="form-control mr-1 float-right"
                                                 placeholder="Name" required>
                                             <div class="input-group-append">
                                                 <button type="submit" class="btn btn-default">
@@ -66,26 +44,57 @@
                                             </div>
                                         </form>
                                     </div>
+                                    <div class="input-group input-group-sm ml-2" style="width: 90px;">
+                                        <div class="input-group-append">
+                                            <a href="#">
+                                                <button class="btn btn-success" data-toggle="modal"
+                                                    data-target="#importWeekly" data-toggle="tooltip" data-placement="top" title="Import Weekly"><i class="fa fa-upload" style="color: white"></i></button>
+                                            </a>
+                                        </div>
+                                        <div class="input-group-append ml-1">
+                                            <a href="#">
+                                                <button class="btn btn-primary" data-toggle="modal"
+                                                    data-target="#exportWeekly" data-toggle="tooltip" data-placement="top" title="Export Weekly"><i class="fa fa-download"></i></button>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             @else
                             <div class="card-tools d-flex">
-                                        <div class="input-group input-group-sm mr-3" style="width: 220px;">
-                                            <form action="/weekly" class="d-inline-flex">
-                                                <select class="custom-select col-lg-10 mx-2" name="tasktype" id="tasktype"
-                                                    required>
-                                                    <option value="">--Choose One--</option>
-                                                    <option value="1">This Week</option>
-                                                    <option value="2">Last Week</option>
-                                                    <option value="3">All</option>
-                                                </select>
-                                                <div class="input-group-append">
-                                                    <button type="submit" class="btn btn-default">
-                                                        <i class="fas fa-search"></i>
-                                                    </button>
-                                                </div>
-                                            </form>
+                                <div class="input-group input-group-sm mr-3" style="width: 380px;">
+                                    <form action="/weekly" class="d-inline-flex">
+                                        <select class="custom-select col-lg-10 mx-2" name="tasktype" id="tasktype"
+                                            required>
+                                            <option value="">--Choose One--</option>
+                                            <option value="1">This Week</option>
+                                            <option value="2">Last Week</option>
+                                            <option value="3">All</option>
+                                        </select>
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-default">
+                                                <i class="fas fa-search"></i>
+                                            </button>
                                         </div>
+                                    </form>
+                                    <div class="input-group-append ml-5">
+                                        <a href="#">
+                                            <button class="btn btn-success" data-toggle="modal"
+                                                data-target="#addWeekly" data-toggle="tooltip" data-placement="top" title="Add Weekly"><i class="fas fa-plus"></i></button>
+                                        </a>
                                     </div>
+                                    <div class="input-group-append ml-1">
+                                        <a href="#">
+                                            <button class="btn btn-success" data-toggle="modal"
+                                                data-target="#importWeekly" data-toggle="tooltip" data-placement="top" title="Import Weekly"><i class="fa fa-upload" style="color: white"></i></button>
+                                        </a>
+                                    </div>
+                                    <div class="input-group-append ml-1">
+                                        <a href="/weekly/template">
+                                            <button class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Download Template"><i class="fas fa-file-alt" style="color: white"></i></button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                             @endif
                         </div>
                         @if ($message = Session::get('success'))
@@ -232,7 +241,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Import</button>
+                        <button type="submit" class="btn btn-success">Import</button>
                     </div>
                 </div>
             </div>
@@ -314,7 +323,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">+ Add</button>
+                        <button type="submit" class="btn btn-success">Add</button>
                     </div>
                 </div>
             </div>

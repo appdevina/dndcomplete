@@ -208,6 +208,17 @@ class KpiDashboardController extends Controller
 
         foreach ($groupedKpisByYear as $yearMonth => $groupedKpi) {
             $groupedKpiByCategory = $groupedKpi->groupBy('kpi_category.name');
+
+            // Sort the grouped data by category name
+            $groupedKpiByCategory = $groupedKpiByCategory->sortBy(function ($kpis, $categoryName) {
+                // Define the desired order of categories
+                $categoryOrder = ['MAIN JOB', 'ADMINISTRATION', 'REPORTING'];
+                // Get the index of the category name in the desired order
+                $categoryIndex = array_search($categoryName, $categoryOrder);
+                // Return the category index for sorting
+                return $categoryIndex !== false ? $categoryIndex : count($categoryOrder);
+            });
+
             $groupedKpisByYearAndCategory[$yearMonth] = $groupedKpiByCategory;
 
             $totalKpiCategories = count($groupedKpiByCategory);
@@ -241,13 +252,14 @@ class KpiDashboardController extends Controller
             // $averageTotalScore = $totalScore / $totalKpiCategories;
         }
 
-        
+
         return view('kpi.kpi_dashboard.index_monthly', [
             'title' => 'KPI Dashboard',
             'active' => 'kpi-dashboard',
             'groupedKpis' => $groupedKpisByYearAndCategory,
             'totalScore' => $totalScore,
             'users' => $this->getUser(),
+            'divisions' => Divisi::all(),
         ]);
     }
 
@@ -270,10 +282,10 @@ class KpiDashboardController extends Controller
         // KALAU FILTER MONTH DI CHART KPI WEEKLY
         if ($request->dateChartHighestKpiWeekly) {
             $date = Carbon::createFromFormat('m/Y', $request->dateChartHighestKpiWeekly);
-            
+
             $weeklyKpis = $weeklyKpis->whereMonth('date', $date->month)
             ->whereYear('date', $date->year);
-        } else {            
+        } else {
             $weeklyKpis = $weeklyKpis->whereMonth('date', $currentMonth)
             ->whereYear('date', $currentYear);
         }
@@ -283,14 +295,14 @@ class KpiDashboardController extends Controller
             $date = Carbon::createFromFormat('m/Y', $request->dateChartHighestKpiMonthly);
 
             $dateChartHighestKpiMonthly = Carbon::parse($date)->format('M Y');
-            
+
             $monthlyKpis = $monthlyKpis->whereMonth('date', $date->month)
             ->whereYear('date', $date->year);
         } else {
             $monthlyKpis = $monthlyKpis->whereMonth('date', $currentMonth)
             ->whereYear('date', $currentYear);
         }
-        
+
         //KALAU FILTER YEAR DI CHART KPI YEARLY
         if ($request->dateChartKpiYearly) {
             $year = $request->dateChartKpiYearly;
@@ -298,7 +310,7 @@ class KpiDashboardController extends Controller
             $currentYear = $date->year;
 
             $dateChartKpiYearly = $date->format('Y');
-       
+
             $yearlyKpis = $yearlyKpis->whereYear('date', $date->year);
         } else {
             $yearlyKpis = $yearlyKpis->whereYear('date', $currentYear);
@@ -311,12 +323,12 @@ class KpiDashboardController extends Controller
             $currentYear = $date->year;
 
             $dateChartUsersKpiYearly = $date->format('Y');
-       
+
             $usersYearlyKpis = $usersYearlyKpis->whereYear('date', $date->year);
         } else {
             $usersYearlyKpis = $usersYearlyKpis->whereYear('date', $currentYear);
         }
-        
+
         // KALAU FILTER DIVISI DI CHART KPI WEEKLY
         if($request->divisi_weekly) {
             $weeklyKpis = $weeklyKpis->whereHas('user', function ($q) use ($request) {
@@ -533,13 +545,13 @@ class KpiDashboardController extends Controller
         // Array to store the average KPI values for each month in 2023
         $averageKpiMonthlyByYear = [];
         $userCounts = [];
-        
+
         // Iterate over each month in the year
         for ($month = 1; $month <= 12; $month++) {
             $yearMonth = $currentYear . '-' . sprintf("%02d", $month); // Format the month as "YYYY-MM"
-            
+
             $yearlyGroupedKpis = $groupedYearKpisByYear[$yearMonth] ?? collect(); // Get the KPIs for the current month
-            
+
             // Calculate the cumulative sum of KPI scores for the month
             $cumulativeScore = 0;
 
@@ -565,7 +577,7 @@ class KpiDashboardController extends Controller
                     $kpi->score = $score;
 
                     // Accumulate the score for the month
-                    $cumulativeScore += $score; 
+                    $cumulativeScore += $score;
                 }
             }
             // Calculate the count of unique user IDs
@@ -573,14 +585,14 @@ class KpiDashboardController extends Controller
 
             // Store the user count for the month
             $userCounts[$yearMonth] = $userCount;
-            
+
             // Calculate the average KPI for the month
             $averageKpiMonthly = $userCount > 0 ? ($cumulativeScore * 100) / $userCount : 0;
-            
+
             // Store the average KPI in the array
             $averageKpiMonthlyByYear[$yearMonth] = $averageKpiMonthly;
         }
-        
+
         // Dump the average KPIs for each month in 2023
         // dd($averageKpiMonthlyByYear);
 
@@ -590,7 +602,7 @@ class KpiDashboardController extends Controller
         foreach ($averageKpiMonthlyByYear as $yearMonth => $averageKpi) {
             $carbonDate = Carbon::createFromFormat('Y-m', $yearMonth); // Create a Carbon instance from the yearMonth string
             $monthName = $carbonDate->formatLocalized('%b'); // Get the abbreviated month name
-            
+
             $averageYearlyKpi[] = $averageKpi;
             $monthYear[] = $monthName;
         }
@@ -685,7 +697,7 @@ class KpiDashboardController extends Controller
             $currentDate = Carbon::now();
             $detailKpi = KpiDetail::findOrFail($request->id);
             $kpiDate = Carbon::parse($detailKpi->kpi->date);
-            
+
             // FOR TESTING PURPOSES
             // $currentDate = Carbon::createFromFormat('Y-m-d', '2023-08-07');
 
@@ -716,5 +728,5 @@ class KpiDashboardController extends Controller
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
     }
-    
+
 }

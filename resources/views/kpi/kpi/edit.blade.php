@@ -89,8 +89,8 @@
                                         </div>
                                     </div>
                                     <br>
-                                    <div class="col-lg-12" style="text-align: right;">
-                                        <button type="submit" class="btn btn-info" onclick="return confirm('Are you sure want to update the data ?')">UPDATE</button>
+                                    <div class="col-lg-12 mb-3" style="text-align: right;">
+                                        <button type="submit" class="btn btn-info" style="width: 100%; background-color: #917FB3; border-color: #917FB3;" onclick="return confirm('Are you sure want to update the data ?')">UPDATE</button>
                                     </div>
                                 </div>
                                 </form>
@@ -169,7 +169,7 @@ $(document).ready(function() {
             console.log("Error fetching kpiDetail data:", error);
         },
     });
-    
+
     $("#tablekpi").on("click", ".btn_remove", function (e) {
     e.preventDefault();
     $(this).closest(".kpi-row").remove();

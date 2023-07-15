@@ -31,7 +31,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/daily/fetchweek',[DailyController::class,'fetchweek']);
     Route::post('/daily/copy',[DailyController::class,'copy']);
     Route::get('/daily/delete/{id}', [DailyController::class, 'delete']);
-    Route::post('/daily/change', [DailyController::class, 'change']);
+    Route::get('/daily/change/{id}', [DailyController::class, 'change']);
+    // KALAU GANTI VER DND PAKE POST:
+    // Route::post('/daily/change', [DailyController::class, 'change']);
     Route::post('/daily/edit/{id}', [DailyController::class, 'edit']);
     Route::get('/daily/getuser', [DailyController::class, 'getTagUser']);
 

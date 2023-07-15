@@ -7,13 +7,13 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-12">
-                        <div class="card card-dark">
+                        <div class="card">
                             <!-- /.card-header -->
                             <div class="card-header">
                                 @if ($title == 'Role')
-                                    <h3 class="card-title">EDIT &raquo; {{ $role->name }}</h3>
+                                    <h3 class="card-title"><strong>EDIT &raquo;</strong> {{ $role->name }}</h3>
                                 @else
-                                    <h3 class="card-title">EDIT &raquo; {{ $divisi->name }}</h3>
+                                    <h3 class="card-title"><strong>EDIT &raquo;</strong> {{ $divisi->name }}</h3>
                                 @endif
                             </div>
                             <div class="card-body">

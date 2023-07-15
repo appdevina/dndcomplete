@@ -19,7 +19,7 @@
                         <div class="card-header bg-white">
                             <h3 class="card-title"><strong>KPI</strong></h3>
                             <div class="card-tools d-flex align-items-center">
-                                <div class="input-group input-group-sm mr-3" style="width: 350px;">
+                                <div class="input-group input-group-sm mr-3" style="width: 430px;">
                                     <form action="kpi" class="d-inline-flex">
                                         <select class="custom-select col-lg-12 mx-2" name="position_id" id="position_id">
                                             <option value="">--Choose Position--</option>
@@ -88,9 +88,11 @@
                                                 <!-- <a href="/kpi/{{ $kpi->id }}/edit" style="color: orange;">
                                                     <span><i class="fas fa-edit"></i></span>
                                                 </a> -->
-                                                <a href="/kpi/{{ $kpi->id }}/delete" style="color: red;" onclick="return confirm('Sure to delete data ?')">
-                                                    <span><i class="fas fa-trash"></i></span>
-                                                </a>
+                                                @if (auth()->user()->role_id == 1)
+                                                    <a href="/kpi/{{ $kpi->id }}/delete" style="color: red;" onclick="return confirm('Sure to delete data ?')">
+                                                        <span><i class="fas fa-trash"></i></span>
+                                                    </a>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach

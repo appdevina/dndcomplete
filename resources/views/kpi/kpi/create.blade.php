@@ -42,8 +42,51 @@
                                         </div>
                                         <div class="mb-3 col-lg-12">
                                             <label for="kpi_category_id" class="form-label">KPI Category</label>
+                                            <input type="text" class="form-control" placeholder="MAIN JOB" readonly>
+                                            <input type="hidden" name="kpi_category_id" value="3">
+                                        </div>
+                                        <div class="mb-3 col-lg-12">
+                                            <label for="percentage" class="form-label">Percentage %</label>
+                                            <input type="percentage" class="form-control" name="percentageMain" required>
+                                        </div>
+                                        <br>
+                                        <div>
+                                            <div class="form-group" >
+                                                <div class="card-body table-responsive p-0" style="min-height: 300px;">
+                                                    <table class="table table-head-fixed text-nowrap">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="width:70%;">KPI Desc</th>
+                                                                <th style="width:10%;">Count Type</th>
+                                                                <th style="width:10%;">Value Plan</th>
+                                                                <th style="width:10%;">
+                                                                    <a href="#addkpiMain" class="badge bg-success" id="addKpiMain">Add <span class="lnr lnr-plus-circle"></span></a>
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="tablekpiMain" class="tablekpi">
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <!-- /.card-header -->
+                            <div class="card-body table-responsive p-0" style="height: 750px;">
+                                <div class="col-md-12 mt-3">
+                                    <div class="" id="formaddkpi" >
+                                        {{csrf_field()}}
+                                        <div class="mb-3 col-lg-12">
+                                            <input type="hidden" name="kpi_type_id" value="3">
+                                        </div>
+                                        <div class="mb-3 col-lg-12">
+                                            <label for="kpi_category_id" class="form-label">KPI Category</label>
                                             <input type="text" class="form-control" name="kpi_category_id" placeholder="ADMINISTRATION" readonly>
-                                            <input type="hidden" name="kpi_category_id" value="5">
+                                            <input type="hidden" name="kpi_category_id" value="1">
                                         </div>
                                         <div class="mb-3 col-lg-12">
                                             <label for="percentage" class="form-label">Percentage %</label>
@@ -86,7 +129,7 @@
                                         <div class="mb-3 col-lg-12">
                                             <label for="kpi_category_id" class="form-label">KPI Category</label>
                                             <input type="text" class="form-control" placeholder="REPORTING" readonly>
-                                            <input type="hidden" name="kpi_category_id" value="6">
+                                            <input type="hidden" name="kpi_category_id" value="2">
                                         </div>
                                         <div class="mb-3 col-lg-12">
                                             <label for="percentage" class="form-label">Percentage %</label>
@@ -108,49 +151,6 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody id="tablekpiRep" class="tablekpi">
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <!-- /.card-header -->
-                            <div class="card-body table-responsive p-0" style="height: 750px;">
-                                <div class="col-md-12 mt-3">
-                                    <div class="" id="formaddkpi" >
-                                        {{csrf_field()}}
-                                        <div class="mb-3 col-lg-12">
-                                            <input type="hidden" name="kpi_type_id" value="3">
-                                        </div>
-                                        <div class="mb-3 col-lg-12">
-                                            <label for="kpi_category_id" class="form-label">KPI Category</label>
-                                            <input type="text" class="form-control" placeholder="MAIN JOB" readonly>
-                                            <input type="hidden" name="kpi_category_id" value="7">
-                                        </div>
-                                        <div class="mb-3 col-lg-12">
-                                            <label for="percentage" class="form-label">Percentage %</label>
-                                            <input type="percentage" class="form-control" name="percentageMain" required>
-                                        </div>
-                                        <br>
-                                        <div>
-                                            <div class="form-group" >
-                                                <div class="card-body table-responsive p-0" style="min-height: 300px;">
-                                                    <table class="table table-head-fixed text-nowrap">
-                                                        <thead>
-                                                            <tr>
-                                                                <th style="width:70%;">KPI Desc</th>
-                                                                <th style="width:10%;">Count Type</th>
-                                                                <th style="width:10%;">Value Plan</th>
-                                                                <th style="width:10%;">
-                                                                    <a href="#addkpiMain" class="badge bg-success" id="addKpiMain">Add <span class="lnr lnr-plus-circle"></span></a>
-                                                                </th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="tablekpiMain" class="tablekpi">
                                                         </tbody>
                                                     </table>
                                                 </div>

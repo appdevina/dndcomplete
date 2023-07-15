@@ -46,11 +46,13 @@
                                         </div>
                                     </form>
                                 </div>
+                                @if (auth()->user()->role_id != 2)
                                 <div class="input-group input-group-sm mr-3 mt-1" style="width: 30px;">
                                     <a href="" data-toggle="modal" data-target="#exportKpi" data-toggle="tooltip" data-placement="top" title="Download Report" class="btn btn-tool btn-sm">
                                         <i class="fa fa-download"></i>
                                     </a>
                                 </div>
+                                @endif
                             </div>
                         </div>
                         <div class="card-body">
@@ -81,7 +83,7 @@
                                             </div>
 
                                             {{-- KPIs by Category --}}
-                                            @foreach ($groupedKpisByCategory as $categoryName => $kpis)                                     
+                                            @foreach ($groupedKpisByCategory as $categoryName => $kpis)
                                                 <div>
                                                     <!-- <i class="fas fa-check bg-success"></i> -->
                                                     <div class="timeline-item">
@@ -259,6 +261,17 @@
                         </button>
                     </div>
                     <div class="modal-body">
+                    @if (auth()->user()->role_id == 1)
+                        <div class="mb-3 col-lg-12">
+                            <label for="divisi_id" class="form-label">Division</label>
+                            <select class="custom-select" name="divisi_id" id="divisi_id">
+                                <option value="">--Choose Division--</option>
+                                @foreach ($divisions as $divisi)
+                                    <option value="{{ $divisi->id }}">{{ $divisi->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @endif
                         <div class="mb-3 col-lg-12">
                             <label for="date" class="form-label">Date</label>
                             <input class="form-control" id="exportMonthly" name="date" required>
