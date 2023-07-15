@@ -295,22 +295,23 @@ class DailyController extends Controller
         }
     }
 
-    public function change(Request $request)
+    // KALAU PAKE DND VER BARU GANTI PARAMETER JADI Request $request
+    public function change($id)
     {
         try {
-            $daily = Daily::findOrFail($request->id);
+            $daily = Daily::findOrFail($id);
             $requesteds = ModelsRequest::where('user_id', Auth::id())->where('jenistodo', 'Daily')->get();
             foreach ($requesteds as $requested) {
                 $idTaskExistings = explode(',', $requested->todo_request);
                 foreach ($idTaskExistings as $idTaskExisting) {
-                    if ($request->id == $idTaskExisting && $requested->status == 'PENDING') {
+                    if ($id == $idTaskExisting && $requested->status == 'PENDING') {
                         return ResponseFormatter::error(null, "Tidak bisa merubah status, task ini ada di pengajuan request task");
                     }
                 }
 
                 $idTaskReplaces = explode(',', $requested->todo_replace);
                 foreach ($idTaskReplaces as $idTaskReplace) {
-                    if ($request->id == $idTaskReplace && $requested->status == 'PENDING') {
+                    if ($id == $idTaskReplace && $requested->status == 'PENDING') {
                         return ResponseFormatter::error(null, "Tidak bisa merubah status, task ini ada di pengajuan request task");
                     }
                 }
@@ -341,14 +342,15 @@ class DailyController extends Controller
             }
             Carbon::now()->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->subWeek(2);
 
-            if ($daily->tipe == 'RESULT') {
-                $daily['value_actual'] = $request->value;
-                $daily['status_result'] = true;
-                $daily['value'] = $daily['value_actual'] / $daily['value_plan'] > 1.2 ? 1.2 : $daily['value_actual'] / $daily['value_plan'];
-            } else {
+            // if ($daily->tipe == 'RESULT') {
+            //     $daily['value_actual'] = $request->value;
+            //     $daily['status_result'] = true;
+            //     $daily['value'] = $daily['value_actual'] / $daily['value_plan'] > 1.2 ? 1.2 : $daily['value_actual'] / $daily['value_plan'];
+            // } else {
                 $daily['status'] = !$daily['status'];
-                $daily['value'] = $daily['status'] ? 1 : 0;
-            }
+            //     $daily['value'] = $daily['status'] ? 1 : 0;
+            // }
+
             $daily->save();
             return ResponseFormatter::success(null, 'Berhasil merubah status daily');
         } catch (Exception $e) {

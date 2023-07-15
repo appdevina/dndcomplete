@@ -8,35 +8,13 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header bg-dark">
+                            <div class="card-header">
                                 <div class="row d-inline-flex">
-                                    <h3 class="card-title">Daily</h3>
-                                    @if (auth()->user()->role_id == 1)
-                                        <a href="#">
-                                            <button class="badge bg-success mx-3 elevation-0" data-toggle="modal"
-                                                data-target="#exportDaily">EXPORT</button>
-                                        </a>
-                                        <a href="#">
-                                            <button class="badge bg-warning mx-3 elevation-0" data-toggle="modal"
-                                                data-target="#importDaily">IMPORT</button>
-                                        </a>
-                                    @else
-                                        <a href="/daily/template">
-                                            <button class="badge bg-primary mx-3 elevation-0">TEMPLATE IMPORT</button>
-                                        </a>
-                                        <a href="#">
-                                            <button class="badge bg-warning mx-3 elevation-0" data-toggle="modal"
-                                                data-target="#importDaily">IMPORT</button>
-                                        </a>
-                                        <a href="#">
-                                            <button class="badge bg-success mx-3 elevation-0" data-toggle="modal"
-                                                data-target="#addDaily">+ ADD</button>
-                                        </a>
-                                    @endif
+                                    <h3 class="card-title"><strong>Daily</strong></h3>
                                 </div>
                                 @if (auth()->user()->role_id == 1)
                                     <div class="card-tools d-flex">
-                                        <div class="input-group input-group-sm mr-3" style="width: 400px;">
+                                        <div class="input-group input-group-sm" style="width: 300px;">
                                             <form action="/admin/daily" class="d-inline-flex">
                                                 <select class="custom-select col-lg-12 mx-2" name="divisi_id" id="divisi_id"
                                                     required>
@@ -65,10 +43,24 @@
                                                 </div>
                                             </form>
                                         </div>
+                                        <div class="input-group input-group-sm ml-2" style="width: 90px;">
+                                            <div class="input-group-append">
+                                                <a href="#">
+                                                    <button class="btn btn-success" data-toggle="modal"
+                                                    data-target="#importDaily" data-toggle="tooltip" data-placement="top" title="Import Daily"><i class="fa fa-upload" style="color: white"></i></button>
+                                                </a>
+                                            </div>
+                                            <div class="input-group-append ml-1">
+                                                <a href="#">
+                                                    <button class="btn btn-primary" data-toggle="modal"
+                                                        data-target="#exportDaily" data-toggle="tooltip" data-placement="top" title="Export Daily"><i class="fa fa-download"></i></button>
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
                                 @else
                                     <div class="card-tools d-flex">
-                                        <div class="input-group input-group-sm mr-3" style="width: 220px;">
+                                        <div class="input-group input-group-sm mr-3" style="width: 380px;">
                                             <form action="/daily" class="d-inline-flex">
                                                 <select class="custom-select col-lg-10 mx-2" name="tasktype" id="tasktype"
                                                     required>
@@ -84,6 +76,23 @@
                                                     </button>
                                                 </div>
                                             </form>
+                                            <div class="input-group-append ml-5">
+                                                <a href="#">
+                                                    <button class="btn btn-success" data-toggle="modal"
+                                                        data-target="#addDaily" data-toggle="tooltip" data-placement="top" title="Add Daily"><i class="fas fa-plus"></i></button>
+                                                </a>
+                                            </div>
+                                            <div class="input-group-append ml-1">
+                                                <a href="#">
+                                                    <button class="btn btn-success" data-toggle="modal"
+                                                        data-target="#importDaily" data-toggle="tooltip" data-placement="top" title="Import Daily"><i class="fa fa-upload" style="color: white"></i></button>
+                                                </a>
+                                            </div>
+                                            <div class="input-group-append ml-1">
+                                                <a href="/daily/template">
+                                                    <button class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Download Template"><i class="fas fa-file-alt" style="color: white"></i></button>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 @endif
@@ -244,7 +253,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Import</button>
+                        <button type="submit" class="btn btn-success">Import</button>
                     </div>
                 </div>
             </div>
@@ -313,7 +322,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">+ Add</button>
+                        <button type="submit" class="btn btn-success">Add</button>
                     </div>
                 </div>
             </div>

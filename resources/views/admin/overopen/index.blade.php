@@ -8,19 +8,27 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header bg-dark">
+                            <div class="card-header">
                                 <div class="row d-inline-flex">
-                                    <h3 class="card-title">Cut Point</h3>
-                                    <a href="#">
-                                        <button class="badge bg-primary mx-3 elevation-0" data-toggle="modal"
-                                            data-target="#exportCutpoint">EXPORT</button>
-                                    </a>
-                                    @if (auth()->user()->role_id == 1)
-                                        <a href="/admin/overopen/create"><button class="badge bg-success mx-3 elevation-0">+
-                                                CREATE</button>
-                                        </a>
-                                    @endif
+                                    <h3 class="card-title"><strong>Cut Point</strong></h3>
                                 </div>
+                                 <div class="card-tools d-flex">
+                                    <div class="input-group input-group-sm mr-3" style="width: 90px;">
+                                        @if (auth()->user()->role_id == 1)
+                                            <div class="input-group-append">
+                                                <a href="/admin/overopen/create">
+                                                    <button class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Add Cut Point"><i class="fa fa-plus"></i></button>
+                                                </a>
+                                            </div>
+                                        @endif
+                                        <div class="input-group-append ml-1">
+                                            <a href="#">
+                                                <button class="btn btn-primary" data-toggle="modal"
+                                                    data-target="#exportCutpoint" data-toggle="tooltip" data-placement="top" title="Export Report"><i class="fa fa-download"></i></button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                 </div>
                             </div>
                             @if ($message = Session::get('success'))
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">

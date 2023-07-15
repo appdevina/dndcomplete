@@ -8,12 +8,16 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header bg-dark">
+                            <div class="card-header">
                                 <div class="row d-inline-flex">
-                                    <h3 class="card-title">Change Task</h3>
-                                    <a href="/request/create"><button
-                                            class="badge bg-success mx-3 elevation-0">CREATE</button>
-                                    </a>
+                                    <h3 class="card-title"><strong>Change Task</strong></h3>
+                                </div>
+                                <div class="card-tools d-flex">
+                                    <div class="input-group input-group-sm">
+                                        <a href="/request/create"><button
+                                                class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Add Request"><i class="fas fa-plus"></i></button>
+                                        </a>
+                                    </div>
                                 </div>
                                 {{-- <div class="card-tools">
                                     <div class="input-group input-group-sm" style="width: 150px;">

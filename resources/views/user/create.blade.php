@@ -7,17 +7,17 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-12">
-                        <div class="card card-dark">
+                        <div class="card">
                             <!-- /.card-header -->
                             <div class="card-header">
-                                <h3 class="card-title">CREATE &raquo; USER</h3>
+                                <h3 class="card-title"><strong>CREATE &raquo;</strong>USER</h3>
                             </div>
                             <div class="card-body">
                                 <form action="/user" method="POST">
                                     @csrf
                                     <div class="row">
                                         <div class="mb-3 col-lg-4">
-                                            <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
+                                            <label for="nama_lengkap" class="form-label">Full Name</label>
                                             <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap"
                                                 required>
                                         </div>
@@ -125,7 +125,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="submit" class="btn btn-success mt-3">Simpan</button>
+                                    <div class="col-lg-12" style="text-align: right;">
+                                        <button type="submit" class="btn btn-success mt-3" style="width: 100%; background-color: #917FB3; border-color: #917FB3;">SAVE</button>
+                                    </div>
                                 </form>
                             </div>
                         </div>

@@ -7,10 +7,10 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-12">
-                        <div class="card card-dark">
+                        <div class="card">
                             <!-- /.card-header -->
                             <div class="card-header">
-                                <h3 class="card-title">REQUEST</h3>
+                                <h3 class="card-title"><strong>REQUEST</strong></h3>
                             </div>
                             <div class="card-body">
                                 <form action="/request" method="POST">
@@ -153,7 +153,9 @@
                                         </div>
                                     @endif
                                     <!-- /.form-group -->
-                                    <button type="submit" class="btn btn-success mt-3">Submit</button>
+                                    <div class="col-lg-12" style="text-align: right;">
+                                        <button type="submit" class="btn btn-success mt-3" style="width: 100%; background-color: #917FB3; border-color: #917FB3;">SUBMIT</button>
+                                    </div>
                                 </form>
                             </div>
                         </div>

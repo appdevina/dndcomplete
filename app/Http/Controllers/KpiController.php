@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\KpiMonthlyExport;
 use App\Imports\KpiImport;
+use App\Models\Divisi;
 use App\Models\Kpi;
 use App\Models\KpiCategory;
 use App\Models\KpiDescription;
@@ -76,8 +77,8 @@ class KpiController extends Controller
             if ($today > $today->copy()->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->startOfMonth()->addDay(3)) {
                 return redirect('kpi')->with(['error' => 'Can not add KPI, now already more than 3 days since start of month !']);
             }
-        } 
-        
+        }
+
         // KALAU ROLE MANAGER BUAT KPI UNTUK ROLE COORDINATOR SAJA
         if (auth()->user()->role_id == 5) {
             $positions = Position::whereHas('user', function ($q) {
@@ -115,7 +116,10 @@ class KpiController extends Controller
     public function store(Request $request)
     {
         try {
-            // dd($request->all());
+            if ($request->percentageMain + $request->percentageAdm + $request->percentageRep != 100) {
+                return redirect()->back()->with(['error' => 'Total percentage must be 100 !']);
+            }
+
             $kpiDescriptionsAdm = [];
             $kpiDescriptionsRep = [];
             $kpiDescriptionsMain = [];
@@ -157,11 +161,11 @@ class KpiController extends Controller
                 $kpiAdm = Kpi::create([
                     'user_id' => $user->id,
                     'kpi_type_id' => $request->kpi_type_id,
-                    'kpi_category_id' => 5,
+                    'kpi_category_id' => 1,
                     'date' => Carbon::createFromFormat('m/Y', $request->date)->format('Y-m-d'),
                     'percentage' => $request->percentageAdm,
                 ]);
-    
+
                 for ($i = 0; $i < count($request->get('kpis')); $i++) {
                     $temp = [
                         'kpi_id' => $kpiAdm->id,
@@ -170,7 +174,7 @@ class KpiController extends Controller
                         'value_plan' => $request->get('value_plan')[$i] ?? null,
                         'value_result' => 0,
                     ];
-    
+
                     KpiDetail::create($temp);
                 }
 
@@ -178,11 +182,11 @@ class KpiController extends Controller
                 $kpiAdm = Kpi::create([
                     'user_id' => $user->id,
                     'kpi_type_id' => $request->kpi_type_id,
-                    'kpi_category_id' => 6,
+                    'kpi_category_id' => 2,
                     'date' => Carbon::createFromFormat('m/Y', $request->date)->format('Y-m-d'),
                     'percentage' => $request->percentageRep,
                 ]);
-    
+
                 for ($i = 0; $i < count($request->get('kpisRep')); $i++) {
                     $temp = [
                         'kpi_id' => $kpiAdm->id,
@@ -191,7 +195,7 @@ class KpiController extends Controller
                         'value_plan' => $request->get('value_planRep')[$i] ?? null,
                         'value_result' => 0,
                     ];
-    
+
                     KpiDetail::create($temp);
                 }
 
@@ -199,11 +203,11 @@ class KpiController extends Controller
                 $kpiMain = Kpi::create([
                     'user_id' => $user->id,
                     'kpi_type_id' => $request->kpi_type_id,
-                    'kpi_category_id' => 7,
+                    'kpi_category_id' => 3,
                     'date' => Carbon::createFromFormat('m/Y', $request->date)->format('Y-m-d'),
                     'percentage' => $request->percentageMain,
                 ]);
-    
+
                 for ($i = 0; $i < count($request->get('kpisMain')); $i++) {
                     $temp = [
                         'kpi_id' => $kpiMain->id,
@@ -212,7 +216,7 @@ class KpiController extends Controller
                         'value_plan' => $request->get('value_planMain')[$i] ?? null,
                         'value_result' => 0,
                     ];
-    
+
                     KpiDetail::create($temp);
                 }
             }
@@ -377,7 +381,8 @@ class KpiController extends Controller
     }
 
     public function exportMonthly(Request $request){
-        
-        return Excel::download(new KpiMonthlyExport($request->date), 'KPI_'. auth()->user()->divisi->name . '_' . $request->date . '.xlsx');
+        $divisi = Divisi::where('id', $request->divisi_id)->first();
+
+        return Excel::download(new KpiMonthlyExport($request->date, $request->divisi_id ?? auth()->user()->divisi_id), 'KPI_'. (auth()->user()->role_id == 1 ? $divisi->name : auth()->user()->divisi->name) . '_' . $request->date . '.xlsx');
     }
 }

@@ -6,39 +6,90 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header bg-dark">
+                        <div class="card-header">
                             <div class="row d-inline-flex">
                                 @switch($title)
                                     @case('Role')
-                                        <h3 class="card-title">Role Setting</h3>
-                                        <button type="button" data-toggle="modal" data-target="#addRole"
-                                            class="badge bg-success mx-3 elevation-0">Add</button>
+                                        <h3 class="card-title"><strong>Role Setting</strong></h3>
                                     @break
 
                                     @case('Divisi')
-                                        <h3 class="card-title">Divisi Setting</h3>
-                                        <button type="button" data-toggle="modal" data-target="#addDivisi"
-                                            class="badge bg-success mx-3 elevation-0">Add</button>
+                                        <h3 class="card-title"><strong>Divisi Setting</strong></h3>
                                     @break
 
                                     @case('Task Category')
-                                        <h3 class="card-title">Task Category Setting</h3>
-                                        <button type="button" data-toggle="modal" data-target="#addTaskCategory"
-                                            class="badge bg-success mx-3 elevation-0">Add</button>
+                                        <h3 class="card-title"><strong>Task Category Setting</strong></h3>
                                     @break
 
                                     @case('Task Status')
-                                        <h3 class="card-title">Task Status Setting</h3>
-                                        <button type="button" data-toggle="modal" data-target="#addTaskStatus"
-                                            class="badge bg-success mx-3 elevation-0">Add</button>
+                                        <h3 class="card-title"><strong>Task Status Setting</strong></h3>
                                     @break
 
                                     @default
-                                        <h3 class="card-title">Area Setting</h3>
-                                        <button type="button" data-toggle="modal" data-target="#addArea"
-                                            class="badge bg-success mx-3 elevation-0">Add</button>
+                                        <h3 class="card-title"><strong>Area Setting</strong></h3>
                                 @endswitch
                             </div>
+                            @switch($title)
+                                @case('Role')
+                                    <div class="card-tools d-flex">
+                                        <div class="input-group input-group-sm" style="width: 40px;">
+                                            <div class="input-group-append">
+                                                <a href="#">
+                                                    <button class="btn btn-success" data-toggle="modal" data-target="#addRole"
+                                                    data-toggle="tooltip" data-placement="top" title="Add Role"><i class="fa fa-plus"></i></button>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @break
+                                @case('Divisi')
+                                    <div class="card-tools d-flex">
+                                        <div class="input-group input-group-sm" style="width: 40px;">
+                                            <div class="input-group-append">
+                                                <a href="#">
+                                                    <button data-toggle="modal" data-target="#addDivisi"
+                                                        class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Add Divisi"><i class="fa fa-plus"></i></button>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @break
+                                @case('Task Category')
+                                    <div class="card-tools d-flex">
+                                        <div class="input-group input-group-sm" style="width: 40px;">
+                                            <div class="input-group-append">
+                                                <a href="#">
+                                                    <button data-toggle="modal" data-target="#addTaskCategory"
+                                                        class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Add Task Category"><i class="fa fa-plus"></i></button>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @break
+                                @case('Task Status')
+                                    <div class="card-tools d-flex">
+                                        <div class="input-group input-group-sm" style="width: 40px;">
+                                            <div class="input-group-append">
+                                                <a href="#">
+                                                    <button data-toggle="modal" data-target="#addTaskStatus"
+                                                        class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Add Task Status"><i class="fa fa-plus"></i></button>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @break
+                                @default
+                                    <div class="card-tools d-flex">
+                                            <div class="input-group input-group-sm" style="width: 40px;">
+                                                <div class="input-group-append">
+                                                    <a href="#">
+                                                        <button data-toggle="modal" data-target="#addArea"
+                                                            class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Add Area"><i class="fa fa-plus"></i></button>
+                                                    </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                            @endswitch
                         </div>
                         @if ($message = Session::get('success'))
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -158,13 +209,13 @@
                             </div>
                             <div class="modal-body">
                                 <div class="mb-3 col-lg-12">
-                                    <label for="name" class="form-label">Nama Role</label>
+                                    <label for="name" class="form-label">Role Name</label>
                                     <input type="text" class="form-control" id="name" name="name" required>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Add</button>
+                                <button type="submit" class="btn btn-success">Add</button>
                             </div>
                         </form>
                     </div>
@@ -188,7 +239,7 @@
                             </div>
                             <div class="modal-body">
                                 <div class="mb-3 col-lg-12">
-                                    <label for="name" class="form-label">Nama Divisi</label>
+                                    <label for="name" class="form-label">Divisi Name</label>
                                     <input type="text" class="form-control" id="name" name="name" required>
                                 </div>
                                 <div class="mb-3 col-lg-12">
@@ -202,7 +253,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Add</button>
+                                <button type="submit" class="btn btn-success">Add</button>
                             </div>
                         </form>
 
@@ -227,13 +278,13 @@
                             </div>
                             <div class="modal-body">
                                 <div class="mb-3 col-lg-12">
-                                    <label for="task_category" class="form-label">Nama Task Category</label>
+                                    <label for="task_category" class="form-label">Task Category</label>
                                     <input type="text" class="form-control" id="task_category" name="task_category" required>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Add</button>
+                                <button type="submit" class="btn btn-success">Add</button>
                             </div>
                         </form>
                     </div>
@@ -257,13 +308,13 @@
                             </div>
                             <div class="modal-body">
                                 <div class="mb-3 col-lg-12">
-                                    <label for="task_status" class="form-label">Nama Task Status</label>
+                                    <label for="task_status" class="form-label">Task Status</label>
                                     <input type="text" class="form-control" id="task_status" name="task_status" required>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Add</button>
+                                <button type="submit" class="btn btn-success">Add</button>
                             </div>
                         </form>
                     </div>
@@ -286,13 +337,13 @@
                             </div>
                             <div class="modal-body">
                                 <div class="mb-3 col-lg-12">
-                                    <label for="name" class="form-label">Nama Area</label>
+                                    <label for="name" class="form-label">Area Name</label>
                                     <input type="text" class="form-control" id="name" name="name" required>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Add</button>
+                                <button type="submit" class="btn btn-success">Add</button>
                             </div>
                         </form>
 

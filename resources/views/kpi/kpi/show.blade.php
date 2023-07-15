@@ -20,7 +20,7 @@
                         <div class="card card-white">
                             <!-- /.card-header -->
                             <div class="card-header">
-                                <h3 class="card-title">SHOW KPI &raquo; {{ $kpi->user->position->name ?? '' }}</h3>
+                                <h3 class="card-title"><strong>SHOW KPI &raquo;</strong> {{ $kpi->user->position->name ?? '' }}</h3>
                                 <div class="card-tools">
                                 <a href="/kpi/{{ $kpi->id }}/edit" data-toggle="tooltip" data-placement="top" title="Edit KPI" class="btn btn-tool btn-sm" id="btn-edit-kpi" data-kpi-id="{{ $kpi->id }}">
                                     <i class="fas fa-edit"></i>

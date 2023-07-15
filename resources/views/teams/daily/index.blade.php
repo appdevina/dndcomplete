@@ -8,23 +8,9 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header bg-dark">
+                            <div class="card-header">
                                 <div class="row d-inline-flex">
-                                    <h3 class="card-title">Team's Daily</h3>
-                                    <a href="#">
-                                        <button class="badge bg-success mx-3 elevation-0" data-toggle="modal"
-                                            data-target="#addDaily">+ ADD</button>
-                                    </a>
-                                    @if (auth()->user()->role->name != 'STAFF')
-                                        <a href="#">
-                                            <button class="badge bg-info mx-3 elevation-0" data-toggle="modal"
-                                                data-target="#sendDaily">+ SEND TASK</button>
-                                        </a>
-                                        <a href="#">
-                                            <button class="badge bg-primary mx-3 elevation-0" data-toggle="modal"
-                                                data-target="#sendDailyBulk">+ SEND TASK BULK</button>
-                                        </a>
-                                    @endif
+                                    <h3 class="card-title"><strong>Team's Daily</strong></h3>
                                 </div>
                                 <div class="card-tools d-flex">
                                     <div class="input-group input-group-sm mr-3" style="width: 220px;">
@@ -43,7 +29,7 @@
                                             </div>
                                         </form>
                                     </div>
-                                    <div class="input-group input-group-sm mr-3" style="width: 220px;">
+                                    <div class="input-group input-group-sm mr-3 ml-2" style="width: 390px;">
                                         <form action="/teams/daily" class="d-inline-flex">
                                             <select class="custom-select col-lg-10 mx-2" name="tasktype" id="tasktype"
                                                 required>
@@ -59,6 +45,26 @@
                                                 </button>
                                             </div>
                                         </form>
+                                        <div class="input-group-append ml-5">
+                                            <a href="#">
+                                                <button class="btn btn-success" data-toggle="modal"
+                                                    data-target="#addDaily" data-toggle="tooltip" data-placement="top" title="Add Daily"><i class="fas fa-plus"></i></button>
+                                            </a>
+                                        </div>
+                                        @if (auth()->user()->role_id != 2)
+                                            <div class="input-group-append ml-1">
+                                                <a href="#">
+                                                    <button class="btn btn-info" data-toggle="modal"
+                                                        data-target="#sendDaily" data-toggle="tooltip" data-placement="top" title="Send Daily"><i class="fas fa-paper-plane"></i></button>
+                                                </a>
+                                            </div>
+                                            <div class="input-group-append ml-1">
+                                                <a href="#">
+                                                    <button class="btn btn-primary" data-toggle="modal"
+                                                        data-target="#sendDailyBulk" data-toggle="tooltip" data-placement="top" title="Send Daily Bulk"><i class="fas fa-mail-bulk"></i></button>
+                                                </a>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -210,9 +216,9 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header bg-dark">
+                            <div class="card-header">
                                 <div class="row d-inline-flex">
-                                    <h3 class="card-title">Log Activity</h3>
+                                    <h3 class="card-title"><strong>Log Activity</strong></h3>
                                 </div>
                                 <div class="card-tools d-flex">
                                     <div class="input-group input-group-sm mr-3" style="width: 220px;">

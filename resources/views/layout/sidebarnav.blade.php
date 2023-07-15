@@ -57,7 +57,7 @@
                             <a href={{ auth()->user()->role_id == 1 ? '/admin/daily' : '/daily' }}
                                 class="nav-link {{ $active === 'daily' ? 'active' : '' }}"
                                 style="{{ $active === 'daily' ? 'background-color: #917FB3; color: white;' : '' }}">
-                                <img src="{{ asset('assets') }}/daily.png" width='25' height='25' class='mr-1'>
+                                <img src="{{ asset('assets') }}/daily-white.png" width='25' height='25' class='mr-1'>
                                 <p>Daily</p>
                             </a>
                         </li>
@@ -67,7 +67,7 @@
                             <a href={{ auth()->user()->role_id == 1 ? '/admin/weekly' : '/weekly' }}
                                 class="nav-link {{ $active === 'weekly' ? 'active' : '' }}"
                                 style="{{ $active === 'weekly' ? 'background-color: #917FB3; color: white;' : '' }}">
-                                <img src="{{ asset('assets') }}/week.png" width='25' height='25' class='mr-1'>
+                                <img src="{{ asset('assets') }}/week-white.png" width='25' height='25' class='mr-1'>
                                 <p>Weekly</p>
                             </a>
                         </li>
@@ -78,7 +78,7 @@
                             <a href={{ auth()->user()->role_id == 1 ? '/admin/monthly' : '/monthly' }}
                                 class="nav-link {{ $active === 'monthly' ? 'active' : '' }}"
                                 style="{{ $active === 'monthly' ? 'background-color: #917FB3; color: white;' : '' }}">
-                                <img src="{{ asset('assets') }}/monthly.png" width='25' height='25' class='mr-1'>
+                                <img src="{{ asset('assets') }}/monthly-white.png" width='25' height='25' class='mr-1'>
                                 <p>Monthly</p>
                             </a>
                         </li>
@@ -219,7 +219,7 @@
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
                             <a href="/teams/daily" class="nav-link {{ $active === 'teams-daily' ? 'active' : '' }}" style="{{ $active === 'teams-daily' ? 'background-color: #917FB3; color: white;' : '' }}">
-                                <img src="{{ asset('assets') }}/daily.png" width='25' height='25' class='mr-1'>
+                                <img src="{{ asset('assets') }}/daily-white.png" width='25' height='25' class='mr-1'>
                                 <p>Team's Daily</p>
                             </a>
                             </li>
@@ -227,7 +227,7 @@
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
                             <a href="/teams/weekly" class="nav-link {{ $active === 'teams-weekly' ? 'active' : '' }}" style="{{ $active === 'teams-weekly' ? 'background-color: #917FB3; color: white;' : '' }}">
-                                <img src="{{ asset('assets') }}/week.png" width='25' height='25' class='mr-1'>
+                                <img src="{{ asset('assets') }}/week-white.png" width='25' height='25' class='mr-1'>
                                 <p>Team's Weekly</p>
                             </a>
                             </li>

@@ -7,10 +7,10 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-12">
-                        <div class="card card-dark">
+                        <div class="card">
                             <!-- /.card-header -->
                             <div class="card-header">
-                                <h3 class="card-title">REPORT ACTUAL &raquo; {{ $monthly->task }}</h3>
+                                <h3 class="card-title"><strong>REPORT ACTUAL &raquo;</strong> {{ $monthly->task }}</h3>
                             </div>
                             @if ($message = Session::get('error'))
                                 <div class="alert alert-danger alert-dismissible fade show" role="alert">

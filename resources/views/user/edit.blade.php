@@ -7,10 +7,10 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-12">
-                        <div class="card card-dark">
+                        <div class="card">
                             <!-- /.card-header -->
                             <div class="card-header">
-                                <h3 class="card-title">EDIT &raquo; {{ $user->nama_lengkap }}</h3>
+                                <h3 class="card-title"><strong>EDIT &raquo;</strong> {{ $user->nama_lengkap }}</h3>
                             </div>
                             <div class="card-body">
                                 <form action="/user/update/{{ $user->id }}" method="POST">
@@ -122,7 +122,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="submit" class="btn btn-success mt-3">Update</button>
+                                    <div class="col-lg-12" style="text-align: right;">
+                                        <button type="submit" class="btn btn-success mt-3" style="width: 100%; background-color: #917FB3; border-color: #917FB3;">Update</button>
+                                    </div>
                                 </form>
                             </div>
                         </div>
