@@ -383,8 +383,6 @@ $(document).ready(function () {
 
     $("#tanggal").daterangepicker();
 
-    console.log("cek");
-
     $(document).ready(function () {
         $type = $(".addtype");
         $user = $(".adduser");
@@ -500,10 +498,25 @@ $(document).ready(function () {
                     '<tr id="rowkpi' +
                         kpiindex +
                         '"><td><input type="text" placeholder="KPI description .." class="form-control" name="kpis[]" style="width: 100%;"></td>' +
-                        '<td><select class="form-control" name="count_type[]" required"><option value="NON">NON</option><option value="RESULT">RESULT</option></select></td><td><input type="number" placeholder="value_plan" class="form-control" name="value_plan[]" min="1" style="width: 110px;"></td><td><a href="#formreplacekpi" class="badge bg-danger btn_remove" id="kpi' +
+                        '<td><input data-format="dd/mm/yyyy" type="text" placeholder="Start date .." class="form-control start-date" name="start[]" id="start' +
+                        kpiindex +
+                        '"></td><td><input data-format="dd/mm/yyyy" type="text" placeholder="End date .." class="form-control end-date" name="end[]" id="end' +
+                        kpiindex +
+                        '"></td><td><select class="form-control" name="count_type[]" required"><option value="NON">NON</option><option value="RESULT">RESULT</option></select></td><td><input type="number" placeholder="value_plan" class="form-control" name="value_plan[]" min="1" style="width: 110px;"></td><td><a href="#formreplacekpi" class="badge bg-danger btn_remove" id="kpi' +
                         kpiindex +
                         '"><span class="fas fa-minus"></span></a></td></tr>'
                 );
+
+                $("#start" + kpiindex).datepicker({
+                    dateFormat: "yy-mm-dd",
+                    format: "dd/mm/yyyy",
+                });
+
+                $("#end" + kpiindex).datepicker({
+                    dateFormat: "yy-mm-dd",
+                    format: "dd/mm/yyyy",
+                });
+
                 // Initialize Select2 on the select element
                 $("#selectkpi" + kpiindex).select2({
                     placeholder: "Search for a kpi",
@@ -536,13 +549,28 @@ $(document).ready(function () {
             url: `${baseUrl}/kpidescription/get?kpi_category_id=${kpi_category_id}`,
             success: function (data) {
                 $("#tablekpiRep").append(
-                    '<tr id="rowkpi' +
+                    '<tr id="rowkpiRep' +
                         kpiindexRep +
                         '"><td><input type="text" placeholder="KPI description .." class="form-control" name="kpisRep[]" style="width: 100%;"></td>' +
-                        '<td><select class="form-control" name="count_typeRep[]" required"><option value="NON">NON</option><option value="RESULT">RESULT</option></select></td><td><input type="number" placeholder="value_plan" class="form-control" name="value_planRep[]" min="1" style="width: 110px;"></td><td><a href="#formreplacekpi" class="badge bg-danger btn_remove" id="kpi' +
+                        '<td><input data-format="dd/mm/yyyy" type="text" placeholder="Start date .." class="form-control start-date" name="startRep[]" id="startRep' +
+                        kpiindexRep +
+                        '"></td><td><input data-format="dd/mm/yyyy" type="text" placeholder="End date .." class="form-control end-date" name="endRep[]" id="endRep' +
+                        kpiindexRep +
+                        '"></td><td><select class="form-control" name="count_typeRep[]" required"><option value="NON">NON</option><option value="RESULT">RESULT</option></select></td><td><input type="number" placeholder="value_plan" class="form-control" name="value_planRep[]" min="1" style="width: 110px;"></td><td><a href="#formreplacekpi" class="badge bg-danger btn_remove" id="kpiRep' +
                         kpiindexRep +
                         '"><span class="fas fa-minus"></span></a></td></tr>'
                 );
+
+                $("#startRep" + kpiindexRep).datepicker({
+                    dateFormat: "yy-mm-dd",
+                    format: "dd/mm/yyyy",
+                });
+
+                $("#endRep" + kpiindexRep).datepicker({
+                    dateFormat: "yy-mm-dd",
+                    format: "dd/mm/yyyy",
+                });
+
                 kpiindexRep++;
             },
         });
@@ -559,16 +587,36 @@ $(document).ready(function () {
             url: `${baseUrl}/kpidescription/get?kpi_category_id=${kpi_category_id}`,
             success: function (data) {
                 $("#tablekpiMain").append(
-                    '<tr id="rowkpi' +
+                    '<tr id="rowkpiMain' +
                         kpiindexMain +
                         '"><td><input type="text" placeholder="KPI description .." class="form-control" name="kpisMain[]" style="width: 100%;"></td>' +
-                        '<td><select class="form-control" name="count_typeMain[]" required"><option value="NON">NON</option><option value="RESULT">RESULT</option></select></td><td><input type="number" placeholder="value_plan" class="form-control" name="value_planMain[]" min="1" style="width: 110px;"></td><td><a href="#formreplacekpi" class="badge bg-danger btn_remove" id="kpi' +
+                        '<td><input data-format="dd/mm/yyyy" type="text" placeholder="Start date .." class="form-control start-date" name="startMain[]" id="startMain' +
+                        kpiindexMain +
+                        '"></td><td><input data-format="dd/mm/yyyy" type="text" placeholder="End date .." class="form-control end-date" name="endMain[]" id="endMain' +
+                        kpiindexMain +
+                        '"></td><td><select class="form-control" name="count_typeMain[]" required"><option value="NON">NON</option><option value="RESULT">RESULT</option></select></td><td><input type="number" placeholder="value_plan" class="form-control" name="value_planMain[]" min="1" style="width: 110px;"></td><td><a href="#formreplacekpi" class="badge bg-danger btn_remove" id="kpiMain' +
                         kpiindexMain +
                         '"><span class="fas fa-minus"></span></a></td></tr>'
                 );
+
+                $("#startMain" + kpiindexMain).datepicker({
+                    dateFormat: "yy-mm-dd",
+                    format: "dd/mm/yyyy",
+                });
+
+                $("#endMain" + kpiindexMain).datepicker({
+                    dateFormat: "yy-mm-dd",
+                    format: "dd/mm/yyyy",
+                });
+
                 kpiindexMain++;
             },
         });
+    });
+
+    $(document).on("click", ".btn_remove", function () {
+        var button_id = $(this).attr("id");
+        $("#row" + button_id + "").remove();
     });
 
     $("#monthpicker").datepicker({

@@ -697,6 +697,8 @@ class KpiDashboardController extends Controller
             $currentDate = Carbon::now();
             $detailKpi = KpiDetail::findOrFail($request->id);
             $kpiDate = Carbon::parse($detailKpi->kpi->date);
+            $startDate = Carbon::parse($detailKpi->start);
+            $endDate = Carbon::parse($detailKpi->end);
 
             // FOR TESTING PURPOSES
             // $currentDate = Carbon::createFromFormat('Y-m-d', '2023-08-07');
@@ -709,6 +711,11 @@ class KpiDashboardController extends Controller
             }
 
             if (auth()->user()->role_id != 1) {
+                if ($detailKpi->start != null && $detailKpi->end != null) {
+                    if ($currentDate < $startDate || $currentDate > $endDate) {
+                        return redirect()->back()->with(['error' => 'Cannot change KPI out of the given range date!']);
+                    }
+                }
                 if ($currentDate > $kpiDate->addMonth(1)->firstOfMonth()->addDays(7)) {
                     return redirect()->back()->with(['error' => 'Cannot change KPI after 7 days of next month!']);
                 }

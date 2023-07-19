@@ -74,10 +74,13 @@
                                                 <table class="table table-head-fixed text-nowrap">
                                                     <thead>
                                                         <tr>
-                                                            <th style="width:70%;">KPI Desc</th>
+                                                            <th style="width:45%;">KPI Desc</th>
+                                                            <th style="width:10%;">Start Date</th>
+                                                            <th style="width:10%;">End Date</th>
+                                                            <th style="width:10%;">End Date</th>
                                                             <th style="width:10%;">Count Type</th>
                                                             <th style="width:10%;">Value Plan</th>
-                                                            <th style="width:10%;">
+                                                            <th style="width:5%;">
                                                                 <a href="#addkpi" class="badge bg-success" id="addKpi">Add <span class="lnr lnr-plus-circle"></span></a>
                                                             </th>
                                                         </tr>
@@ -137,6 +140,20 @@ $(document).ready(function() {
                 var description = value.kpi_description.description;
                 var kpiDescription = value.kpi_description.description;
 
+                var startDate = value.start;
+                var formattedStartDate = "";
+                if (startDate !== null) {
+                    var startDateParts = startDate.split(' ')[0].split('-');
+                    var formattedStartDate = startDateParts[2] + '/' + startDateParts[1] + '/' + startDateParts[0];                
+                }
+
+                var endDate = value.end;
+                var formattedEndDate = "";
+                if (endDate !== null) {
+                    var endDateParts = endDate.split(' ')[0].split('-');
+                    var formattedEndDate = endDateParts[2] + '/' + endDateParts[1] + '/' + endDateParts[0];
+                }
+
                 var countTypeSelect =
                 '<select class="form-control" name="count_type[]" required>' +
                 '<option value="NON" ' +
@@ -148,14 +165,34 @@ $(document).ready(function() {
                 '</select>';
 
                 var valuePlanInput =
-                '<input type="number" placeholder="value_plan" class="form-control col-lg-4" name="value_plan[]" min="1" style="width: 250px;" value="' +
+                '<input type="number" placeholder="value_plan" class="form-control" name="value_plan[]" min="1" style="width: 110px;" value="' +
                 value.value_plan +
                 '">';
+
+                if (formattedStartDate !== "") {
+                    startDate =
+                        '<input data-format="dd/mm/yyyy" type="text" class="form-control start-date" name="start[]" id="start" value="' + formattedStartDate + '">';
+                } else {
+                    startDate =
+                        '<input data-format="dd/mm/yyyy" type="text" class="form-control start-date" name="start[]" id="start">';
+                }
+
+                if (formattedEndDate !== "") {
+                    endDate =
+                        '<input data-format="dd/mm/yyyy" type="text" class="form-control end-date" name="end[]" id="end" value="' + formattedEndDate + '">';
+                } else {
+                    endDate =
+                        '<input data-format="dd/mm/yyyy" type="text" class="form-control end-date" name="end[]" id="end">';
+                }
 
                 $("#tablekpi").append(
                     '<tr class="kpi-row"><td><input type="text" placeholder="KPI description .." class="form-control" name="kpis[]" style="width: 100%;" value="' +
                     description +
                     '"></td><td>' +
+                    startDate +
+                    '</td><td>' +
+                    endDate +
+                    '</td><td>' +
                     countTypeSelect +
                     '</td><td>' +
                     valuePlanInput +
@@ -163,6 +200,16 @@ $(document).ready(function() {
                     index +
                     '"><span class="fas fa-minus"></span></a></td></tr>'
                 );
+
+                $("#start").datepicker({
+                    dateFormat: "yy-mm-dd",
+                    format: "dd/mm/yyyy",
+                });
+
+                $("#end").datepicker({
+                    dateFormat: "yy-mm-dd",
+                    format: "dd/mm/yyyy",
+                });
             });
         },
         error: function (error) {

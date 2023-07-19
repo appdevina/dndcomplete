@@ -15,7 +15,15 @@
                             <strong>{{ $message }}</strong>
                         </div>
                     @endif
-                    <h3><strong>Add KPI</strong></h3>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><strong>Add KPI</strong></h3>
+                        </div>
+                        <div class="card-body">
+                            <p>Untuk KPI yang memiliki <strong>tenggat waktu</strong>, dapat mengisikan Start Date & End Date. Jika tidak memiliki tenggat waktu, Start Date dan End Date dapat dikosongkan.</p>
+                            <p>Untuk KPI yang memiliki <strong>target angka/nominal</strong>, dapat memilih Count Type = RESULT dan isikan angka target / Value Plannya. Jika tidak memiliki angka target, dapat memilih Count Type = NON dan kosongkan Value Plannya.</p>
+                        </div>
+                    </div>
                     <form action="/kpi" method="POST" enctype="multipart/form-data">
                         <div class="card">
                             <!-- /.card-header -->
@@ -56,7 +64,9 @@
                                                     <table class="table table-head-fixed text-nowrap">
                                                         <thead>
                                                             <tr>
-                                                                <th style="width:70%;">KPI Desc</th>
+                                                                <th style="width:50%;">KPI Desc</th>
+                                                                <th style="width:10%;">Start Date</th>
+                                                                <th style="width:10%;">End Date</th>
                                                                 <th style="width:10%;">Count Type</th>
                                                                 <th style="width:10%;">Value Plan</th>
                                                                 <th style="width:10%;">
@@ -99,7 +109,9 @@
                                                     <table class="table table-head-fixed text-nowrap">
                                                         <thead>
                                                             <tr>
-                                                                <th style="width:70%;">KPI Desc</th>
+                                                                <th style="width:50%;">KPI Desc</th>
+                                                                <th style="width:10%;">Start Date</th>
+                                                                <th style="width:10%;">End Date</th>
                                                                 <th style="width:10%;">Count Type</th>
                                                                 <th style="width:10%;">Value Plan</th>
                                                                 <th style="width:10%;">
@@ -142,7 +154,9 @@
                                                     <table class="table table-head-fixed text-nowrap">
                                                         <thead>
                                                             <tr>
-                                                                <th style="width:70%;">KPI Desc</th>
+                                                                <th style="width:50%;">KPI Desc</th>
+                                                                <th style="width:10%;">Start Date</th>
+                                                                <th style="width:10%;">End Date</th>
                                                                 <th style="width:10%;">Count Type</th>
                                                                 <th style="width:10%;">Value Plan</th>
                                                                 <th style="width:10%;">

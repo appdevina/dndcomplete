@@ -79,16 +79,18 @@ class KpiController extends Controller
             }
         }
 
-        // KALAU ROLE MANAGER BUAT KPI UNTUK ROLE COORDINATOR SAJA
+        // KALAU ROLE MANAGER BUAT KPI UNTUK ROLE COORDINATOR & MANAGER
         if (auth()->user()->role_id == 5) {
             $positions = Position::whereHas('user', function ($q) {
-                $q->where('role_id', 4);
+                $q->whereIn('role_id', [4,5])
+                ->where('divisi_id', auth()->user()->divisi_id);
             })
             ->get();
         // KALAU ROLE MANAGER BUAT KPI UNTUK ROLE TEAM LEADER & STAFF
         } else if (auth()->user()->role_id == 4) {
             $positions = Position::whereHas('user', function ($q) {
-                $q->whereIn('role_id', [3,2]);
+                $q->whereIn('role_id', [3,2])
+                ->where('divisi_id', auth()->user()->divisi_id);
             })
             ->get();
         } else {
@@ -116,6 +118,7 @@ class KpiController extends Controller
     public function store(Request $request)
     {
         try {
+            // dd($request->all());
             if ($request->percentageMain + $request->percentageAdm + $request->percentageRep != 100) {
                 return redirect()->back()->with(['error' => 'Total percentage must be 100 !']);
             }
@@ -173,6 +176,8 @@ class KpiController extends Controller
                         'count_type' => $request->get('count_type')[$i],
                         'value_plan' => $request->get('value_plan')[$i] ?? null,
                         'value_result' => 0,
+                        'start' => $request->get('start')[$i] == null ? null : Carbon::createFromFormat('d/m/Y', $request->get('start')[$i])->format('Y-m-d'),
+                        'end' => $request->get('end')[$i] == null ? null : Carbon::createFromFormat('d/m/Y', $request->get('end')[$i])->format('Y-m-d'),
                     ];
 
                     KpiDetail::create($temp);
@@ -194,6 +199,8 @@ class KpiController extends Controller
                         'count_type' => $request->get('count_typeRep')[$i],
                         'value_plan' => $request->get('value_planRep')[$i] ?? null,
                         'value_result' => 0,
+                        'start' => $request->get('startRep')[$i] == null ? null : Carbon::createFromFormat('d/m/Y', $request->get('startRep')[$i])->format('Y-m-d'),
+                        'end' => $request->get('endRep')[$i] == null ? null : Carbon::createFromFormat('d/m/Y', $request->get('endRep')[$i])->format('Y-m-d'),
                     ];
 
                     KpiDetail::create($temp);
@@ -215,6 +222,8 @@ class KpiController extends Controller
                         'count_type' => $request->get('count_typeMain')[$i],
                         'value_plan' => $request->get('value_planMain')[$i] ?? null,
                         'value_result' => 0,
+                        'start' => $request->get('startMain')[$i] == null ? null : Carbon::createFromFormat('d/m/Y', $request->get('startMain')[$i])->format('Y-m-d'),
+                        'end' => $request->get('endMain')[$i] == null ? null : Carbon::createFromFormat('d/m/Y', $request->get('endMain')[$i])->format('Y-m-d'),
                     ];
 
                     KpiDetail::create($temp);
@@ -250,6 +259,12 @@ class KpiController extends Controller
      */
     public function edit(Kpi $kpi)
     {
+        // KALAU COORDINATOR GABISA CHANGE KPI PUNYA SENDIRI
+        if (auth()->user()->role_id == 4) {
+            if ($kpi->user_id == auth()->user()->id) {
+                return redirect()->back()->with(['error' => 'Request your supervisor to change KPI !']);
+            }
+        }
         $kpidescs = KpiDescription::all();
 
         return view('kpi.kpi.edit', [
@@ -289,7 +304,8 @@ class KpiController extends Controller
                     'kpi_id' => $kpi->id,
                     'count_type' => $request->get('count_type')[$i],
                     'value_plan' => $request->get('value_plan')[$i] ?? null,
-                    // 'value_result' => $request->get('value_result')[$i] ?? 0,
+                    'start' => $request->get('start')[$i] == null ? null : Carbon::createFromFormat('d/m/Y', $request->get('start')[$i])->format('Y-m-d'),
+                    'end' => $request->get('end')[$i] == null ? null : Carbon::createFromFormat('d/m/Y', $request->get('end')[$i])->format('Y-m-d'),
                 ];
 
                 // Check if the KpiDescription with the given description already exists

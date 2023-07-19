@@ -34,6 +34,8 @@
                                         <tr>
                                             <th>NO</th>
                                             <th>KPI</th>
+                                            <th>Start</th>
+                                            <th>End</th>
                                             <th>Count Type</th>
                                             <th>Value Plan</th>
                                             <th>Value Actual</th>
@@ -44,6 +46,8 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $detail->kpi_description->description ?? ''}}</td>
+                                                <td>{{ $detail->start == null ? ' ' : Carbon\Carbon::parse($detail->start)->format('d M Y') }}</td>
+                                                <td>{{ $detail->end == null ? ' ' : Carbon\Carbon::parse($detail->end)->format('d M Y') }}</td>
                                                 <td>{{ $detail->count_type }}</td>
                                                 <td>{{ $detail->value_plan }}</td>
                                                 <td>{{ $detail->value_actual }}</td>

@@ -95,6 +95,8 @@
                                                                     <tr>
                                                                         <th style="width: 2%;"></th>
                                                                         <th>KPI Description</th>
+                                                                        <th class="text-center" style="width: 10%;">Start</th>
+                                                                        <th class="text-center" style="width: 10%;">End</th>
                                                                         <th class="text-center" style="width: 10%;">Type</th>
                                                                         <th class="text-center" style="width: 10%;">Value Plan</th>
                                                                         <th class="text-center" style="width: 10%;">Value Actual</th>
@@ -172,6 +174,8 @@
                                                                                     @endif
                                                                                 </td>
                                                                                 <td>{{ $kpiDetail->kpi_description->description }}</td>
+                                                                                <td class="text-center">{{ $kpiDetail->start == null ? '-' : Carbon\Carbon::parse($kpiDetail->start)->format('d M Y') }}</td>
+                                                                                <td class="text-center">{{ $kpiDetail->end == null ? '-' : Carbon\Carbon::parse($kpiDetail->end)->format('d M Y') }}</td>
                                                                                 <td class="text-center">{{ $kpiDetail->count_type }}</td>
                                                                                 <td class="text-center">{{ $kpiDetail->value_plan }}</td>
                                                                                 <td class="text-center">{{ $kpiDetail->value_actual }}</td>
