@@ -68,7 +68,7 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $kpi->user->position->name ?? '-' }}</td>
                                             <td>{{ $kpi->user->nama_lengkap }}</td>
-                                            <td>{{ $kpi->kpi_category->name }}</td>
+                                            <td>{{ $kpi->kpi_category->name ?? '-' }}</td>
                                             <td>{{ $kpi->kpi_type->name }}</td>
                                             <td>
                                                 @if ($kpi->kpi_type->name === 'DAILY')

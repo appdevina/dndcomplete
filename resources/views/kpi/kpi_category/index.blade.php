@@ -19,9 +19,9 @@
                         <div class="card-header bg-white">
                             <h3 class="card-title"><strong>KPI Category</strong></h3>
                             <div class="card-tools">
-                                <a data-toggle="modal" data-target="#addKPICategory" class="btn btn-tool btn-sm">
+                                {{-- <a data-toggle="modal" data-target="#addKPICategory" class="btn btn-tool btn-sm">
                                     <i class="fas fa-plus"></i>
-                                </a>
+                                </a> --}}
                             </div>
                         </div>
                         <!-- /.card-header -->
@@ -43,9 +43,9 @@
                                                 <a href="/kpicategory/{{ $kpic->id }}/edit" style="color: orange;">
                                                     <span><i class="fas fa-edit"></i></span>
                                                 </a>
-                                                <a href="/kpicategory/{{ $kpic->id }}/delete" style="color: red;" onclick="return confirm('Sure to delete data ?')">
+                                                {{-- <a href="/kpicategory/{{ $kpic->id }}/delete" style="color: red;" onclick="return confirm('Sure to delete data ?')">
                                                     <span><i class="fas fa-trash"></i></span>
-                                                </a>
+                                                </a> --}}
                                             </td>
                                         </tr>
                                     @endforeach

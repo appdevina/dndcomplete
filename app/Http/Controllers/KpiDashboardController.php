@@ -684,6 +684,8 @@ class KpiDashboardController extends Controller
             ->get();
         } else {
             $users = User::where('divisi_id', auth()->user()->divisi_id)
+            ->whereIn('role_id', [2, 3])
+            ->orWhere('id', auth()->user()->id)
             ->orderBy('nama_lengkap')
             ->get();
         }

@@ -16,7 +16,7 @@
                                 <form action="/position/{{ $position->id }}/update" method="POST">
                                     @csrf
                                     <div class="mb-3 col-lg-6">
-                                        <label for="name" class="form-label">Type</label>
+                                        <label for="name" class="form-label">Position</label>
                                         <input type="text" class="form-control" name="name"
                                             value="{{ $position->name }}" required>
                                     </div>

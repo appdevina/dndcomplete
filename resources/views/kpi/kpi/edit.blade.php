@@ -65,7 +65,7 @@
                                     </div>
                                     <div class="mb-3 col-lg-12">
                                         <label for="percentage" class="form-label">Percentage %</label>
-                                        <input type="percentage" class="form-control" name="percentage" value="{{ $kpi->percentage }}" required>
+                                        <input type="number" class="form-control" name="percentage" value="{{ $kpi->percentage }}" required>
                                     </div>
                                     <br>
                                     <div>
@@ -144,7 +144,7 @@ $(document).ready(function() {
                 var formattedStartDate = "";
                 if (startDate !== null) {
                     var startDateParts = startDate.split(' ')[0].split('-');
-                    var formattedStartDate = startDateParts[2] + '/' + startDateParts[1] + '/' + startDateParts[0];                
+                    var formattedStartDate = startDateParts[2] + '/' + startDateParts[1] + '/' + startDateParts[0];
                 }
 
                 var endDate = value.end;
@@ -171,18 +171,18 @@ $(document).ready(function() {
 
                 if (formattedStartDate !== "") {
                     startDate =
-                        '<input data-format="dd/mm/yyyy" type="text" class="form-control start-date" name="start[]" id="start" value="' + formattedStartDate + '">';
+                        '<input data-format="dd/mm/yyyy" type="text" class="form-control start-date" name="start[]" id="start_' + kpiDetailId + '" value="' + formattedStartDate + '">';
                 } else {
                     startDate =
-                        '<input data-format="dd/mm/yyyy" type="text" class="form-control start-date" name="start[]" id="start">';
+                        '<input data-format="dd/mm/yyyy" type="text" class="form-control start-date" name="start[]" id="start_' + kpiDetailId + '">';
                 }
 
                 if (formattedEndDate !== "") {
                     endDate =
-                        '<input data-format="dd/mm/yyyy" type="text" class="form-control end-date" name="end[]" id="end" value="' + formattedEndDate + '">';
+                        '<input data-format="dd/mm/yyyy" type="text" class="form-control end-date" name="end[]" id="end_' + kpiDetailId + '" value="' + formattedEndDate + '">';
                 } else {
                     endDate =
-                        '<input data-format="dd/mm/yyyy" type="text" class="form-control end-date" name="end[]" id="end">';
+                        '<input data-format="dd/mm/yyyy" type="text" class="form-control end-date" name="end[]" id="end_' + kpiDetailId + '">';
                 }
 
                 $("#tablekpi").append(
@@ -201,12 +201,12 @@ $(document).ready(function() {
                     '"><span class="fas fa-minus"></span></a></td></tr>'
                 );
 
-                $("#start").datepicker({
+                $("#start_" + kpiDetailId).datepicker({
                     dateFormat: "yy-mm-dd",
                     format: "dd/mm/yyyy",
                 });
 
-                $("#end").datepicker({
+                $("#end_" + kpiDetailId).datepicker({
                     dateFormat: "yy-mm-dd",
                     format: "dd/mm/yyyy",
                 });

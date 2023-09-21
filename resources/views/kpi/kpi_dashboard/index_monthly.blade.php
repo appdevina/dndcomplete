@@ -204,7 +204,7 @@
                                             {{-- KPIs by Category --}}
                                             <div>
                                                 <div class="timeline-item">
-                                                    <h3 class="timeline-header"><strong>YOUR RESULTS !</strong></h3>
+                                                    <h3 class="timeline-header"><strong>RESULTS :</strong></h3>
                                                     <div class="table-responsive">
                                                         <table class="table">
                                                             <thead>

@@ -51,7 +51,7 @@ class UserController extends Controller
             'areas' => $areas,
             'title' => 'Create User',
             'active' => 'user',
-            'positions' => Position::all(),
+            'positions' => Position::orderBy('name')->get(),
         ]);
     }
 
@@ -122,7 +122,7 @@ class UserController extends Controller
             'divisis' => Divisi::orderBy('name')->get(),
             'roles' => Role::orderBy('name')->get(),
             'approvals' => User::whereIn('role_id', [3, 4, 5, 6])->withTrashed()->get(),
-            'positions' => Position::all(),
+            'positions' => Position::orderBy('name')->get(),
         ]);
     }
 

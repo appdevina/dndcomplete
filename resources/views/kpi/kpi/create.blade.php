@@ -45,7 +45,7 @@
                                             </select>
                                         </div>
                                         <div class="mb-3 col-lg-12">
-                                            <label for="date" class="form-label">Date</label>
+                                            <label for="date" class="form-label">Month</label>
                                             <input type="text" data-format="mm/yyyy" class="form-control" id="monthpicker" name="date" required>
                                         </div>
                                         <div class="mb-3 col-lg-12">
@@ -55,7 +55,7 @@
                                         </div>
                                         <div class="mb-3 col-lg-12">
                                             <label for="percentage" class="form-label">Percentage %</label>
-                                            <input type="percentage" class="form-control" name="percentageMain" required>
+                                            <input type="number" class="form-control" name="percentageMain" required>
                                         </div>
                                         <br>
                                         <div>
@@ -100,7 +100,7 @@
                                         </div>
                                         <div class="mb-3 col-lg-12">
                                             <label for="percentage" class="form-label">Percentage %</label>
-                                            <input type="percentage" class="form-control" name="percentageAdm" required>
+                                            <input type="number" class="form-control" name="percentageAdm" required>
                                         </div>
                                         <br>
                                         <div>
@@ -145,7 +145,7 @@
                                         </div>
                                         <div class="mb-3 col-lg-12">
                                             <label for="percentage" class="form-label">Percentage %</label>
-                                            <input type="percentage" class="form-control" name="percentageRep" required>
+                                            <input type="number" class="form-control" name="percentageRep" required>
                                         </div>
                                         <br>
                                         <div>

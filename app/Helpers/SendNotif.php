@@ -61,7 +61,7 @@ class SendNotif
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=utf-8', 'Authorization: Basic NTJmZGQ0MWYtM2NhOS00ZDk5LThjMGYtNTBiZmYxZDVlYTRm'));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=utf-8', 'Authorization: Basic MmVjNWQ3ODgtYWI4Mi00MGI0LWE2MTEtY2Q3OTJiNjdlMTkx'));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_HEADER, FALSE);
         curl_setopt($ch, CURLOPT_POST, TRUE);

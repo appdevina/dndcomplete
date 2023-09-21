@@ -79,14 +79,21 @@ class KpiController extends Controller
             }
         }
 
+        // BU VEGA
+        if (auth()->user()->role_id == 5 && auth()->user()->divisi_id == 3) {
+            $positions = Position::whereHas('user', function ($q) {
+                $q->whereIn('role_id', [4,5,3,2])
+                ->where('divisi_id', auth()->user()->divisi_id);
+            })
+            ->get();
         // KALAU ROLE MANAGER BUAT KPI UNTUK ROLE COORDINATOR & MANAGER
-        if (auth()->user()->role_id == 5) {
+        } else if (auth()->user()->role_id == 5 && auth()->user()->divisi_id != 3) {
             $positions = Position::whereHas('user', function ($q) {
                 $q->whereIn('role_id', [4,5])
                 ->where('divisi_id', auth()->user()->divisi_id);
             })
             ->get();
-        // KALAU ROLE MANAGER BUAT KPI UNTUK ROLE TEAM LEADER & STAFF
+        // KALAU ROLE COORDINATOR BUAT KPI UNTUK ROLE TEAM LEADER & STAFF
         } else if (auth()->user()->role_id == 4) {
             $positions = Position::whereHas('user', function ($q) {
                 $q->whereIn('role_id', [3,2])
