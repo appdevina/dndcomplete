@@ -301,12 +301,16 @@ class KpiController extends Controller
             $kpi->percentage = $request->percentage;
             $kpi->save();
 
-            // Get the existing KpiDetail records associated with the current Kpi
-            $existingKpiDetails = KpiDetail::where('kpi_id', $kpi->id)->get();
+            $kpi = Kpi::with('kpi_detail')->find($kpi->id);
+
+            // Get the IDs of KpiDescriptions associated with the Kpi before the update
+            $existingKpiDescriptionsBeforeUpdate = $kpi->kpi_detail ? $kpi->kpi_detail->pluck('kpi_description_id')->toArray() : [];
 
             // Loop through the new request data
             for ($i = 0; $i < count($request->get('kpis')); $i++) {
                 $kpiDescription = $request->get('kpis')[$i];
+                $kpiDescriptionId = isset($request->get('kpi_description_id')[$i]) ? $request->get('kpi_description_id')[$i] : null;
+
                 $kpiDetailData = [
                     'kpi_id' => $kpi->id,
                     'count_type' => $request->get('count_type')[$i],
@@ -315,34 +319,52 @@ class KpiController extends Controller
                     'end' => $request->get('end')[$i] == null ? null : Carbon::createFromFormat('d/m/Y', $request->get('end')[$i])->format('Y-m-d'),
                 ];
 
-                // Check if the KpiDescription with the given description already exists
-                $existingKpiDescription = KpiDescription::where('description', $kpiDescription)->first();
+                // Check if $kpiDescriptionId exists in the list of existing KpiDescriptions before the update
+                if (in_array($kpiDescriptionId, $existingKpiDescriptionsBeforeUpdate)) {
+                    KpiDetail::where('kpi_description_id', $kpiDescriptionId)
+                    ->where('kpi_id', $kpi->id)
+                    ->update($kpiDetailData);
 
-                if ($existingKpiDescription) {
-                    // If it exists, update the existing record with new data
-                    $existingKpiDetail = $existingKpiDetails->where('kpi_description_id', $existingKpiDescription->id)->first();
-                    if ($existingKpiDetail) {
-                        $existingKpiDetail->update($kpiDetailData);
-                    } else {
-                        $kpiDetailData['kpi_description_id'] = $existingKpiDescription->id;
-                        KpiDetail::create($kpiDetailData);
-                    }
+                    KpiDescription::where('id', $kpiDescriptionId)
+                    ->update(['description' => $kpiDescription]);
+
                 } else {
-                    // If it doesn't exist, create a new KpiDescription and KpiDetail record
-                    $newKpiDescription = KpiDescription::create([
-                        'description' => $kpiDescription,
-                        'kpi_category_id' => $request->kpi_category_id,
+                    // Find or create the KpiDescription
+                    $newKpiDescription = KpiDescription::create(
+                        ['description' => $kpiDescription,
+                        'kpi_category_id' => $request->kpi_category_id]
+                    );
+                    
+                    // KpiDescription doesn't exist, create a new KpiDetail record
+                    $newKpiDetail = new KpiDetail([
+                        'kpi_id' => $kpi->id,
+                        'kpi_description_id' => $newKpiDescription->id,
+                        'count_type' => $kpiDetailData['count_type'],
+                        'value_plan' => $kpiDetailData['value_plan'] ?? null,
+                        'start' => $kpiDetailData['start'],
+                        'end' => $kpiDetailData['end'],
                     ]);
-                    $kpiDetailData['kpi_description_id'] = $newKpiDescription->id;
-                    KpiDetail::create($kpiDetailData);
+                    
+                    // Associate the new KpiDetail record with the existing Kpi
+                    $kpi->kpi_detail()->save($newKpiDetail);
+                    
+                    // Associate the new KpiDetail record with the existing KpiDescription
+                    // $newKpiDetail->kpi_description()->save($newKpiDescription);
                 }
             }
 
-            // Delete any KpiDetail records that are missing in the new request data
-            $existingKpiDescriptions = KpiDescription::whereIn('description', $request->get('kpis'))->pluck('id');
-            $existingKpiDetails->whereNotIn('kpi_description_id', $existingKpiDescriptions)->each(function ($kpiDetail) {
-                $kpiDetail->delete();
-            });
+            // Get the current IDs of KpiDescriptions associated with the Kpi after the update
+            $existingKpiDescriptionsAfterUpdate = $request->input('kpi_description_id', []);
+
+            // Find the IDs of KpiDescriptions that were associated with the Kpi before but not after the update
+            $removedKpiDescriptions = array_diff($existingKpiDescriptionsBeforeUpdate, $existingKpiDescriptionsAfterUpdate);
+
+            // Delete the KpiDetail records with the obtained IDs
+            if (!empty($removedKpiDescriptions)) {
+                KpiDetail::whereIn('kpi_description_id', $removedKpiDescriptions)
+                    ->where('kpi_id', $kpi->id)
+                    ->delete();
+            }
 
             return redirect('kpi/'.$kpi->id.'/show')->with('success', 'Data Updated !');
         } catch (Exception $e) {

@@ -77,7 +77,6 @@
                                                             <th style="width:45%;">KPI Desc</th>
                                                             <th style="width:10%;">Start Date</th>
                                                             <th style="width:10%;">End Date</th>
-                                                            <th style="width:10%;">End Date</th>
                                                             <th style="width:10%;">Count Type</th>
                                                             <th style="width:10%;">Value Plan</th>
                                                             <th style="width:5%;">
@@ -139,6 +138,7 @@ $(document).ready(function() {
                 var kpiDetailId = value.id;
                 var description = value.kpi_description.description;
                 var kpiDescription = value.kpi_description.description;
+                var kpiDescriptionId = value.kpi_description.id;
 
                 var startDate = value.start;
                 var formattedStartDate = "";
@@ -186,9 +186,9 @@ $(document).ready(function() {
                 }
 
                 $("#tablekpi").append(
-                    '<tr class="kpi-row"><td><input type="text" placeholder="KPI description .." class="form-control" name="kpis[]" style="width: 100%;" value="' +
+                    '<tr class="kpi-row"><td><input type="text" placeholder="KPI description .." class="form-control" name="kpis[]" data-kpi-description-id="' + kpiDescriptionId + '" style="width: 100%;" value="' +
                     description +
-                    '"></td><td>' +
+                     '"><input type="hidden" name="kpi_description_id[]" value="' + kpiDescriptionId + '"></td><td>' +
                     startDate +
                     '</td><td>' +
                     endDate +
@@ -196,7 +196,7 @@ $(document).ready(function() {
                     countTypeSelect +
                     '</td><td>' +
                     valuePlanInput +
-                    '</td><td><a href="#formreplacekpi" class="badge bg-danger btn_remove" id="kpi' +
+                    '</td><td><a href="#formreplacekpi" class="badge bg-danger btn_remove" data-kpi-description-id="' + kpiDescriptionId + '" id="kpi' +
                     index +
                     '"><span class="fas fa-minus"></span></a></td></tr>'
                 );
@@ -218,9 +218,10 @@ $(document).ready(function() {
     });
 
     $("#tablekpi").on("click", ".btn_remove", function (e) {
-    e.preventDefault();
-    $(this).closest(".kpi-row").remove();
-});
+        e.preventDefault();
+        var kpiDescriptionId = $(this).closest("tr").find('input[name="kpis[]"]').data('kpi-description-id');
+        $(this).closest(".kpi-row").remove();
+    });
 });
 </script>
 
