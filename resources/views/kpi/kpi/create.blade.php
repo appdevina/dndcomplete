@@ -40,7 +40,14 @@
                                                 <option selected disabled>-- Choose Job Position --</option>
                                                 @foreach ($positions as $post)
                                                     <option value="{{ $post->id }}">
-                                                        {{ $post->name }}</option>
+                                                        {{ $post->name }} - 
+                                                        @foreach ($post->user as $user)
+                                                            {{ $user->nama_lengkap }}
+                                                            @if (!$loop->last)
+                                                                , <!-- Add a comma if it's not the last user -->
+                                                            @endif
+                                                        @endforeach
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>

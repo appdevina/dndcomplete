@@ -101,7 +101,7 @@ class KpiController extends Controller
             })
             ->get();
         } else {
-            $positions = Position::all();
+            $positions = Position::with('user')->get();
         }
 
         $kpidescs = KpiDescription::all();
