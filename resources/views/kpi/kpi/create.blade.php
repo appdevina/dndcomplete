@@ -36,7 +36,7 @@
                                         </div>
                                         <div class="mb-3 col-lg-12">
                                             <label for="position_id" class="form-label">Job Position</label>
-                                            <select class="form-control" id="position_id" name="position_id" required onchange="toggleOption()">
+                                            <select class="form-control" id="position_id" name="position_id" required onchange="toggleOption()" style="width: 100%; overflow-x: auto;">
                                                 <option selected disabled>-- Choose Job Position --</option>
                                                 @foreach ($positions as $post)
                                                     <option value="{{ $post->id }}">
