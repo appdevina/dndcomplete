@@ -21,7 +21,7 @@
                             <div class="card-tools d-flex align-items-center">
                                 <div class="input-group input-group-sm mr-3" style="width: 430px;">
                                     <form action="kpi" class="d-inline-flex">
-                                        <select class="custom-select col-lg-12 mx-2" name="position_id" id="position_id">
+                                        <select class="custom-select col-lg-12 mx-2" name="position_id" id="position_id" style="width: 300px;">
                                             <option value="">--Choose Position--</option>
                                             @foreach ($positions as $post)
                                                 <option value="{{ $post->id }}">{{ $post->name }}</option>
@@ -67,7 +67,7 @@
                                         <tr onclick="window.location='/kpi/{{ $kpi->id }}/show';" style="cursor: pointer;">
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $kpi->user->position->name ?? '-' }}</td>
-                                            <td>{{ $kpi->user->nama_lengkap }}</td>
+                                            <td>{{ $kpi->user->nama_lengkap ?? '-' }}</td>
                                             <td>{{ $kpi->kpi_category->name ?? '-' }}</td>
                                             <td>{{ $kpi->kpi_type->name }}</td>
                                             <td>
@@ -88,11 +88,11 @@
                                                 <!-- <a href="/kpi/{{ $kpi->id }}/edit" style="color: orange;">
                                                     <span><i class="fas fa-edit"></i></span>
                                                 </a> -->
-                                                @if (auth()->user()->role_id == 1)
+                                                {{-- @if (auth()->user()->role_id == 1) --}}
                                                     <a href="/kpi/{{ $kpi->id }}/delete" style="color: red;" onclick="return confirm('Sure to delete data ?')">
                                                         <span><i class="fas fa-trash"></i></span>
                                                     </a>
-                                                @endif
+                                                {{-- @endif --}}
                                             </td>
                                         </tr>
                                     @endforeach
@@ -105,6 +105,11 @@
                 </div>
             </div>
         </div>
+        @if (count($kpis) == 100)
+            <div class="d-flex justify-content-center">
+                {{ $kpis->links() }}
+            </div>
+        @endif
     </section>
     <!-- /.content -->
     <!-- /.content-wrapper -->

@@ -31,7 +31,7 @@ class KpiController extends Controller
                 ->whereHas('user', function ($q) {
                     $q->where('divisi_id', auth()->user()->divisi_id);
                 })
-                ->get();
+                ->simplePaginate(100);
 
             $positions = Position::whereHas('user', function ($q) {
                     $q->where('divisi_id', auth()->user()->divisi_id);
@@ -39,7 +39,7 @@ class KpiController extends Controller
                 ->get();
         } else {
             $kpis = Kpi::orderBy('date', 'DESC')
-                ->get();
+                ->simplePaginate(100);
 
             $positions = Position::all();
         }
@@ -93,10 +93,10 @@ class KpiController extends Controller
                 ->where('divisi_id', auth()->user()->divisi_id);
             })
             ->get();
-        // KALAU ROLE COORDINATOR BUAT KPI UNTUK ROLE TEAM LEADER & STAFF
+        // KALAU ROLE COORDINATOR BUAT KPI UNTUK ROLE COORDINATOR & TEAM LEADER & STAFF
         } else if (auth()->user()->role_id == 4) {
             $positions = Position::whereHas('user', function ($q) {
-                $q->whereIn('role_id', [3,2])
+                $q->whereIn('role_id', [4,3,2])
                 ->where('divisi_id', auth()->user()->divisi_id);
             })
             ->get();
@@ -266,8 +266,8 @@ class KpiController extends Controller
      */
     public function edit(Kpi $kpi)
     {
-        // KALAU COORDINATOR GABISA CHANGE KPI PUNYA SENDIRI
-        if (auth()->user()->role_id == 4) {
+        // KALAU COORDINATOR GABISA CHANGE KPI PUNYA SENDIRI KECUALI SCM-MAJU (Alicia)
+        if (auth()->user()->role_id == 4 && auth()->user()->divisi_id != 28) {
             if ($kpi->user_id == auth()->user()->id) {
                 return redirect()->back()->with(['error' => 'Request your supervisor to change KPI !']);
             }
@@ -334,7 +334,7 @@ class KpiController extends Controller
                         ['description' => $kpiDescription,
                         'kpi_category_id' => $request->kpi_category_id]
                     );
-                    
+
                     // KpiDescription doesn't exist, create a new KpiDetail record
                     $newKpiDetail = new KpiDetail([
                         'kpi_id' => $kpi->id,
@@ -344,10 +344,10 @@ class KpiController extends Controller
                         'start' => $kpiDetailData['start'],
                         'end' => $kpiDetailData['end'],
                     ]);
-                    
+
                     // Associate the new KpiDetail record with the existing Kpi
                     $kpi->kpi_detail()->save($newKpiDetail);
-                    
+
                     // Associate the new KpiDetail record with the existing KpiDescription
                     // $newKpiDetail->kpi_description()->save($newKpiDescription);
                 }
