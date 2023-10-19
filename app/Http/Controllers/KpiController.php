@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\KpiMonthlyExport;
+use App\Exports\KpiPerDivisionExport;
 use App\Imports\KpiImport;
 use App\Models\Divisi;
 use App\Models\Kpi;
@@ -59,6 +60,7 @@ class KpiController extends Controller
             'positions' => $positions,
             'kpicategories' => KpiCategory::all(),
             'kpitypes' => KpiType::all(),
+            'divisis' => Divisi::all(),
         ]);
     }
 
@@ -429,5 +431,11 @@ class KpiController extends Controller
         $divisi = Divisi::where('id', $request->divisi_id)->first();
 
         return Excel::download(new KpiMonthlyExport($request->date, $request->divisi_id ?? auth()->user()->divisi_id), 'KPI_'. (auth()->user()->role_id == 1 ? $divisi->name : auth()->user()->divisi->name) . '_' . $request->date . '.xlsx');
+    }
+
+    public function exportPerDivision(Request $request){
+        $divisi = Divisi::where('id', $request->divisi_id)->first();
+
+        return Excel::download(new KpiPerDivisionExport($request->month, $request->divisi_id ?? auth()->user()->divisi_id), 'KPI_'. (auth()->user()->role_id == 1 ? $divisi->name : auth()->user()->divisi->name) . '_' . $request->month . '.xlsx');
     }
 }

@@ -40,6 +40,11 @@
                                         <i class="fa fa-upload"></i>
                                     </a>
                                 </div> -->
+                                <div class="input-group input-group-sm mr-3" style="width: 30px;">
+                                    <a href="" data-toggle="modal" data-target="#exportKpi" data-toggle="tooltip" data-placement="top" title="Export KPI" class="btn btn-tool btn-sm">
+                                        <i class="fa fa-download"></i>
+                                    </a>
+                                </div>
                                 <div class="input-group input-group-sm" style="width: 30px;">
                                     <a href="/kpi/create" data-toggle="tooltip" data-placement="top" title="Add KPI" class="btn btn-tool btn-sm">
                                         <i class="fas fa-plus"></i>
@@ -173,6 +178,42 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-info">Import</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Export -->
+    <div class="modal fade" id="exportKpi" tabindex="-1" role="dialog" aria-labelledby="exportKpiLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form method="POST" action="/kpi/export" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exportKpiLabel">Export KPI</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3 col-lg-12">
+                            <label for="divisi_id" class="form-label">Divisi</label>
+                            <select class="custom-select col-lg-12" name="divisi_id" id="divisi_id" required>
+                                @foreach ($divisis as $divisi)
+                                    <option value="{{ $divisi->id }}">{{ $divisi->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3 col-lg-12">
+                            <label for="month" class="form-label">Month</label>
+                            <input type="month" class="form-control" id="month" name="month" required>
+                        </div>
+                        <br>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-info">Export</button>
                     </div>
                 </form>
             </div>
