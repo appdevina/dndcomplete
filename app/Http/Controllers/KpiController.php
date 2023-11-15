@@ -73,11 +73,11 @@ class KpiController extends Controller
     {
         // VALIDASI WAKTU
         if (auth()->user()->role_id != 1) {
-            $today = Carbon::createFromFormat('d/m/Y', '01/01/2023');
-            // $today = Carbon::now();
+            // $today = Carbon::createFromFormat('d/m/Y', '01/01/2023');
+            $today = Carbon::now();
 
-            if ($today > $today->copy()->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->startOfMonth()->addDay(3)) {
-                return redirect('kpi')->with(['error' => 'Can not add KPI, now already more than 3 days since start of month !']);
+            if ($today > $today->copy()->setTimezone(env('DEFAULT_TIMEZONE_APP', 'Asia/Jakarta'))->startOfMonth()->addDay(6)) {
+                return redirect('kpi')->with(['error' => 'Can not add KPI, now already more than 5 days since start of month !']);
             }
         }
 

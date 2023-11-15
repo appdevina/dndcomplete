@@ -698,24 +698,33 @@ class KpiDashboardController extends Controller
             // VALIDASI WAKTU
             $currentDate = Carbon::now();
             $detailKpi = KpiDetail::findOrFail($request->id);
+
             $kpiDate = Carbon::parse($detailKpi->kpi->date);
+            $firstDateOfMonth = $kpiDate->copy()->startOfMonth();
+            $lastDateOfMonth = $kpiDate->copy()->endOfMonth()->addDays(5);
+
             $startDate = Carbon::parse($detailKpi->start);
-            $endDate = Carbon::parse($detailKpi->end);
+            $endDate = Carbon::parse($detailKpi->end)->addDay();
 
             // FOR TESTING PURPOSES
             // $currentDate = Carbon::createFromFormat('Y-m-d', '2023-08-07');
 
             // VALIDASI STAFF & TEAM LEDAER
             if (auth()->user()->role_id == 2 || auth()->user()->role_id == 3) {
-                if (!$kpiDate->isSameMonth($currentDate)) {
-                    return redirect()->back()->with(['error' => 'Cannot change KPI for previous or future months!']);
+                // if (!$kpiDate->isSameMonth($currentDate)) {
+                //     return redirect()->back()->with(['error' => 'Cannot change KPI for previous or future months!']);
+                // }
+                if (!$currentDate->between($firstDateOfMonth, $lastDateOfMonth)) {
+                    return redirect()->back()->with(['error' => 'Cannot change KPI for previous or more than 5 days of future months!']);
                 }
             }
 
             if (auth()->user()->role_id != 1) {
-                if ($detailKpi->start != null && $detailKpi->end != null) {
-                    if ($currentDate < $startDate || $currentDate > $endDate) {
-                        return redirect()->back()->with(['error' => 'Cannot change KPI out of the given range date!']);
+                if (auth()->user()->role_id == 2 || auth()->user()->role_id == 3) {
+                    if ($detailKpi->start != null && $detailKpi->end != null) {
+                        if ($currentDate < $startDate || $currentDate > $endDate) {
+                            return redirect()->back()->with(['error' => 'Cannot change KPI out of the given range date!']);
+                        }
                     }
                 }
                 if ($currentDate > $kpiDate->addMonth(1)->firstOfMonth()->addDays(7)) {
