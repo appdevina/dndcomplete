@@ -132,6 +132,7 @@ Route::middleware('auth')->group(
         Route::post('/kpi/import', [KpiController::class, 'import']);
         Route::get('/kpi/exportMonthly', [KpiController::class, 'exportMonthly']);
         Route::post('/kpi/export', [KpiController::class, 'exportPerDivision']);
+        Route::post('/kpi/copy', [KpiController::class, 'copyKpi']);
 
         ##ROUTE ADMIN
         Route::middleware('isAdmin')->group(function () {

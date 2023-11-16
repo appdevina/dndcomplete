@@ -40,6 +40,11 @@
                                         <i class="fa fa-upload"></i>
                                     </a>
                                 </div> -->
+                                <div class="input-group input-group-sm mr-3 ml-3" style="width: 30px;">
+                                    <a href="" data-toggle="modal" data-target="#copyKpi" data-toggle="tooltip" data-placement="top" title="Copy KPI" class="btn btn-tool btn-sm">
+                                        <i class="fa fa-copy"></i>
+                                    </a>
+                                </div>
                                 <div class="input-group input-group-sm mr-3" style="width: 30px;">
                                     <a href="" data-toggle="modal" data-target="#exportKpi" data-toggle="tooltip" data-placement="top" title="Export KPI" class="btn btn-tool btn-sm">
                                         <i class="fa fa-download"></i>
@@ -118,6 +123,65 @@
     </section>
     <!-- /.content -->
     <!-- /.content-wrapper -->
+
+    <!-- Modal Copy -->
+    <div class="modal fade" id="copyKpi" tabindex="-1" role="dialog" aria-labelledby="copyKpiLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="copyForm" method="POST" action="/kpi/copy" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="copyKpiLabel">Copy KPI</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3 col-lg-12">
+                            <label for="copy_position_id" class="form-label">Job Position</label>
+                            <select class="form-control" id="copy_position_id" name="copy_position_id" required style="width: 100%; overflow-x: auto;" onchange="toggleOptions()">
+                                <option selected disabled>-- Choose Job Position --</option>
+                                @foreach ($positionsToCopy as $post)
+                                    <option value="{{ $post->id }}">
+                                        {{ $post->name }} -
+                                        @foreach ($post->user as $user)
+                                            {{ $user->nama_lengkap }}
+                                            @if (!$loop->last)
+                                                , <!-- Add a comma if it's not the last user -->
+                                            @endif
+                                        @endforeach
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3 col-lg-12">
+                            <label for="fromDate" class="form-label">From Month</label>
+                            <input type="text" data-format="mm/yyyy" class="form-control" id="monthpicker" name="fromDate" required>
+                        </div>
+                        <div class="mb-3 col-lg-12">
+                            <label for="toDate" class="form-label">To Month</label>
+                            <input type="text" data-format="mm/yyyy" class="form-control" id="toMonthpicker" name="toDate" required>
+                        </div>
+                        <br>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <!-- <button type="submit" class="btn btn-info">Copy</button> -->
+                        <button type="submit" class="btn btn-info" id="copyBtn">
+                            <span id="copyBtnText">Copy</span>
+
+                            <div class="spinner-border spinner-border-sm" role="status" id="copyBtnSpinner" style="display: none;">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+
+                            <!-- <span id="copyBtnSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span> -->
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Upload -->
     <div class="modal fade" id="importKpi" tabindex="-1" role="dialog" aria-labelledby="importKpiLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -219,4 +283,52 @@
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+    document.getElementById('copyForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        // Get references to button elements
+        var copyBtn = document.getElementById('copyBtn');
+        var copyBtnText = document.getElementById('copyBtnText');
+        var copyBtnSpinner = document.getElementById('copyBtnSpinner');
+
+        // Disable the button and show the spinner
+        copyBtnText.style.display = 'none';
+        copyBtnSpinner.style.display = 'inline-block';
+        copyBtn.disabled = true;
+
+        // Perform the AJAX request to copy the KPIs
+        axios.post('/kpi/copy', {
+            fromDate: document.getElementById('monthpicker').value,
+            toDate: document.getElementById('toMonthpicker').value,
+            position_id: document.getElementById('copy_position_id').value,
+        })
+        .then(function (response) {
+            // Re-enable the button and hide the spinner
+            copyBtnText.style.display = 'inline-block';
+            copyBtnSpinner.style.display = 'none';
+            copyBtn.disabled = false;
+
+            // Redirect to the kpi page
+            window.location.href = '/kpi';
+
+            // Show success message if needed
+            alert('Copying success!');
+        })
+        .catch(function (error) {
+            // Handle errors, show error message if needed
+            console.error(error);
+
+            // Re-enable the button and hide the spinner on error
+            copyBtnText.style.display = 'inline-block';
+            copyBtnSpinner.style.display = 'none';
+            copyBtn.disabled = false;
+
+            // Show an error message
+            alert('Copying failed. Please try again.');
+        });
+    });
+</script>
 @endsection
+

@@ -658,4 +658,10 @@ $(document).ready(function () {
         minViewMode: "years",
         parentEl: "#exportKpi .modal-body",
     });
+
+    $("#toMonthpicker").datepicker({
+        autoclose: true,
+        minViewMode: 1,
+        format: "mm/yyyy",
+    });
 });

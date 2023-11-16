@@ -53,6 +53,31 @@ class KpiController extends Controller
             ->get();
         }
 
+        // BU VEGA
+        if (auth()->user()->role_id == 5 && auth()->user()->divisi_id == 3) {
+            $positionsToCopy = Position::whereHas('user', function ($q) {
+                $q->whereIn('role_id', [4,5,3,2])
+                ->where('divisi_id', auth()->user()->divisi_id);
+            })
+            ->get();
+        // KALAU ROLE MANAGER BUAT KPI UNTUK ROLE COORDINATOR & MANAGER
+        } else if (auth()->user()->role_id == 5 && auth()->user()->divisi_id != 3) {
+            $positionsToCopy = Position::whereHas('user', function ($q) {
+                $q->whereIn('role_id', [4,5])
+                ->where('divisi_id', auth()->user()->divisi_id);
+            })
+            ->get();
+        // KALAU ROLE COORDINATOR BUAT KPI UNTUK ROLE COORDINATOR & TEAM LEADER & STAFF
+        } else if (auth()->user()->role_id == 4) {
+            $positionsToCopy = Position::whereHas('user', function ($q) {
+                $q->whereIn('role_id', [4,3,2])
+                ->where('divisi_id', auth()->user()->divisi_id);
+            })
+            ->get();
+        } else {
+            $positionsToCopy = Position::with('user')->get();
+        }
+
         return view('kpi.kpi.index', [
             'title' => 'KPI',
             'active' => 'kpi',
@@ -61,6 +86,7 @@ class KpiController extends Controller
             'kpicategories' => KpiCategory::all(),
             'kpitypes' => KpiType::all(),
             'divisis' => Divisi::all(),
+            'positionsToCopy' => $positionsToCopy,
         ]);
     }
 
@@ -437,5 +463,34 @@ class KpiController extends Controller
         $divisi = Divisi::where('id', $request->divisi_id)->first();
 
         return Excel::download(new KpiPerDivisionExport($request->month, $request->divisi_id ?? auth()->user()->divisi_id), 'KPI_'. (auth()->user()->role_id == 1 ? $divisi->name : auth()->user()->divisi->name) . '_' . $request->month . '.xlsx');
+    }
+
+    public function copyKpi(Request $request){
+        $fromDate = Carbon::createFromFormat('m/Y', $request->fromDate)->startOfMonth();
+        $toDate = Carbon::createFromFormat('m/Y', $request->toDate)->startOfMonth();
+        $users = User::where('position_id', $request->position_id)->pluck('id');
+
+        $kpis = Kpi::whereMonth('date', $fromDate->month)
+            ->whereYear('date', $fromDate->year)
+            ->whereIn('user_id', $users)
+            ->get();
+
+        foreach ($kpis as $kpi) {
+            $newKpi = $kpi->replicate();
+
+            $newKpi->date = $toDate;
+
+            $newKpi->save();
+
+            foreach ($kpi->kpi_detail as $kpiDetail) {
+                $newKpiDetail = $kpiDetail->replicate();
+                $newKpiDetail->kpi_id = $newKpi->id;
+                $newKpiDetail->start = null;
+                $newKpiDetail->end = null;
+                $newKpiDetail->save();
+            }
+        }
+
+        return redirect('kpi')->with(['success' => 'Copying success !']);
     }
 }
